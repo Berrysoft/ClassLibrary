@@ -50,7 +50,7 @@ namespace Berrysoft.Data
         {
             return GetDepthInternal(_root, 1);
         }
-        private int GetDepthInternal(BinaryNode<T> root,int depth)
+        private int GetDepthInternal(BinaryNode<T> root, int depth)
         {
             int result = depth;
             int tempDepth;
@@ -137,11 +137,11 @@ namespace Berrysoft.Data
                 }
                 else
                 {
-                    if(current.RightChild!=null)
+                    if (current.RightChild != null)
                     {
                         nodes.Push(current.RightChild);
                     }
-                    if(current.LeftChild!=null)
+                    if (current.LeftChild != null)
                     {
                         nodes.Push(current.LeftChild);
                     }
