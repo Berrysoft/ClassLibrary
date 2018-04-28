@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Berrysoft.Data
 {
     #region Interfaces
-    public interface ITree<TValue,TNode>
+    public interface ITree<TValue, TNode>
         where TNode : INodeBase<TValue, TNode>
     {
         TNode Root { get; }
         int GetDepth();
     }
-    public interface INodeBase<TValue,TNode>
+    public interface INodeBase<TValue, TNode>
         where TNode : INodeBase<TValue, TNode>
     {
         TValue Value { get; set; }
@@ -62,7 +62,7 @@ namespace Berrysoft.Data
         private int GetDepthInternal(Node<T> node, int depth)
         {
             int result = depth;
-            foreach(Node<T> child in node.AsEnumerable())
+            foreach (Node<T> child in node.AsEnumerable())
             {
                 int tempDepth = GetDepthInternal(child, depth + 1);
                 if (tempDepth > result)
