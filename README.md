@@ -1,0 +1,2 @@
+# ClassLibrary
+Some helpful classes
