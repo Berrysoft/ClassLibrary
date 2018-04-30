@@ -37,8 +37,7 @@ Public Class DictionaryTest
         keydic.Add(123, "123")
         keydic.Add(456, "456")
         Dim key1collection = keydic.Keys1
-        Dim key1array(1) As Integer
-        key1collection.CopyTo(key1array, 0)
+        Dim key1array() As Integer = key1collection.ToArray()
         Assert.AreEqual(key1array(0), 123)
         Assert.AreEqual(key1array(1), 456)
         Dim key2collection = keydic.Keys2
@@ -48,6 +47,18 @@ Public Class DictionaryTest
             Assert.AreEqual(key2, key2array(i))
             i += 1
         Next
+    End Sub
+
+    <TestMethod()>
+    Public Sub KeyLookupAddTest()
+        Dim keylook As New KeyLookup(Of Integer, String)()
+        keylook.Add(123, "123")
+        keylook.Add(456, "456")
+        keylook.Add(123, "abc")
+        Dim key1values() As String = keylook.GetValuesFromKey1(123).ToArray()
+        Assert.AreEqual(key1values(0), "123")
+        Assert.AreEqual(key1values(1), "abc")
+        Assert.ThrowsException(Of ArgumentException)(Sub() keylook.Add(123, "123"))
     End Sub
 
 End Class

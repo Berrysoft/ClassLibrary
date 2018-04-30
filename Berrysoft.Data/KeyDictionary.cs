@@ -10,8 +10,8 @@ namespace Berrysoft.Data
     #region Interfaces
     public interface IKeyDictionary<TKey1, TKey2> : ICollection<KeyPair<TKey1, TKey2>>
     {
-        ICollection<TKey1> Keys1 { get; }
-        ICollection<TKey2> Keys2 { get; }
+        IEnumerable<TKey1> Keys1 { get; }
+        IEnumerable<TKey2> Keys2 { get; }
         TKey2 GetValueFromKey1(TKey1 key);
         TKey1 GetValueFromKey2(TKey2 key);
         bool TryGetValueFromKey1(TKey1 key, out TKey2 value);
@@ -24,6 +24,8 @@ namespace Berrysoft.Data
         bool RemoveKey1(TKey1 key);
         bool RemoveKey2(TKey2 key);
         bool Remove(TKey1 key1, TKey2 key2);
+        IDictionary<TKey1, TKey2> ToDictionaryFromKey1();
+        IDictionary<TKey2, TKey1> ToDictionaryFromKey2();
     }
     #endregion
     public struct KeyPair<TKey1, TKey2>
@@ -59,8 +61,6 @@ namespace Berrysoft.Data
         private List<KeyPair<TKey1, TKey2>> list;
         private IEqualityComparer<TKey1> comparer1;
         private IEqualityComparer<TKey2> comparer2;
-        private Key1Collection keys1;
-        private Key2Collection keys2;
         public KeyDictionary()
             : this(0, null, null)
         { }
@@ -93,30 +93,8 @@ namespace Berrysoft.Data
         }
         public int Count => list.Count;
         public bool IsReadOnly => false;
-        public Key1Collection Keys1
-        {
-            get
-            {
-                if (keys1 == null)
-                {
-                    keys1 = new Key1Collection(this);
-                }
-                return keys1;
-            }
-        }
-        public Key2Collection Keys2
-        {
-            get
-            {
-                if (keys2 == null)
-                {
-                    keys2 = new Key2Collection(this);
-                }
-                return keys2;
-            }
-        }
-        ICollection<TKey1> IKeyDictionary<TKey1, TKey2>.Keys1 => Keys1;
-        ICollection<TKey2> IKeyDictionary<TKey1, TKey2>.Keys2 => Keys2;
+        public IEnumerable<TKey1> Keys1 => list.Select(pair => pair.Key1);
+        public IEnumerable<TKey2> Keys2 => list.Select(pair => pair.Key2);
         private bool Insert(TKey1 key1, TKey2 key2, bool add)
         {
             int index1 = -1;
@@ -163,7 +141,7 @@ namespace Berrysoft.Data
                 }
                 else if (add)
                 {
-                    throw new ArgumentException("The keys are existed.");
+                    throw new ArgumentException("Both keys are existed.");
                 }
                 else
                 {
@@ -312,53 +290,7 @@ namespace Berrysoft.Data
         public void CopyTo(KeyPair<TKey1, TKey2>[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
         public IEnumerator<KeyPair<TKey1, TKey2>> GetEnumerator() => list.GetEnumerator();
         IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)list).GetEnumerator();
-        #region Collections
-        public sealed class Key1Collection : ICollection<TKey1>
-        {
-            private KeyDictionary<TKey1, TKey2> dictionary;
-            public Key1Collection(KeyDictionary<TKey1,TKey2> dictionary)
-            {
-                this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
-            }
-            public int Count => dictionary.Count;
-            public bool IsReadOnly => true;
-            public void Add(TKey1 item) => throw new NotSupportedException();
-            public void Clear() => throw new NotSupportedException();
-            public bool Contains(TKey1 item) => dictionary.ContainsKey1(item);
-            public bool Remove(TKey1 item) => throw new NotSupportedException();
-            public void CopyTo(TKey1[] array, int arrayIndex)
-            {
-                for (int i = 0; i < Count; i++)
-                {
-                    array[arrayIndex++] = dictionary.list[i].Key1;
-                }
-            }
-            public IEnumerator<TKey1> GetEnumerator() => dictionary.list.Select(pair => pair.Key1).GetEnumerator();
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-        public sealed class Key2Collection : ICollection<TKey2>
-        {
-            private KeyDictionary<TKey1, TKey2> dictionary;
-            public Key2Collection(KeyDictionary<TKey1, TKey2> dictionary)
-            {
-                this.dictionary = dictionary ?? throw new ArgumentNullException(nameof(dictionary));
-            }
-            public int Count => dictionary.Count;
-            public bool IsReadOnly => true;
-            public void Add(TKey2 item) => throw new NotSupportedException();
-            public void Clear() => throw new NotSupportedException();
-            public bool Contains(TKey2 item) => dictionary.ContainsKey2(item);
-            public bool Remove(TKey2 item) => throw new NotSupportedException();
-            public void CopyTo(TKey2[] array, int arrayIndex)
-            {
-                for (int i = 0; i < Count; i++)
-                {
-                    array[arrayIndex++] = dictionary.list[i].Key2;
-                }
-            }
-            public IEnumerator<TKey2> GetEnumerator() => dictionary.list.Select(pair => pair.Key2).GetEnumerator();
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-        #endregion
+        public IDictionary<TKey1, TKey2> ToDictionaryFromKey1() => list.ToDictionary(pair => pair.Key1, pair => pair.Key2, comparer1);
+        public IDictionary<TKey2, TKey1> ToDictionaryFromKey2() => list.ToDictionary(pair => pair.Key2, pair => pair.Key1, comparer2);
     }
 }
