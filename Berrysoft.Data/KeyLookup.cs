@@ -168,16 +168,11 @@ namespace Berrysoft.Data
             {
                 throw new ArgumentNullException(nameof(key));
             }
-            int index = list.FindIndex(pair => comparer1.Equals(pair.Key1, key));
-            if (index < 0)
+            if (list.RemoveAll(pair => comparer1.Equals(pair.Key1, key)) > 0)
             {
-                return false;
-            }
-            else
-            {
-                list.RemoveAt(index);
                 return true;
             }
+            return false;
         }
         public bool RemoveKey2(TKey2 key)
         {
@@ -185,16 +180,11 @@ namespace Berrysoft.Data
             {
                 throw new ArgumentNullException(nameof(key));
             }
-            int index = list.FindIndex(pair => comparer2.Equals(pair.Key2, key));
-            if (index < 0)
+            if (list.RemoveAll(pair => comparer2.Equals(pair.Key2, key)) > 0)
             {
-                return false;
-            }
-            else
-            {
-                list.RemoveAt(index);
                 return true;
             }
+            return false;
         }
         public bool Remove(TKey1 key1, TKey2 key2)
         {
@@ -207,15 +197,12 @@ namespace Berrysoft.Data
                 throw new ArgumentNullException(nameof(key2));
             }
             int index = list.FindIndex(pair => comparer1.Equals(pair.Key1, key1) && comparer2.Equals(pair.Key2, key2));
-            if (index < 0)
-            {
-                return false;
-            }
-            else
+            if (index >= 0)
             {
                 list.RemoveAt(index);
                 return true;
             }
+            return false;
         }
         public bool Remove(KeyPair<TKey1, TKey2> item) => Remove(item.Key1, item.Key2);
         public void Clear() => list.Clear();

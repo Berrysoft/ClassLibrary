@@ -61,4 +61,18 @@ Public Class DictionaryTest
         Assert.ThrowsException(Of ArgumentException)(Sub() keylook.Add(123, "123"))
     End Sub
 
+    <TestMethod()>
+    Public Sub KeyLookupRemoveTest()
+        Dim keylook As New KeyLookup(Of Integer, String)()
+        keylook.Add(123, "123")
+        keylook.Add(456, "456")
+        keylook.Add(123, "abc")
+        keylook.RemoveKey1(123)
+        Assert.AreEqual(keylook.Count, 1)
+        keylook.Add(123456, "233")
+        Assert.IsFalse(keylook.Remove(456, "123"))
+        keylook.Remove(456, "456")
+        Assert.AreEqual(keylook.Count, 1)
+    End Sub
+
 End Class

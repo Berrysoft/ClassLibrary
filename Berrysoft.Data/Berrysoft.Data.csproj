@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BinaryTree.cs" />
+    <Compile Include="Digraph.cs" />
     <Compile Include="KeyDictionary.cs" />
     <Compile Include="KeyLookup.cs" />
     <Compile Include="Tree.cs" />

@@ -26,7 +26,7 @@ namespace Berrysoft.Data
         void Add(TNode child);
         void Insert(int index, TNode child);
         bool Contains(TNode child);
-        void Remove(TNode child);
+        bool Remove(TNode child);
         void Clear();
         IEnumerable<TNode> AsEnumerable();
     }
@@ -136,14 +136,18 @@ namespace Berrysoft.Data
             }
             return _children.Contains(child);
         }
-        public void Remove(Node<T> child)
+        public bool Remove(Node<T> child)
         {
             if (child == null)
             {
-                throw new ArgumentNullException(nameof(child));
+                return false;
             }
-            child._parent = null;
-            _children.Remove(child);
+            if (_children.Remove(child))
+            {
+                child._parent = null;
+                return true;
+            }
+            return false;
         }
         public void Clear()
         {
