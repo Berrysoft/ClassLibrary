@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Berrysoft.Data
 {
     #region Interfaces
-    public interface IDiagraph<T>
+    public interface IGraph<T>
     {
         int Count { get; }
         void Add(T vertex);
@@ -17,8 +17,11 @@ namespace Berrysoft.Data
         bool Remove(T vertex);
         void Clear();
         void AddArc(T tail, T head);
+        void AddEdge(T tail, T head);
         bool ContainsArc(T tail, T head);
+        bool ContainsEdge(T tail, T head);
         bool RemoveArc(T tail, T head);
+        bool RemoveEdge(T tail, T head);
         void ClearArc();
         void ClearArc(T vertex);
         void ClearHeads(T tail);
@@ -28,21 +31,26 @@ namespace Berrysoft.Data
         ILookup<T, T> GetTails();
         IEnumerable<T> GetTails(T head);
     }
+    public interface IRootSearchable<T>
+    {
+        IEnumerable<T> AsDFSEnumerable(T root);
+        IEnumerable<T> AsBFSEnumerable(T root);
+    }
     #endregion
-    public class Diagraph<T> : IDiagraph<T>
+    public class Graph<T> : IGraph<T>, IRootSearchable<T>
     {
         private HashSet<T> _vertexes;
         private KeyLookup<T, T> _arcs;
-        public Diagraph()
+        public Graph()
             : this(null, null)
         { }
-        public Diagraph(IEqualityComparer<T> comparer)
+        public Graph(IEqualityComparer<T> comparer)
             : this(null, comparer)
         { }
-        public Diagraph(IEnumerable<T> vertexes)
+        public Graph(IEnumerable<T> vertexes)
             : this(vertexes, null)
         { }
-        public Diagraph(IEnumerable<T> vertexes,IEqualityComparer<T> comparer)
+        public Graph(IEnumerable<T> vertexes,IEqualityComparer<T> comparer)
         {
             _vertexes = vertexes == null ? new HashSet<T>() : new HashSet<T>(vertexes);
             IEqualityComparer<T> comp = comparer ?? EqualityComparer<T>.Default;
@@ -133,8 +141,30 @@ namespace Berrysoft.Data
                 throw new KeyNotFoundException();
             }
         }
+        public void AddEdge(T tail,T head)
+        {
+            if (tail == null)
+            {
+                throw new ArgumentNullException(nameof(tail));
+            }
+            if (head == null)
+            {
+                throw new ArgumentNullException(nameof(head));
+            }
+            if (_vertexes.Contains(tail) && _vertexes.Contains(head))
+            {
+                _arcs.Add(tail, head);
+                _arcs.Add(head, tail);
+            }
+            else
+            {
+                throw new KeyNotFoundException();
+            }
+        }
         public bool ContainsArc(T tail, T head) => _arcs.Contains(tail, head);
+        public bool ContainsEdge(T tail, T head) => _arcs.Contains(tail, head) && _arcs.Contains(head, tail);
         public bool RemoveArc(T tail, T head) => _arcs.Remove(tail, head);
+        public bool RemoveEdge(T tail, T head) => _arcs.Remove(tail, head) || _arcs.Remove(head, tail);
         public void ClearArc() => _arcs.Clear();
         public void ClearArc(T vertex)
         {
@@ -147,5 +177,63 @@ namespace Berrysoft.Data
         public IEnumerable<T> GetHeads(T tail) => _arcs.GetValuesFromKey1(tail);
         public ILookup<T, T> GetTails() => _arcs.ToLookupFromKey2();
         public IEnumerable<T> GetTails(T head) => _arcs.GetValuesFromKey2(head);
+        public IEnumerable<T> AsDFSEnumerable(T root)
+        {
+            return AsDFSEnumerableIterator(root);
+        }
+        private IEnumerable<T> AsDFSEnumerableIterator(T root)
+        {
+            Stack<T> nodes = new Stack<T>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Push(root);
+            while (nodes.Count != 0)
+            {
+                T current;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        yield break;
+                    }
+                    current = nodes.Pop();
+                }
+                while (visited.Contains(current));
+                visited.Add(current);
+                yield return current;
+                foreach (var child in GetTails(current).Reverse())
+                {
+                    nodes.Push(child);
+                }
+            }
+        }
+        public IEnumerable<T> AsBFSEnumerable(T root)
+        {
+            return AsBFSEnumerableIterator(root);
+        }
+        private IEnumerable<T> AsBFSEnumerableIterator(T root)
+        {
+            Queue<T> nodes = new Queue<T>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Enqueue(root);
+            while (nodes.Count != 0)
+            {
+                T current;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        yield break;
+                    }
+                    current = nodes.Dequeue();
+                }
+                while (visited.Contains(current));
+                visited.Add(current);
+                yield return current;
+                foreach (var child in GetTails(current))
+                {
+                    nodes.Enqueue(child);
+                }
+            }
+        }
     }
 }

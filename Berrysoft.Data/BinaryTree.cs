@@ -13,8 +13,15 @@ namespace Berrysoft.Data
         TNode LeftChild { get; set; }
         TNode RightChild { get; set; }
     }
+    public interface IOrderable<T>
+    {
+        IEnumerable<T> AsPreOrderEnumerable();
+        IEnumerable<T> AsInOrderEnumerable();
+        IEnumerable<T> AsPostOrderEnumerable();
+        IEnumerable<T> AsLevelOrderEnumerable();
+    }
     #endregion
-    public class BinaryTree<T> : ITree<T, BinaryNode<T>>
+    public class BinaryTree<T> : ITree<T, BinaryNode<T>>, IOrderable<BinaryNode<T>>, ISearchable<BinaryNode<T>>
     {
         private BinaryNode<T> _root;
         public BinaryTree()
@@ -63,6 +70,10 @@ namespace Berrysoft.Data
                 }
             }
             return result;
+        }
+        public IEnumerable<BinaryNode<T>> AsDFSEnumerable()
+        {
+            return AsPreOrderEnumerableIterator();
         }
         public IEnumerable<BinaryNode<T>> AsPreOrderEnumerable()
         {
@@ -139,6 +150,10 @@ namespace Berrysoft.Data
                     }
                 }
             }
+        }
+        public IEnumerable<BinaryNode<T>> AsBFSEnumerable()
+        {
+            return AsLevelOrderEnumerableIterator();
         }
         public IEnumerable<BinaryNode<T>> AsLevelOrderEnumerable()
         {
