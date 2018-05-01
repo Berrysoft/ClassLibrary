@@ -30,8 +30,13 @@ namespace Berrysoft.Data
         void Clear();
         IEnumerable<TNode> AsEnumerable();
     }
+    public interface ISearchable<T>
+    {
+        IEnumerable<T> AsBFSEnumerable();
+        IEnumerable<T> AsDFSEnumerable();
+    }
     #endregion
-    public class Tree<T> : ITree<T, Node<T>>
+    public class Tree<T> : ITree<T, Node<T>>, ISearchable<Node<T>>
     {
         private Node<T> _root;
         public Tree()
@@ -71,6 +76,42 @@ namespace Berrysoft.Data
                 }
             }
             return result;
+        }
+        public IEnumerable<Node<T>> AsDFSEnumerable()
+        {
+            return AsDFSEnumerableIterator();
+        }
+        private IEnumerable<Node<T>> AsDFSEnumerableIterator()
+        {
+            Stack<Node<T>> nodes = new Stack<Node<T>>();
+            nodes.Push(_root);
+            while (nodes.Count != 0)
+            {
+                Node<T> current = nodes.Pop();
+                yield return current;
+                foreach(var child in current.AsEnumerable().Reverse())
+                {
+                    nodes.Push(child);
+                }
+            }
+        }
+        public IEnumerable<Node<T>> AsBFSEnumerable()
+        {
+            return AsBFSEnumerableIterator();
+        }
+        private IEnumerable<Node<T>> AsBFSEnumerableIterator()
+        {
+            Queue<Node<T>> nodes = new Queue<Node<T>>();
+            nodes.Enqueue(_root);
+            while (nodes.Count != 0)
+            {
+                Node<T> current = nodes.Dequeue();
+                yield return current;
+                foreach(var child in current.AsEnumerable())
+                {
+                    nodes.Enqueue(child);
+                }
+            }
         }
     }
     public class Node<T> : INode<T, Node<T>>

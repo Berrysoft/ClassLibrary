@@ -7,7 +7,7 @@ Public Class GraphTest
 
     <TestMethod()>
     Public Sub HeadTailTest()
-        Dim graph As New Diagraph(Of Integer)
+        Dim graph As New Graph(Of Integer)
         graph.Add(123)
         graph.Add(456)
         graph.AddAsHead(789, 123, 456)
@@ -18,6 +18,52 @@ Public Class GraphTest
             Assert.AreEqual(tail, tails(i))
             i += 1
         Next
+    End Sub
+
+    <TestMethod()>
+    Public Sub DFSTest()
+        Dim graph As New Graph(Of Integer)
+        graph.Add(1)
+        graph.Add(2)
+        graph.Add(3)
+        graph.Add(4)
+        graph.Add(5)
+        graph.Add(6)
+        graph.Add(7)
+        graph.Add(8)
+        graph.AddEdge(1, 2)
+        graph.AddEdge(1, 3)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(2, 5)
+        graph.AddEdge(3, 6)
+        graph.AddEdge(3, 7)
+        graph.AddEdge(6, 7)
+        graph.AddEdge(4, 8)
+        graph.AddEdge(5, 8)
+        Dim dfsarray() As Integer = graph.AsDFSEnumerable(1).ToArray()
+    End Sub
+
+    <TestMethod()>
+    Public Sub BFSTest()
+        Dim graph As New Graph(Of Integer)
+        graph.Add(1)
+        graph.Add(2)
+        graph.Add(3)
+        graph.Add(4)
+        graph.Add(5)
+        graph.Add(6)
+        graph.Add(7)
+        graph.Add(8)
+        graph.AddEdge(1, 2)
+        graph.AddEdge(1, 3)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(2, 5)
+        graph.AddEdge(3, 6)
+        graph.AddEdge(3, 7)
+        graph.AddEdge(6, 7)
+        graph.AddEdge(4, 8)
+        graph.AddEdge(5, 8)
+        Dim bfsarray() As Integer = graph.AsBFSEnumerable(1).ToArray()
     End Sub
 
 End Class
