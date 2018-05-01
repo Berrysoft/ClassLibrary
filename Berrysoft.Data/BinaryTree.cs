@@ -7,14 +7,6 @@ using System.Threading.Tasks;
 namespace Berrysoft.Data
 {
     #region Interfaces
-    public interface IBinaryTree<TValue, TNode> : ITree<TValue, TNode>
-        where TNode : IBinaryNode<TValue, TNode>
-    {
-        IEnumerable<TNode> AsPreOrderEnumerable();
-        IEnumerable<TNode> AsInOrderEnumerable();
-        IEnumerable<TNode> AsPostOrderEnumerable();
-        IEnumerable<TNode> AsLevelOrderEnumerable();
-    }
     public interface IBinaryNode<TValue, TNode> : INodeBase<TValue, TNode>
         where TNode : IBinaryNode<TValue, TNode>
     {
@@ -22,7 +14,7 @@ namespace Berrysoft.Data
         TNode RightChild { get; set; }
     }
     #endregion
-    public class BinaryTree<T> : IBinaryTree<T, BinaryNode<T>>
+    public class BinaryTree<T> : ITree<T, BinaryNode<T>>
     {
         private BinaryNode<T> _root;
         public BinaryTree()
