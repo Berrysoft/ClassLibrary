@@ -75,4 +75,52 @@ Public Class GraphTest
         Next
     End Sub
 
+    <TestMethod()>
+    Public Sub DFSTreeTest()
+        Dim graph As New Graph(Of Integer)
+        graph.Add(1)
+        graph.Add(2)
+        graph.Add(3)
+        graph.Add(4)
+        graph.Add(5)
+        graph.Add(6)
+        graph.Add(7)
+        graph.Add(8)
+        graph.AddEdge(1, 2)
+        graph.AddEdge(1, 3)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(2, 5)
+        graph.AddEdge(3, 6)
+        graph.AddEdge(3, 7)
+        graph.AddEdge(6, 7)
+        graph.AddEdge(4, 8)
+        graph.AddEdge(5, 8)
+        Dim tree = graph.ToDFSTree(1)
+        Assert.AreEqual(tree.GetDepth(), 5)
+    End Sub
+
+    <TestMethod()>
+    Public Sub BFSTreeTest()
+        Dim graph As New Graph(Of Integer)
+        graph.Add(1)
+        graph.Add(2)
+        graph.Add(3)
+        graph.Add(4)
+        graph.Add(5)
+        graph.Add(6)
+        graph.Add(7)
+        graph.Add(8)
+        graph.AddEdge(1, 2)
+        graph.AddEdge(1, 3)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(2, 5)
+        graph.AddEdge(3, 6)
+        graph.AddEdge(3, 7)
+        graph.AddEdge(6, 7)
+        graph.AddEdge(4, 8)
+        graph.AddEdge(5, 8)
+        Dim tree = graph.ToBFSTree(1)
+        Assert.AreEqual(tree.GetDepth(), 4)
+    End Sub
+
 End Class

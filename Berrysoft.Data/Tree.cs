@@ -30,13 +30,8 @@ namespace Berrysoft.Data
         void Clear();
         IEnumerable<TNode> AsEnumerable();
     }
-    public interface ISearchable<T>
-    {
-        IEnumerable<T> AsBFSEnumerable();
-        IEnumerable<T> AsDFSEnumerable();
-    }
     #endregion
-    public class Tree<T> : ITree<T, Node<T>>, ISearchable<Node<T>>
+    public class Tree<T> : ITree<T, Node<T>>
     {
         private Node<T> _root;
         public Tree()
@@ -196,5 +191,9 @@ namespace Berrysoft.Data
             _children.Clear();
         }
         public IEnumerable<Node<T>> AsEnumerable() => _children;
+        public override string ToString()
+        {
+            return _value.ToString();
+        }
     }
 }

@@ -13,15 +13,8 @@ namespace Berrysoft.Data
         TNode LeftChild { get; set; }
         TNode RightChild { get; set; }
     }
-    public interface IOrderable<T>
-    {
-        IEnumerable<T> AsPreOrderEnumerable();
-        IEnumerable<T> AsInOrderEnumerable();
-        IEnumerable<T> AsPostOrderEnumerable();
-        IEnumerable<T> AsLevelOrderEnumerable();
-    }
     #endregion
-    public class BinaryTree<T> : ITree<T, BinaryNode<T>>, IOrderable<BinaryNode<T>>, ISearchable<BinaryNode<T>>
+    public class BinaryTree<T> : ITree<T, BinaryNode<T>>
     {
         private BinaryNode<T> _root;
         public BinaryTree()
@@ -240,6 +233,10 @@ namespace Berrysoft.Data
                 }
                 _right = value;
             }
+        }
+        public override string ToString()
+        {
+            return _value.ToString();
         }
     }
 }
