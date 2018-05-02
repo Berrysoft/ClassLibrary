@@ -30,6 +30,8 @@ namespace Berrysoft.Data
         IEnumerable<T> GetHeads(T tail);
         ILookup<T, T> GetTails();
         IEnumerable<T> GetTails(T head);
+        bool TryGetHeads(T tail, out IEnumerable<T> heads);
+        bool TryGetTails(T head, out IEnumerable<T> tails);
     }
     public interface IRootSearchable<T>
     {
@@ -50,7 +52,7 @@ namespace Berrysoft.Data
         public Graph(IEnumerable<T> vertexes)
             : this(vertexes, null)
         { }
-        public Graph(IEnumerable<T> vertexes,IEqualityComparer<T> comparer)
+        public Graph(IEnumerable<T> vertexes, IEqualityComparer<T> comparer)
         {
             _vertexes = vertexes == null ? new HashSet<T>() : new HashSet<T>(vertexes);
             IEqualityComparer<T> comp = comparer ?? EqualityComparer<T>.Default;
@@ -141,7 +143,7 @@ namespace Berrysoft.Data
                 throw new KeyNotFoundException();
             }
         }
-        public void AddEdge(T tail,T head)
+        public void AddEdge(T tail, T head)
         {
             if (tail == null)
             {
@@ -177,6 +179,8 @@ namespace Berrysoft.Data
         public IEnumerable<T> GetHeads(T tail) => _arcs.GetValuesFromKey1(tail);
         public ILookup<T, T> GetTails() => _arcs.ToLookupFromKey2();
         public IEnumerable<T> GetTails(T head) => _arcs.GetValuesFromKey2(head);
+        public bool TryGetHeads(T tail, out IEnumerable<T> heads) => _arcs.TryGetValuesFromKey1(tail, out heads);
+        public bool TryGetTails(T head, out IEnumerable<T> tails) => _arcs.TryGetValuesFromKey2(head, out tails);
         public IEnumerable<T> AsDFSEnumerable(T root)
         {
             return AsDFSEnumerableIterator(root);
@@ -200,9 +204,15 @@ namespace Berrysoft.Data
                 while (visited.Contains(current));
                 visited.Add(current);
                 yield return current;
-                foreach (var child in GetTails(current).Reverse())
+                if (TryGetHeads(current, out var heads))
                 {
-                    nodes.Push(child);
+                    foreach (var child in heads.Reverse())
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Push(child);
+                        }
+                    }
                 }
             }
         }
@@ -229,9 +239,15 @@ namespace Berrysoft.Data
                 while (visited.Contains(current));
                 visited.Add(current);
                 yield return current;
-                foreach (var child in GetTails(current))
+                if (TryGetHeads(current, out var heads))
                 {
-                    nodes.Enqueue(child);
+                    foreach (var child in heads)
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Enqueue(child);
+                        }
+                    }
                 }
             }
         }

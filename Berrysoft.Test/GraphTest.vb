@@ -38,9 +38,14 @@ Public Class GraphTest
         graph.AddEdge(3, 6)
         graph.AddEdge(3, 7)
         graph.AddEdge(6, 7)
-        graph.AddEdge(4, 8)
-        graph.AddEdge(5, 8)
+        'graph.AddEdge(4, 8)
+        'graph.AddEdge(5, 8)
+        graph.AddAsHead(8, 4, 5)
         Dim dfsarray() As Integer = graph.AsDFSEnumerable(1).ToArray()
+        Dim expect() As Integer = {1, 2, 4, 8, 5, 3, 6, 7}
+        For i = 0 To 7
+            Assert.AreEqual(dfsarray(i), expect(i))
+        Next
     End Sub
 
     <TestMethod()>
@@ -64,6 +69,10 @@ Public Class GraphTest
         graph.AddEdge(4, 8)
         graph.AddEdge(5, 8)
         Dim bfsarray() As Integer = graph.AsBFSEnumerable(1).ToArray()
+        Dim expect() As Integer = {1, 2, 3, 4, 5, 6, 7, 8}
+        For i = 0 To 7
+            Assert.AreEqual(bfsarray(i), expect(i))
+        Next
     End Sub
 
 End Class
