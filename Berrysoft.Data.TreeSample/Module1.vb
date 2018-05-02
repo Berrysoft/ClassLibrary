@@ -6,25 +6,24 @@
         Console.Write("How many groups do you want to test: ")
         Dim n As Integer = Console.ReadLine()
         For nn = 1 To n
-            Console.Write("How many nodes: ")
-            Dim m As Integer = Console.ReadLine()
             Console.WriteLine("Please enter the values by pre order, splited by space:")
             Dim front() As Integer = Console.ReadLine().Split(" "c).Select(Function(str) CInt(str)).ToArray()
             Console.WriteLine("Please enter the values by in order, splited by space:")
             Dim mid() As Integer = Console.ReadLine().Split(" "c).Select(Function(str) CInt(str)).ToArray()
+            If front.Length <> mid.Length Then
+                Console.WriteLine("The length of the two arrays should be equal.")
+            End If
             tree.Root.LeftChild = Nothing
             tree.Root.RightChild = Nothing
             current = tree.Root
-            Create(front, mid, m)
+            Create(front, mid)
             Console.WriteLine("The post order of this tree is:")
-            For Each node In tree.AsPostOrderEnumerable()
-                Console.Write("{0} ", node.Value)
-            Next
-            Console.WriteLine()
+            Console.WriteLine(String.Join(" ", tree.AsPostOrderEnumerable().Select(Function(node) node.ToString()).ToArray()))
         Next
     End Sub
 
-    Sub Create(front() As Integer, mid() As Integer, n As Integer)
+    Sub Create(front As Span(Of Integer), mid As Span(Of Integer))
+        Dim n As Integer = front.Length
         Dim tr As BinaryNode(Of Integer) = current
         tr.Value = front(0)
         Dim i As Integer
@@ -37,13 +36,13 @@
             Dim nl As New BinaryNode(Of Integer)
             tr.LeftChild = nl
             current = nl
-            Create(front.Skip(1).ToArray(), mid, i)
+            Create(front.Slice(1, i), mid)
         End If
         If n - 1 - i > 0 Then
             Dim nr As New BinaryNode(Of Integer)
             tr.RightChild = nr
             current = nr
-            Create(front.Skip(i + 1).ToArray(), mid.Skip(i + 1).ToArray(), n - 1 - i)
+            Create(front.Slice(i + 1, n - 1 - i), mid.Slice(i + 1, n - 1 - i))
         End If
     End Sub
 
