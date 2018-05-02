@@ -33,13 +33,8 @@ namespace Berrysoft.Data
         bool TryGetHeads(T tail, out IEnumerable<T> heads);
         bool TryGetTails(T head, out IEnumerable<T> tails);
     }
-    public interface IRootSearchable<T>
-    {
-        IEnumerable<T> AsDFSEnumerable(T root);
-        IEnumerable<T> AsBFSEnumerable(T root);
-    }
     #endregion
-    public class Graph<T> : IGraph<T>, IRootSearchable<T>
+    public class Graph<T> : IGraph<T>
     {
         private HashSet<T> _vertexes;
         private KeyLookup<T, T> _arcs;
@@ -183,6 +178,10 @@ namespace Berrysoft.Data
         public bool TryGetTails(T head, out IEnumerable<T> tails) => _arcs.TryGetValuesFromKey2(head, out tails);
         public IEnumerable<T> AsDFSEnumerable(T root)
         {
+            if (!_vertexes.Contains(root))
+            {
+                throw new KeyNotFoundException();
+            }
             return AsDFSEnumerableIterator(root);
         }
         private IEnumerable<T> AsDFSEnumerableIterator(T root)
@@ -216,8 +215,56 @@ namespace Berrysoft.Data
                 }
             }
         }
+        public Tree<T> ToDFSTree(T root)
+        {
+            if (!_vertexes.Contains(root))
+            {
+                throw new KeyNotFoundException();
+            }
+            Tree<T> result = new Tree<T>(root);
+            Stack<Node<T>> nodes = new Stack<Node<T>>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Push(result.Root);
+            while (nodes.Count != 0)
+            {
+                Node<T> current;
+                for (; ; )
+                {
+                    if (nodes.Count == 0)
+                    {
+                        goto ret;
+                    }
+                    current = nodes.Pop();
+                    if(visited.Contains(current.Value))
+                    {
+                        current.Parent.Remove(current);
+                        continue;
+                    }
+                    break;
+                }
+                visited.Add(current.Value);
+                if (TryGetHeads(current.Value, out var heads))
+                {
+                    foreach (var child in heads.Reverse())
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            Node<T> nc = new Node<T>(child);
+                            nodes.Push(nc);
+                            current.Add(nc);
+                        }
+                    }
+                }
+            }
+            ret:
+            return result;
+        }
         public IEnumerable<T> AsBFSEnumerable(T root)
         {
+            if (!_vertexes.Contains(root))
+            {
+                throw new KeyNotFoundException();
+            }
             return AsBFSEnumerableIterator(root);
         }
         private IEnumerable<T> AsBFSEnumerableIterator(T root)
@@ -250,6 +297,50 @@ namespace Berrysoft.Data
                     }
                 }
             }
+        }
+        public Tree<T> ToBFSTree(T root)
+        {
+            if (!_vertexes.Contains(root))
+            {
+                throw new KeyNotFoundException();
+            }
+            Tree<T> result = new Tree<T>(root);
+            Queue<Node<T>> nodes = new Queue<Node<T>>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Enqueue(result.Root);
+            while (nodes.Count != 0)
+            {
+                Node<T> current;
+                for (; ; )
+                {
+                    if (nodes.Count == 0)
+                    {
+                        goto ret;
+                    }
+                    current = nodes.Dequeue();
+                    if (visited.Contains(current.Value))
+                    {
+                        current.Parent.Remove(current);
+                        continue;
+                    }
+                    break;
+                }
+                visited.Add(current.Value);
+                if (TryGetHeads(current.Value, out var heads))
+                {
+                    foreach (var child in heads)
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            Node<T> nc = new Node<T>(child);
+                            nodes.Enqueue(nc);
+                            current.Add(nc);
+                        }
+                    }
+                }
+            }
+            ret:
+            return result;
         }
     }
 }
