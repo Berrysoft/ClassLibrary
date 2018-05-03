@@ -39,19 +39,23 @@ namespace Berrysoft.Data
         private HashSet<T> _vertexes;
         private KeyLookup<T, T> _arcs;
         public Graph()
-            : this(null, null)
+            : this(0, 0, null)
         { }
         public Graph(IEqualityComparer<T> comparer)
-            : this(null, comparer)
+            : this(0, 0, comparer)
         { }
+        public Graph(int vertexCapacity, int arcCapacity, IEqualityComparer<T> comparer)
+        {
+            _vertexes = new HashSet<T>(vertexCapacity, comparer);
+            _arcs = new KeyLookup<T, T>(arcCapacity, comparer, comparer);
+        }
         public Graph(IEnumerable<T> vertexes)
             : this(vertexes, null)
         { }
         public Graph(IEnumerable<T> vertexes, IEqualityComparer<T> comparer)
         {
-            _vertexes = vertexes == null ? new HashSet<T>() : new HashSet<T>(vertexes);
-            IEqualityComparer<T> comp = comparer ?? EqualityComparer<T>.Default;
-            _arcs = new KeyLookup<T, T>(comp, comp);
+            _vertexes = new HashSet<T>(vertexes);
+            _arcs = new KeyLookup<T, T>(comparer, comparer);
         }
         public int Count => _vertexes.Count;
         public void Add(T vertex)
@@ -235,7 +239,7 @@ namespace Berrysoft.Data
                         goto ret;
                     }
                     current = nodes.Pop();
-                    if(visited.Contains(current.Value))
+                    if (visited.Contains(current.Value))
                     {
                         current.Parent.Remove(current);
                         continue;
