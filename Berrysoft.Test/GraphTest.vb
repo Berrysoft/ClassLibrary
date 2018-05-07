@@ -1,5 +1,4 @@
-﻿Imports System.Text
-Imports Berrysoft.Data
+﻿Imports Berrysoft.Data
 Imports Microsoft.VisualStudio.TestTools.UnitTesting
 
 <TestClass()>

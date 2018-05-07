@@ -38,6 +38,7 @@ namespace Berrysoft.Data
     {
         private HashSet<T> _vertexes;
         private KeyLookup<T, T> _arcs;
+#if NETCOREAPP2_0 || NET472
         public Graph()
             : this(0, 0, null)
         { }
@@ -49,6 +50,16 @@ namespace Berrysoft.Data
             _vertexes = new HashSet<T>(vertexCapacity, comparer);
             _arcs = new KeyLookup<T, T>(arcCapacity, comparer, comparer);
         }
+#else
+        public Graph()
+            : this((IEqualityComparer<T>)null)
+        { }
+        public Graph(IEqualityComparer<T> comparer)
+        {
+            _vertexes = new HashSet<T>(comparer);
+            _arcs = new KeyLookup<T, T>(comparer, comparer);
+        }
+#endif
         public Graph(IEnumerable<T> vertexes)
             : this(vertexes, null)
         { }
