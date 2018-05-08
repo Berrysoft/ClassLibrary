@@ -28,32 +28,48 @@ namespace Berrysoft.Console
             {
                 throw new ArgumentNullException(nameof(args));
             }
+            InitArgs(args);
+        }
+        private void InitArgs(string[] args)
+        {
             Args = new Dictionary<string, string>();
             for (int i = 0; i < args.Length; i++)
             {
-                if (!(args[i].StartsWith(LongHead) || args[i].StartsWith(ShortHead)))
+                if (!StartsWithHead(args[i]))
                 {
                     throw new ArgNotValidException(args[i]);
                 }
+                string argValue = args[i + 1];
+                if (StartsWithHead(argValue))
+                {
+                    argValue = null;
+                }
 #if NETCOREAPP2_0
-                if (!Args.TryAdd(args[i], args[i + 1]))
+                if (!Args.TryAdd(args[i], argValue))
                 {
                     throw new ArgNotValidException(args[i]);
                 }
 #else
                 try
                 {
-                    Args.Add(args[i], args[i + 1]);
+                    Args.Add(args[i], argValue);
                 }
                 catch (Exception ex)
                 {
                     throw new ArgNotValidException(args[i], ex.Message, ex);
                 }
 #endif
-                i++;
+                if (argValue != null)
+                {
+                    i++;
+                }
             }
         }
-        public Dictionary<string, string> Args { get; }
+        private bool StartsWithHead(string arg)
+        {
+            return arg.StartsWith(LongHead) || arg.StartsWith(ShortHead);
+        }
+        public Dictionary<string, string> Args { get; private set; }
         protected virtual string ShortHead => "-";
         protected virtual string LongHead => "--";
         public void Parse()
@@ -63,25 +79,39 @@ namespace Berrysoft.Console
                 if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
                 {
                     string arg;
-                    bool assigned = false;
+                    bool required = option.Required;
+                    object propValue = null;
                     if (option.ShortArg != null && Args.ContainsKey(arg = ShortHead + option.ShortArg))
                     {
-                        prop.SetValue(this, Convert.ChangeType(Args[arg], prop.PropertyType));
-                        assigned = true;
+                        if (prop.PropertyType == typeof(bool) && Args[arg] == null)
+                        {
+                            propValue = true;
+                        }
+                        else
+                        {
+                            propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
+                        }
                     }
                     if (option.LongArg != null && Args.ContainsKey(arg = LongHead + option.LongArg))
                     {
-                        if (assigned)
+                        if (propValue != null)
                         {
                             throw new ArgRepeatedException(arg);
                         }
-                        prop.SetValue(this, Convert.ChangeType(Args[arg], prop.PropertyType));
-                        assigned = true;
+                        if (prop.PropertyType == typeof(bool) && Args[arg] == null)
+                        {
+                            propValue = true;
+                        }
+                        else
+                        {
+                            propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
+                        }
                     }
-                    if (!assigned && option.Required)
+                    if (propValue == null && required)
                     {
                         throw new ArgRequiredException(LongHead + option.LongArg);
                     }
+                    prop.SetValue(this, propValue);
                 }
             }
         }
