@@ -4,7 +4,7 @@ Imports Microsoft.VisualStudio.TestTools.UnitTesting
 <TestClass()>
 Public Class CommandLineTest
     Class StdArgTestClass
-        Inherits UnixCommandLine
+        Inherits CommandLine
         Public Sub New(args() As String)
             MyBase.New(args)
         End Sub
