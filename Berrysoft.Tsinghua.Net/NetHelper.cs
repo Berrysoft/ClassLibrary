@@ -10,7 +10,7 @@ namespace Berrysoft.Tsinghua.Net
         private const string LoginData = "action=login&username={0}&password={1}&ac_id=1";
         private const string LogoutData = "action=logout";
         public NetHelper(string username, string password)
-            : base(username, "{MD5_HEX}" + GetMD5(password))
+            : base(username, "{MD5_HEX}" + GetMD5(password ?? string.Empty))
         { }
         public Task<string> LoginAsync()
         {

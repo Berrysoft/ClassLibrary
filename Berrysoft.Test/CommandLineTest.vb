@@ -17,6 +17,9 @@ Public Class CommandLineTest
 
         <[Option]("c"c, "ccc")>
         Public Property C As Date
+
+        <[Option]("d"c, Nothing)>
+        Public Property D As Boolean
     End Class
 
     <TestMethod()>
@@ -45,12 +48,19 @@ Public Class CommandLineTest
     <TestMethod()>
     Public Sub OptionTest()
         Dim argclass As New StdArgTestClass({})
-        Dim options() As String = {"a", "b", "c"}
+        Dim options() As String = {"a", "b", "c", "d"}
         Dim i As Integer = 0
         For Each op In argclass.GetOptionAttributes()
             Assert.AreEqual(op.ShortArg, options(i))
             i += 1
         Next
+    End Sub
+
+    <TestMethod()>
+    Public Sub BooleanTest()
+        Dim argclass As New StdArgTestClass({"-a", "aaa", "-d"})
+        argclass.Parse()
+        Assert.IsTrue(argclass.D)
     End Sub
 
 End Class

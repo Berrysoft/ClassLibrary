@@ -20,6 +20,14 @@ namespace Berrysoft.Tsinghua.Net
             LogoutUri = string.Format(LogoutUriBase, version);
             FluxUri = string.Format(FluxUriBase, version);
         }
+        public static AuthHelper CreateAuth4Helper(string username, string password)
+        {
+            return new AuthHelper(username, password, 4);
+        }
+        public static AuthHelper CreateAuth6Helper(string username, string password)
+        {
+            return new AuthHelper(username, password, 6);
+        }
         public Task<string> LoginAsync()
         {
             return PostAsync(LoginUri, string.Format(LoginData, Username, Password));

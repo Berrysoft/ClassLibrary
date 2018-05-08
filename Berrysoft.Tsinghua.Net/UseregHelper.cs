@@ -28,7 +28,7 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogoutData = "action=logout";
         private const string DropData = "action=drop&user_ip={0}";
         public UseregHelper(string username, string password)
-            : base(username, GetMD5(password))
+            : base(username, GetMD5(password ?? string.Empty))
         { }
         public Task<string> LoginAsync()
         {

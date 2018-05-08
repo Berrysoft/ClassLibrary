@@ -39,8 +39,16 @@ namespace Berrysoft.Console
                 {
                     throw new ArgNotValidException(args[i]);
                 }
-                string argValue = args[i + 1];
-                if (StartsWithHead(argValue))
+                string argValue;
+                if (i + 1 < args.Length)
+                {
+                    argValue = args[i + 1];
+                    if (StartsWithHead(argValue))
+                    {
+                        argValue = null;
+                    }
+                }
+                else
                 {
                     argValue = null;
                 }
