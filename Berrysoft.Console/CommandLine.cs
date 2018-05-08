@@ -54,8 +54,8 @@ namespace Berrysoft.Console
             }
         }
         public Dictionary<string, string> Args { get; }
-        protected abstract string ShortHead { get; }
-        protected abstract string LongHead { get; }
+        protected virtual string ShortHead => "-";
+        protected virtual string LongHead => "--";
         public void Parse()
         {
             foreach (PropertyInfo prop in GetType().GetProperties())
@@ -80,7 +80,7 @@ namespace Berrysoft.Console
                     }
                     if (!assigned && option.Required)
                     {
-                        throw new ArgRequiredException(option.LongArg);
+                        throw new ArgRequiredException(LongHead + option.LongArg);
                     }
                 }
             }
