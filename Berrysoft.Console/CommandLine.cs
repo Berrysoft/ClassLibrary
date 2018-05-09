@@ -78,10 +78,22 @@ namespace Berrysoft.Console
             return arg.StartsWith(LongHead) || arg.StartsWith(ShortHead);
         }
         public Dictionary<string, string> Args { get; private set; }
-        protected virtual string ShortHead => "-";
-        protected virtual string LongHead => "--";
+        public virtual string ShortHead => "-";
+        public virtual string LongHead => "--";
+        public virtual string ShortHelpArg => "h";
+        public virtual string LongHelpArg => "help";
+        private bool ContainsHelp()
+        {
+            return Args.ContainsKey(ShortHead + ShortHelpArg) || Args.ContainsKey(LongHead + LongHelpArg);
+        }
         public void Parse()
         {
+            bool help = ContainsHelp();
+            if (help && Args.Count == 1)
+            {
+                PrintUsage();
+                return;
+            }
             foreach (PropertyInfo prop in GetType().GetProperties())
             {
                 if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
@@ -91,38 +103,63 @@ namespace Berrysoft.Console
                     object propValue = null;
                     if (option.ShortArg != null && Args.ContainsKey(arg = ShortHead + option.ShortArg))
                     {
-                        if (prop.PropertyType == typeof(bool) && Args[arg] == null)
+                        if (help)
                         {
-                            propValue = true;
+                            PrintUsage(option);
                         }
                         else
                         {
-                            propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
+                            if (prop.PropertyType == typeof(bool) && Args[arg] == null)
+                            {
+                                propValue = true;
+                            }
+                            else
+                            {
+                                propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
+                            }
                         }
                     }
                     if (option.LongArg != null && Args.ContainsKey(arg = LongHead + option.LongArg))
                     {
-                        if (propValue != null)
+                        if (help)
                         {
-                            throw new ArgRepeatedException(arg);
-                        }
-                        if (prop.PropertyType == typeof(bool) && Args[arg] == null)
-                        {
-                            propValue = true;
+                            PrintUsage(option);
                         }
                         else
                         {
-                            propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
+                            if (propValue != null)
+                            {
+                                throw new ArgRepeatedException(arg);
+                            }
+                            if (prop.PropertyType == typeof(bool) && Args[arg] == null)
+                            {
+                                propValue = true;
+                            }
+                            else
+                            {
+                                propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
+                            }
                         }
                     }
-                    if (propValue == null && required)
+                    if (propValue == null && required && !help)
                     {
                         throw new ArgRequiredException(LongHead + option.LongArg);
                     }
-                    prop.SetValue(this, propValue);
+                    if (!help)
+                    {
+                        prop.SetValue(this, propValue);
+                    }
                 }
             }
         }
+        public void PrintUsage()
+        {
+            foreach (OptionAttribute option in GetOptionAttributes())
+            {
+                PrintUsage(option);
+            }
+        }
+        protected abstract void PrintUsage(OptionAttribute opt);
         public IEnumerable<OptionAttribute> GetOptionAttributes()
         {
             foreach (PropertyInfo prop in GetType().GetProperties())

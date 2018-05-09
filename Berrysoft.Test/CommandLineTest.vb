@@ -20,6 +20,10 @@ Public Class CommandLineTest
 
         <[Option]("d"c, Nothing)>
         Public Property D As Boolean
+
+        Protected Overrides Sub PrintUsage(opt As OptionAttribute)
+            Debug.WriteLine(opt.HelpText)
+        End Sub
     End Class
 
     <TestMethod()>

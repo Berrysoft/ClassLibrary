@@ -26,29 +26,30 @@ namespace Berrysoft.Tsinghua.Net
         public TimeSpan OnlineTime { get; }
         public decimal Balance { get; }
     }
-    public class NetHelperBase
+    public class NetHelperBase : IDisposable
     {
-        private static readonly HttpClient Client = new HttpClient();
+        private HttpClient client;
         public string Username { get; }
         public string Password { get; }
         public NetHelperBase(string username, string password)
         {
             Username = username;
             Password = password;
+            client = new HttpClient();
         }
-        public static async Task<string> PostAsync(string uri, string data)
+        internal async Task<string> PostAsync(string uri, string data)
         {
             using (StringContent content = new StringContent(data ?? string.Empty, Encoding.ASCII, "application/x-www-form-urlencoded"))
             {
-                using (HttpResponseMessage response = await Client.PostAsync(uri, content))
+                using (HttpResponseMessage response = await client.PostAsync(uri, content))
                 {
                     return await response.Content.ReadAsStringAsync();
                 }
             }
         }
-        public static async Task<string> GetAsync(string uri)
+        internal async Task<string> GetAsync(string uri)
         {
-            return await Client.GetStringAsync(uri);
+            return await client.GetStringAsync(uri);
         }
         internal static FluxUser GetFluxUser(string fluxstr)
         {
@@ -79,5 +80,23 @@ namespace Berrysoft.Tsinghua.Net
                 return sBuilder.ToString();
             }
         }
+        #region IDisposable Support
+        private bool disposedValue = false;
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    client.Dispose();
+                }
+                disposedValue = true;
+            }
+        }
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+        #endregion
     }
 }
