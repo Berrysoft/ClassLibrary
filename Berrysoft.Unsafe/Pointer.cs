@@ -1,42 +1,58 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.Unsafe;
 
 namespace Berrysoft.Unsafe
 {
     public unsafe readonly struct Pointer<T>
-        where T : unmanaged
     {
-        private readonly T* _ptr;
-        public Pointer(T* ptr)
+        private readonly void* _ptr;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Pointer(void* ptr)
         {
             _ptr = ptr;
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Pointer(IntPtr ptr)
         {
-            _ptr = (T*)ptr;
+            _ptr = (void*)ptr;
         }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Pointer(ref T ptr)
         {
-            _ptr = (T*)AsPointer(ref ptr);
+            _ptr = AsPointer(ref ptr);
         }
-        public T* Ptr => _ptr;
-        public ref T Target => ref _ptr[0];
-        public ref T this[int index] => ref _ptr[index];
-        public static Pointer<T> operator +(Pointer<T> ptr, int offset) => new Pointer<T>(&ptr._ptr[offset]);
-        public static Pointer<T> operator -(Pointer<T> ptr, int offset) => new Pointer<T>(&ptr._ptr[-offset]);
-        public static Pointer<T> operator ++(Pointer<T> ptr)
+        public void* Ptr
         {
-            T* p = ptr._ptr;
-            return new Pointer<T>(++p);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => _ptr;
         }
-        public static Pointer<T> operator --(Pointer<T> ptr)
+        public ref T Target
         {
-            T* p = ptr._ptr;
-            return new Pointer<T>(--p);
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref AsRef<T>(_ptr);
         }
-        public static implicit operator Pointer<T>(T* ptr) => new Pointer<T>(ptr);
-        public static implicit operator T*(Pointer<T> ptr) => ptr._ptr;
+
+        public ref T this[int index]
+        {
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            get => ref Add(ref AsRef<T>(_ptr), index);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Pointer<T> operator +(Pointer<T> ptr, int offset) => new Pointer<T>(ref Add(ref AsRef<T>(ptr._ptr), offset));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Pointer<T> operator -(Pointer<T> ptr, int offset) => new Pointer<T>(ref Subtract(ref AsRef<T>(ptr._ptr), offset));
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Pointer<T> operator ++(Pointer<T> ptr) => ptr + 1;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Pointer<T> operator --(Pointer<T> ptr) => ptr - 1;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator Pointer<T>(void* ptr) => new Pointer<T>(ptr);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static implicit operator void*(Pointer<T> ptr) => ptr._ptr;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Pointer<T>(IntPtr ptr) => new Pointer<T>(ptr);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(Pointer<T> ptr) => (IntPtr)(ptr._ptr);
     }
 }
