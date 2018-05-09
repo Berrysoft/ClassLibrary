@@ -3,7 +3,7 @@
   <PropertyGroup>
     <RootNamespace>Berrysoft.Test</RootNamespace>
     <TargetFramework>netcoreapp2.0</TargetFramework>
-
+    <LangVersion>latest</LangVersion>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Berrysoft.Console\Berrysoft.Console.csproj" />
     <ProjectReference Include="..\Berrysoft.Data\Berrysoft.Data.csproj" />
+    <ProjectReference Include="..\Berrysoft.Unsafe\Berrysoft.Unsafe.csproj" />
   </ItemGroup>
 
 </Project>
