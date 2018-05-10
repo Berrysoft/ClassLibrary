@@ -57,4 +57,14 @@ Public Class PointerTest
             End Sub)
     End Sub
 
+    <TestMethod()>
+    Public Sub SpanTest()
+        UnsafeMethods.StackAlloc(Of Integer)(1,
+            Sub(ptr)
+                Dim span = ptr.AsSpan(1)
+                span(0) = 123
+                Assert.AreEqual(ptr.Target, 123)
+            End Sub)
+    End Sub
+
 End Class

@@ -24,8 +24,18 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StackAlloc<T>(int size, Action<Pointer<T>> action)
         {
-            byte* ptr = stackalloc byte[size * GetSize<T>()];
+            byte* ptr = stackalloc byte[size * SizeOf<T>()];
             action(new Pointer<T>(ptr));
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<T> AsSpan<T>(this Pointer<T> ptr, int size)
+        {
+            return new Span<T>(ptr.Ptr, size);
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this Pointer<T> ptr, int size)
+        {
+            return new ReadOnlySpan<T>(ptr.Ptr, size);
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemorySet(IntPtr startAddress, byte value, uint byteCount) => InitBlock((void*)startAddress, value, byteCount);
