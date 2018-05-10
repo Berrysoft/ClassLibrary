@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.Unsafe;
 
 namespace Berrysoft.Unsafe
 {
+    [DebuggerDisplay("{Ptr}")]
     public unsafe readonly struct Pointer<T>
     {
         private readonly void* _ptr;
@@ -47,6 +49,10 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pointer<T> operator --(Pointer<T> ptr) => ptr - 1;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator ==(Pointer<T> left, Pointer<T> right) => left._ptr == right._ptr;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool operator !=(Pointer<T> left, Pointer<T> right) => left._ptr != right._ptr;
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator Pointer<T>(void* ptr) => new Pointer<T>(ptr);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator void*(Pointer<T> ptr) => ptr._ptr;
@@ -54,5 +60,18 @@ namespace Berrysoft.Unsafe
         public static implicit operator Pointer<T>(IntPtr ptr) => new Pointer<T>(ptr);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(Pointer<T> ptr) => (IntPtr)(ptr._ptr);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override bool Equals(object obj)
+        {
+            if (obj is Pointer<T> p)
+            {
+                return _ptr == p.Ptr;
+            }
+            return false;
+        }
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override int GetHashCode() => ((int)_ptr).GetHashCode();
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public override string ToString() => ((int)_ptr).ToString();
     }
 }

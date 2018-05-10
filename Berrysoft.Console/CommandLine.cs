@@ -22,12 +22,20 @@ namespace Berrysoft.Console
     }
     public abstract class CommandLine
     {
+        private Dictionary<OptionAttribute, PropertyInfo> properties;
+        private HashSet<string> validArgs;
+        public Dictionary<string, string> Args { get; private set; }
+        public virtual string ShortHead => "-";
+        public virtual string LongHead => "--";
+        public virtual string ShortHelpArg => "h";
+        public virtual string LongHelpArg => "help";
         public CommandLine(string[] args)
         {
             if (args == null)
             {
                 throw new ArgumentNullException(nameof(args));
             }
+            InitDictionary();
             InitArgs(args);
         }
         private void InitArgs(string[] args)
@@ -51,6 +59,10 @@ namespace Berrysoft.Console
                 else
                 {
                     argValue = null;
+                }
+                if (!validArgs.Contains(args[i]))
+                {
+                    throw new ArgNotValidException(args[i]);
                 }
 #if NETCOREAPP2_0
                 if (!Args.TryAdd(args[i], argValue))
@@ -77,11 +89,20 @@ namespace Berrysoft.Console
         {
             return arg.StartsWith(LongHead) || arg.StartsWith(ShortHead);
         }
-        public Dictionary<string, string> Args { get; private set; }
-        public virtual string ShortHead => "-";
-        public virtual string LongHead => "--";
-        public virtual string ShortHelpArg => "h";
-        public virtual string LongHelpArg => "help";
+        private void InitDictionary()
+        {
+            properties = new Dictionary<OptionAttribute, PropertyInfo>();
+            validArgs = new HashSet<string>();
+            foreach (PropertyInfo prop in GetType().GetProperties())
+            {
+                if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
+                {
+                    properties.Add(option, prop);
+                    validArgs.Add(ShortHead + option.ShortArg);
+                    validArgs.Add(LongHead + option.LongArg);
+                }
+            }
+        }
         private bool ContainsHelp()
         {
             return Args.ContainsKey(ShortHead + ShortHelpArg) || Args.ContainsKey(LongHead + LongHelpArg);
@@ -94,61 +115,62 @@ namespace Berrysoft.Console
                 PrintUsage();
                 return;
             }
-            foreach (PropertyInfo prop in GetType().GetProperties())
+            foreach (var prop in properties)
             {
-                if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
+                string arg = ShortHead + prop.Key.ShortArg;
+                bool assigned = false;
+                object propValue = null;
+                PropertyInfo p = prop.Value;
+                Type type = p.PropertyType;
+                if (Args.TryGetValue(arg, out string value))
                 {
-                    string arg;
-                    bool required = option.Required;
-                    object propValue = null;
-                    if (option.ShortArg != null && Args.ContainsKey(arg = ShortHead + option.ShortArg))
+                    if (help)
                     {
-                        if (help)
+                        PrintUsage(prop.Key);
+                    }
+                    else
+                    {
+                        if (type == typeof(bool) && value == null)
                         {
-                            PrintUsage(option);
+                            propValue = true;
                         }
                         else
                         {
-                            if (prop.PropertyType == typeof(bool) && Args[arg] == null)
-                            {
-                                propValue = true;
-                            }
-                            else
-                            {
-                                propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
-                            }
+                            propValue = Convert.ChangeType(value, type);
                         }
                     }
-                    if (option.LongArg != null && Args.ContainsKey(arg = LongHead + option.LongArg))
+                    assigned = true;
+                }
+                arg = LongHead + prop.Key.LongArg;
+                if (Args.TryGetValue(arg, out string value2))
+                {
+                    if (help && !assigned)
                     {
-                        if (help)
+                        PrintUsage(prop.Key);
+                    }
+                    else if (!assigned)
+                    {
+                        if (type == typeof(bool) && value2 == null)
                         {
-                            PrintUsage(option);
+                            propValue = true;
                         }
                         else
                         {
-                            if (propValue != null)
-                            {
-                                throw new ArgRepeatedException(arg);
-                            }
-                            if (prop.PropertyType == typeof(bool) && Args[arg] == null)
-                            {
-                                propValue = true;
-                            }
-                            else
-                            {
-                                propValue = Convert.ChangeType(Args[arg], prop.PropertyType);
-                            }
+                            propValue = Convert.ChangeType(value2, type);
                         }
                     }
-                    if (propValue == null && required && !help)
+                    else
                     {
-                        throw new ArgRequiredException(LongHead + option.LongArg);
+                        throw new ArgRepeatedException(prop.Key.LongArg);
                     }
-                    if (!help)
-                    {
-                        prop.SetValue(this, propValue);
-                    }
+                }
+                if (!help && !assigned && prop.Key.Required)
+                {
+                    throw new ArgRequiredException(prop.Key.LongArg);
+                }
+                if (propValue != null)
+                {
+                    p.SetValue(this, propValue);
                 }
             }
         }
@@ -159,15 +181,13 @@ namespace Berrysoft.Console
                 PrintUsage(option);
             }
         }
-        protected abstract void PrintUsage(OptionAttribute opt);
+        protected virtual void PrintUsage(OptionAttribute opt)
+        { }
         public IEnumerable<OptionAttribute> GetOptionAttributes()
         {
-            foreach (PropertyInfo prop in GetType().GetProperties())
+            foreach (var prop in properties)
             {
-                if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
-                {
-                    yield return option;
-                }
+                yield return prop.Key;
             }
         }
     }

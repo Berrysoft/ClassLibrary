@@ -1,11 +1,19 @@
-Imports System
 Imports Berrysoft.Console
 Imports Berrysoft.Tsinghua.Net
 
 Module Program
     Sub Main(args As String())
         Console.WriteLine("Tsinghua Net Cross Platform Client")
-        Dim command As New TsinghuaNetCommand(args)
+        Dim command As TsinghuaNetCommand
+        Try
+            command = New TsinghuaNetCommand(args)
+        Catch ex As ArgNotValidException
+            Console.Error.WriteLine("Argument not valid: {0}", ex.ArgName)
+            Return
+        Catch ex As Exception
+            Console.Error.WriteLine("Exception occured: {0}", ex.Message)
+            Return
+        End Try
         If args.Length > 0 Then
             Try
                 command.Parse()
