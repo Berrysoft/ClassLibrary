@@ -231,6 +231,13 @@ namespace Berrysoft.Data
                 _right = value;
             }
         }
+        public IEnumerable<BinaryNode<T>> AsEnumerable()
+        {
+            yield return _left;
+            yield return _right;
+        }
+        public static explicit operator T(BinaryNode<T> node) => node.Value;
+        public static implicit operator BinaryNode<T>(T value) => new BinaryNode<T>(value);
         public override string ToString()
         {
             return _value.ToString();

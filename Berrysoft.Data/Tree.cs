@@ -16,6 +16,7 @@ namespace Berrysoft.Data
     {
         TValue Value { get; set; }
         TNode Parent { get; }
+        IEnumerable<TNode> AsEnumerable();
     }
     public interface INode<TValue, TNode> : INodeBase<TValue, TNode>
         where TNode : INode<TValue, TNode>
@@ -26,7 +27,6 @@ namespace Berrysoft.Data
         bool Contains(TNode child);
         bool Remove(TNode child);
         void Clear();
-        IEnumerable<TNode> AsEnumerable();
     }
     #endregion
     public class Tree<T> : ITree<T, Node<T>>
@@ -69,42 +69,6 @@ namespace Berrysoft.Data
                 }
             }
             return result;
-        }
-        public IEnumerable<Node<T>> AsDFSEnumerable()
-        {
-            return AsDFSEnumerableIterator();
-        }
-        private IEnumerable<Node<T>> AsDFSEnumerableIterator()
-        {
-            Stack<Node<T>> nodes = new Stack<Node<T>>();
-            nodes.Push(_root);
-            while (nodes.Count != 0)
-            {
-                Node<T> current = nodes.Pop();
-                yield return current;
-                foreach(var child in current.AsEnumerable().Reverse())
-                {
-                    nodes.Push(child);
-                }
-            }
-        }
-        public IEnumerable<Node<T>> AsBFSEnumerable()
-        {
-            return AsBFSEnumerableIterator();
-        }
-        private IEnumerable<Node<T>> AsBFSEnumerableIterator()
-        {
-            Queue<Node<T>> nodes = new Queue<Node<T>>();
-            nodes.Enqueue(_root);
-            while (nodes.Count != 0)
-            {
-                Node<T> current = nodes.Dequeue();
-                yield return current;
-                foreach(var child in current.AsEnumerable())
-                {
-                    nodes.Enqueue(child);
-                }
-            }
         }
     }
     public class Node<T> : INode<T, Node<T>>
@@ -189,6 +153,8 @@ namespace Berrysoft.Data
             _children.Clear();
         }
         public IEnumerable<Node<T>> AsEnumerable() => _children;
+        public static explicit operator T(Node<T> node) => node.Value;
+        public static implicit operator Node<T>(T value) => new Node<T>(value);
         public override string ToString()
         {
             return _value.ToString();

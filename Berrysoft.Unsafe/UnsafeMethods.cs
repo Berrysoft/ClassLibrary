@@ -7,20 +7,11 @@ namespace Berrysoft.Unsafe
     public unsafe static class UnsafeMethods
     {
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetSize<T>()
-        {
-            return SizeOf<T>();
-        }
+        public static int GetSize<T>() => SizeOf<T>();
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Pointer<T> AddressOf<T>(ref T value)
-        {
-            return new Pointer<T>(ref value);
-        }
+        public static Pointer<T> AddressOf<T>(ref T value) => new Pointer<T>(ref value);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T TargetOf<T>(Pointer<T> ptr)
-        {
-            return ref ptr.Target;
-        }
+        public static ref T TargetOf<T>(Pointer<T> ptr) => ref ptr.Target;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StackAlloc<T>(int size, Action<Pointer<T>> action)
         {
@@ -28,15 +19,9 @@ namespace Berrysoft.Unsafe
             action(new Pointer<T>(ptr));
         }
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<T> AsSpan<T>(this Pointer<T> ptr, int size)
-        {
-            return new Span<T>(ptr.Ptr, size);
-        }
+        public static Span<T> AsSpan<T>(this Pointer<T> ptr, int size) => new Span<T>(ptr.Ptr, size);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this Pointer<T> ptr, int size)
-        {
-            return new ReadOnlySpan<T>(ptr.Ptr, size);
-        }
+        public static ReadOnlySpan<T> AsReadOnlySpan<T>(this Pointer<T> ptr, int size) => new ReadOnlySpan<T>(ptr.Ptr, size);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemorySet(IntPtr startAddress, byte value, uint byteCount) => InitBlock((void*)startAddress, value, byteCount);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
