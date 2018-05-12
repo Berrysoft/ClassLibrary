@@ -9,8 +9,15 @@ namespace Berrysoft.Workflow
         public Func<IExecutable> Func => func;
         public SimpleExecutable(Func<IExecutable> func)
         {
-            this.func = func;
+            this.func = func ?? Executable.DefaultFunc;
         }
+        public SimpleExecutable(Action action)
+            : this(() =>
+             {
+                 action();
+                 return null;
+             })
+        { }
         public IExecutor GetExecutor() => new Executor(this);
         internal struct Executor : IExecutor
         {
