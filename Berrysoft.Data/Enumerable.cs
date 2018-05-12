@@ -9,7 +9,7 @@ namespace Berrysoft.Data
         #region Tree
         public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
-            => AsDFSEnumerableIterator(tree ?? throw new ArgumentNullException(nameof(tree)));
+            => AsDFSEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         private static IEnumerable<TNode> AsDFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -27,7 +27,7 @@ namespace Berrysoft.Data
         }
         public static IEnumerable<TNode> AsBFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
-            => AsBFSEnumerableIterator(tree ?? throw new ArgumentNullException(nameof(tree)));
+            => AsBFSEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         private static IEnumerable<TNode> AsBFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -49,11 +49,11 @@ namespace Berrysoft.Data
         {
             if (graph == null)
             {
-                throw new ArgumentNullException(nameof(graph));
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
             }
             if (!graph.Contains(root))
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
             return AsDFSEnumerableIterator(graph, root);
         }
@@ -92,11 +92,11 @@ namespace Berrysoft.Data
         {
             if (graph == null)
             {
-                throw new ArgumentNullException(nameof(graph));
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
             }
             if (!graph.Contains(root))
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
             return AsBFSEnumerableIterator(graph, root);
         }
@@ -139,11 +139,11 @@ namespace Berrysoft.Data
         {
             if (graph == null)
             {
-                throw new ArgumentNullException(nameof(graph));
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
             }
             if (!graph.Contains(root))
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
             TTree result = new TTree();
             result.Root.Value = root;
@@ -193,11 +193,11 @@ namespace Berrysoft.Data
         {
             if (graph == null)
             {
-                throw new ArgumentNullException(nameof(graph));
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
             }
             if (!graph.Contains(root))
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
             TTree result = new TTree();
             result.Root.Value = root;
@@ -247,15 +247,15 @@ namespace Berrysoft.Data
         {
             if (source == null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw ExceptionHelper.ArgumentNull(nameof(source));
             }
             if (key1Selector == null)
             {
-                throw new ArgumentNullException(nameof(key1Selector));
+                throw ExceptionHelper.ArgumentNull(nameof(key1Selector));
             }
             if (key2Selector == null)
             {
-                throw new ArgumentNullException(nameof(key2Selector));
+                throw ExceptionHelper.ArgumentNull(nameof(key2Selector));
             }
             KeyDictionary<TKey1, TKey2> dictionary = new KeyDictionary<TKey1, TKey2>(comparer1, comparer2);
             foreach (TSource item in source)
@@ -270,15 +270,15 @@ namespace Berrysoft.Data
         {
             if (source == null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw ExceptionHelper.ArgumentNull(nameof(source));
             }
             if (key1Selector == null)
             {
-                throw new ArgumentNullException(nameof(key1Selector));
+                throw ExceptionHelper.ArgumentNull(nameof(key1Selector));
             }
             if (key2Selector == null)
             {
-                throw new ArgumentNullException(nameof(key2Selector));
+                throw ExceptionHelper.ArgumentNull(nameof(key2Selector));
             }
             KeyLookup<TKey1, TKey2> lookup = new KeyLookup<TKey1, TKey2>(comparer1, comparer2);
             foreach (TSource item in source)
@@ -290,7 +290,7 @@ namespace Berrysoft.Data
         #endregion
         #region Linq
         public static IEnumerable<TResult> SelectWhen<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, (bool Select, TResult Result)> predicate)
-            => SelectWhenIterator(source ?? throw new ArgumentNullException(nameof(source)), predicate ?? throw new ArgumentNullException(nameof(predicate)));
+            => SelectWhenIterator(source ?? throw ExceptionHelper.ArgumentNull(nameof(source)), predicate ?? throw ExceptionHelper.ArgumentNull(nameof(predicate)));
         private static IEnumerable<TResult> SelectWhenIterator<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, (bool Select, TResult Result)> predicate)
         {
             foreach (TSource item in source)
@@ -303,7 +303,7 @@ namespace Berrysoft.Data
             }
         }
         public static IEnumerable<TSource> Random<TSource>(this IEnumerable<TSource> source)
-            => RandomIterator(source ?? throw new ArgumentNullException(nameof(source)));
+            => RandomIterator(source ?? throw ExceptionHelper.ArgumentNull(nameof(source)));
         private static IEnumerable<TSource> RandomIterator<TSource>(IEnumerable<TSource> source)
         {
             Random random = new Random();

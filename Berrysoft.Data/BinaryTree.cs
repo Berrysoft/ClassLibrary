@@ -26,11 +26,11 @@ namespace Berrysoft.Data
         {
             if (root == null)
             {
-                throw new ArgumentNullException(nameof(root));
+                throw ExceptionHelper.ArgumentNull(nameof(root));
             }
             if (root.Parent != null)
             {
-                throw new ArgumentException("The root can't have a parent.");
+                throw ExceptionHelper.RootHasParent();
             }
             _root = root;
         }

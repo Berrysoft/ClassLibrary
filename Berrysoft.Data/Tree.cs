@@ -44,11 +44,11 @@ namespace Berrysoft.Data
         {
             if (root == null)
             {
-                throw new ArgumentNullException(nameof(root));
+                throw ExceptionHelper.ArgumentNull(nameof(root));
             }
             if (root.Parent != null)
             {
-                throw new ArgumentException("The root can't have a parent.");
+                throw ExceptionHelper.RootHasParent();
             }
             _root = root;
         }
@@ -112,7 +112,7 @@ namespace Berrysoft.Data
         {
             if (child == null)
             {
-                throw new ArgumentNullException(nameof(child));
+                throw ExceptionHelper.ArgumentNull(nameof(child));
             }
             child._parent = this;
             _children.Add(child);
@@ -121,25 +121,17 @@ namespace Berrysoft.Data
         {
             if (child == null)
             {
-                throw new ArgumentNullException(nameof(child));
+                throw ExceptionHelper.ArgumentNull(nameof(child));
             }
             child._parent = this;
             _children.Insert(index, child);
         }
         public bool Contains(Node<T> child)
         {
-            if (child == null)
-            {
-                throw new ArgumentNullException(nameof(child));
-            }
             return _children.Contains(child);
         }
         public bool Remove(Node<T> child)
         {
-            if (child == null)
-            {
-                return false;
-            }
             if (_children.Remove(child))
             {
                 child._parent = null;

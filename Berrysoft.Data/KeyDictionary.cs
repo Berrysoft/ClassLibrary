@@ -83,7 +83,7 @@ namespace Berrysoft.Data
         {
             if (dictionary == null)
             {
-                throw new ArgumentNullException(nameof(dictionary));
+                throw ExceptionHelper.ArgumentNull(nameof(dictionary));
             }
             foreach (var item in dictionary)
             {
@@ -104,7 +104,7 @@ namespace Berrysoft.Data
                 {
                     if (add)
                     {
-                        throw new ArgumentException("Key1 is existed.");
+                        throw ExceptionHelper.KeyExisted($"Key1 {key1}");
                     }
                     index1 = i;
                 }
@@ -112,7 +112,7 @@ namespace Berrysoft.Data
                 {
                     if (add)
                     {
-                        throw new ArgumentException("Key2 is existed.");
+                        throw ExceptionHelper.KeyExisted($"Key2 {key2}");
                     }
                     index2 = i;
                 }
@@ -125,7 +125,7 @@ namespace Berrysoft.Data
                 }
                 else if (add)
                 {
-                    throw new ArgumentException("The key pair is existed.");
+                    throw ExceptionHelper.PairExisted();
                 }
             }
             else
@@ -140,7 +140,7 @@ namespace Berrysoft.Data
                 }
                 else if (add)
                 {
-                    throw new ArgumentException("Both keys are existed.");
+                    throw ExceptionHelper.KeysExisted();
                 }
                 else
                 {
@@ -160,7 +160,7 @@ namespace Berrysoft.Data
             }
             else
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
         }
         public TKey1 GetValueFromKey2(TKey2 key)
@@ -171,7 +171,7 @@ namespace Berrysoft.Data
             }
             else
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
         }
         public bool TryGetValueFromKey1(TKey1 key, out TKey2 value)
@@ -204,7 +204,7 @@ namespace Berrysoft.Data
         {
             if (key == null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw ExceptionHelper.ArgumentNull(nameof(key));
             }
             return list.FindIndex(pair => comparer1.Equals(pair.Key1, key)) >= 0;
         }
@@ -212,7 +212,7 @@ namespace Berrysoft.Data
         {
             if (key == null)
             {
-                throw new ArgumentNullException(nameof(key));
+                throw ExceptionHelper.ArgumentNull(nameof(key));
             }
             return list.FindIndex(pair => comparer2.Equals(pair.Key2, key)) >= 0;
         }
@@ -220,21 +220,17 @@ namespace Berrysoft.Data
         {
             if (key1 == null)
             {
-                throw new ArgumentNullException(nameof(key1));
+                throw ExceptionHelper.ArgumentNull(nameof(key1));
             }
             if (key2 == null)
             {
-                throw new ArgumentNullException(nameof(key2));
+                throw ExceptionHelper.ArgumentNull(nameof(key2));
             }
             return list.FindIndex(pair => comparer1.Equals(pair.Key1, key1) && comparer2.Equals(pair.Key2, key2)) >= 0;
         }
         public bool Contains(KeyPair<TKey1, TKey2> item) => Contains(item.Key1, item.Key2);
         public bool RemoveKey1(TKey1 key)
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
             int index = list.FindIndex(pair => comparer1.Equals(pair.Key1, key));
             if (index < 0)
             {
@@ -248,10 +244,6 @@ namespace Berrysoft.Data
         }
         public bool RemoveKey2(TKey2 key)
         {
-            if (key == null)
-            {
-                throw new ArgumentNullException(nameof(key));
-            }
             int index = list.FindIndex(pair => comparer2.Equals(pair.Key2, key));
             if (index < 0)
             {
@@ -265,14 +257,6 @@ namespace Berrysoft.Data
         }
         public bool Remove(TKey1 key1, TKey2 key2)
         {
-            if (key1 == null)
-            {
-                throw new ArgumentNullException(nameof(key1));
-            }
-            if (key2 == null)
-            {
-                throw new ArgumentNullException(nameof(key2));
-            }
             int index = list.FindIndex(pair => comparer1.Equals(pair.Key1, key1) && comparer2.Equals(pair.Key2, key2));
             if (index < 0)
             {
