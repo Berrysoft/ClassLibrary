@@ -5,14 +5,16 @@ namespace Berrysoft.Workflow
 {
     public class AsyncExecutable : IExecutable
     {
-        Func<IExecutable> func;
-        Func<Task<IExecutable>> funcAsync;
+        private Func<IExecutable> func;
+        private Func<Task<IExecutable>> funcAsync;
+        public Func<IExecutable> Func => func;
+        public Func<Task<IExecutable>> FuncAsync => funcAsync;
         public AsyncExecutable(Func<Task<IExecutable>> funcAsync)
             : this(null, funcAsync)
         { }
         public AsyncExecutable(Func<IExecutable> func, Func<Task<IExecutable>> funcAsync)
         {
-            this.func = func;
+            this.func = func ?? throw new ArgumentNullException(nameof(func));
             this.funcAsync = funcAsync;
         }
         public IExecutor GetExecutor()
@@ -21,7 +23,7 @@ namespace Berrysoft.Workflow
         }
         internal struct Executor : IExecutor
         {
-            AsyncExecutable executable;
+            private AsyncExecutable executable;
             public Executor(AsyncExecutable executable)
             {
                 this.executable = executable;
