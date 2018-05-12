@@ -71,7 +71,7 @@ namespace Berrysoft.Data
         {
             if (vertex == null)
             {
-                throw new ArgumentNullException(nameof(vertex));
+                throw ExceptionHelper.ArgumentNull(nameof(vertex));
             }
             _vertexes.Add(vertex);
         }
@@ -79,7 +79,7 @@ namespace Berrysoft.Data
         {
             if (vertex == null)
             {
-                throw new ArgumentNullException(nameof(vertex));
+                throw ExceptionHelper.ArgumentNull(nameof(vertex));
             }
             _vertexes.Add(vertex);
             foreach (T tail in tails)
@@ -94,7 +94,7 @@ namespace Berrysoft.Data
         {
             if (vertex == null)
             {
-                throw new ArgumentNullException(nameof(vertex));
+                throw ExceptionHelper.ArgumentNull(nameof(vertex));
             }
             _vertexes.Add(vertex);
             foreach (T head in heads)
@@ -108,10 +108,6 @@ namespace Berrysoft.Data
         public bool Contains(T vertex) => _vertexes.Contains(vertex);
         public bool Remove(T vertex)
         {
-            if (vertex == null)
-            {
-                throw new ArgumentNullException(nameof(vertex));
-            }
             if (_vertexes.Remove(vertex))
             {
                 _arcs.RemoveKey1(vertex);
@@ -129,11 +125,11 @@ namespace Berrysoft.Data
         {
             if (tail == null)
             {
-                throw new ArgumentNullException(nameof(tail));
+                throw ExceptionHelper.ArgumentNull(nameof(tail));
             }
             if (head == null)
             {
-                throw new ArgumentNullException(nameof(head));
+                throw ExceptionHelper.ArgumentNull(nameof(head));
             }
             if (_vertexes.Contains(tail) && _vertexes.Contains(head))
             {
@@ -141,18 +137,18 @@ namespace Berrysoft.Data
             }
             else
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
         }
         public void AddEdge(T tail, T head)
         {
             if (tail == null)
             {
-                throw new ArgumentNullException(nameof(tail));
+                throw ExceptionHelper.ArgumentNull(nameof(tail));
             }
             if (head == null)
             {
-                throw new ArgumentNullException(nameof(head));
+                throw ExceptionHelper.ArgumentNull(nameof(head));
             }
             if (_vertexes.Contains(tail) && _vertexes.Contains(head))
             {
@@ -161,7 +157,7 @@ namespace Berrysoft.Data
             }
             else
             {
-                throw new KeyNotFoundException();
+                throw ExceptionHelper.KeyNotFound();
             }
         }
         public bool ContainsArc(T tail, T head) => _arcs.Contains(tail, head);
