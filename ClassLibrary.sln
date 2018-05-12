@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Console", "Berrys
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Tsinghua.Net", "Berrysoft.Tsinghua.Net\Berrysoft.Tsinghua.Net.csproj", "{9854C1E8-59CA-44EF-BBA5-448A146A4BB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Berrysoft.Unsafe", "Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{CEC29D71-8F41-4D63-9CF1-C0768612B786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{CEC29D71-8F41-4D63-9CF1-C0768612B786}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Berrysoft.Workflow", "Berrysoft.Workflow\Berrysoft.Workflow.csproj", "{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{CEC29D71-8F41-4D63-9CF1-C0768612B786}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CEC29D71-8F41-4D63-9CF1-C0768612B786}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CEC29D71-8F41-4D63-9CF1-C0768612B786}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
