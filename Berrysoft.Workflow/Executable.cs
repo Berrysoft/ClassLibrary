@@ -14,6 +14,9 @@ namespace Berrysoft.Workflow
     }
     public static class Executable
     {
+        internal static readonly Func<bool> DefaultPredicate = (() => true);
+        internal static readonly Func<IExecutable> DefaultFunc = (() => null);
+        internal static readonly Func<Task<IExecutable>> DefaultFuncAsync = (() => new Task<IExecutable>(DefaultFunc));
         public static void Work(this IExecutable executable)
         {
             IExecutable current = executable;

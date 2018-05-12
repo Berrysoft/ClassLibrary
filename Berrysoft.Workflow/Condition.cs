@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Workflow
@@ -18,9 +16,9 @@ namespace Berrysoft.Workflow
         { }
         public Condition(Func<bool> predicate, Func<IExecutable> trueFunc, Func<IExecutable> falseFunc)
         {
-            this.predicate = predicate;
-            this.trueFunc = trueFunc;
-            this.falseFunc = falseFunc;
+            this.predicate = predicate ?? Executable.DefaultPredicate;
+            this.trueFunc = trueFunc ?? Executable.DefaultFunc;
+            this.falseFunc = falseFunc ?? Executable.DefaultFunc;
         }
         public IExecutor GetExecutor() => new Executor(this);
         internal struct Executor : IExecutor
@@ -36,13 +34,9 @@ namespace Berrysoft.Workflow
                 {
                     return executable.trueFunc();
                 }
-                else if (executable.falseFunc != null)
-                {
-                    return executable.falseFunc();
-                }
                 else
                 {
-                    return null;
+                    return executable.falseFunc();
                 }
             }
             public Task<IExecutable> ExecuteAsync() => new Task<IExecutable>(Execute);
