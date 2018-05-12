@@ -5,7 +5,8 @@ namespace Berrysoft.Workflow
 {
     public class SimpleExecutable : IExecutable
     {
-        Func<IExecutable> func;
+        private Func<IExecutable> func;
+        public Func<IExecutable> Func => func;
         public SimpleExecutable(Func<IExecutable> func)
         {
             this.func = func;
@@ -13,7 +14,7 @@ namespace Berrysoft.Workflow
         public IExecutor GetExecutor() => new Executor(this);
         internal struct Executor : IExecutor
         {
-            SimpleExecutable executable;
+            private SimpleExecutable executable;
             public Executor(SimpleExecutable executable)
             {
                 this.executable = executable;
