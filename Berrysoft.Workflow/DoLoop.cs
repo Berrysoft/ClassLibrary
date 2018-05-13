@@ -31,13 +31,7 @@ namespace Berrysoft.Workflow
             }
             public IExecutable Execute()
             {
-                while (executable.firstPredicate())
-                {
-                    if (!executable.loopFunc() || !executable.lastPredicate())
-                    {
-                        break;
-                    }
-                }
+                while (executable.firstPredicate() && executable.loopFunc() && executable.lastPredicate()) ;
                 return executable.brokeFunc();
             }
             public Task<IExecutable> ExecuteAsync() => new Task<IExecutable>(Execute);
