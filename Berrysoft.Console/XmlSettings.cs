@@ -23,7 +23,9 @@ namespace Berrysoft.Console
     {
         private Dictionary<SettingsAttribute, PropertyInfo> properties;
         private XName rootName;
+#if NETCOREAPP2_0
         private readonly object syncLock = new object();
+#endif
         public XmlSettings()
         {
             if (Attribute.GetCustomAttribute(GetType().GetTypeInfo(), typeof(SettingsAttribute)) is SettingsAttribute settings)

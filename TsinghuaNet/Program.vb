@@ -7,7 +7,7 @@ Module Program
         Dim command As TsinghuaNetCommand
         Try
             command = New TsinghuaNetCommand(args)
-        Catch ex As ArgNotValidException
+        Catch ex As ArgInvalidException
             Console.Error.WriteLine("Argument not valid: {0}", ex.ArgName)
             Return
         Catch ex As Exception
