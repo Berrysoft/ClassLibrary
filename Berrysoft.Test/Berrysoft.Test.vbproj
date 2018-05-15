@@ -20,4 +20,10 @@
     <ProjectReference Include="..\Berrysoft.Workflow\Berrysoft.Workflow.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="settings.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

@@ -136,7 +136,7 @@ namespace Berrysoft.Console
                         }
                         else
                         {
-                            propValue = Convert.ChangeType(value, type);
+                            propValue = ChangeType(arg, value, type);
                         }
                     }
                     assigned = true;
@@ -156,7 +156,7 @@ namespace Berrysoft.Console
                         }
                         else
                         {
-                            propValue = Convert.ChangeType(value2, type);
+                            propValue = ChangeType(arg, value2, type);
                         }
                     }
                     else
@@ -173,6 +173,10 @@ namespace Berrysoft.Console
                     p.SetValue(this, propValue);
                 }
             }
+        }
+        protected virtual object ChangeType(string argName, object value, Type conversionType)
+        {
+            return Convert.ChangeType(value, conversionType);
         }
         public void PrintUsage()
         {
