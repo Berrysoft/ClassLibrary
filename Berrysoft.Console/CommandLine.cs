@@ -33,7 +33,7 @@ namespace Berrysoft.Console
         {
             if (args == null)
             {
-                throw new ArgumentNullException(nameof(args));
+                throw ExceptionsHelper.ArgumentNull(nameof(args));
             }
             InitDictionary();
             InitArgs(args);
@@ -45,7 +45,7 @@ namespace Berrysoft.Console
             {
                 if (!StartsWithHead(args[i]))
                 {
-                    throw new ArgNotValidException(args[i]);
+                    throw ExceptionsHelper.ArgInvalid(args[i]);
                 }
                 string argValue;
                 if (i + 1 < args.Length)
@@ -62,12 +62,12 @@ namespace Berrysoft.Console
                 }
                 if (!validArgs.Contains(args[i]))
                 {
-                    throw new ArgNotValidException(args[i]);
+                    throw ExceptionsHelper.ArgInvalid(args[i]);
                 }
 #if NETCOREAPP2_0
                 if (!Args.TryAdd(args[i], argValue))
                 {
-                    throw new ArgNotValidException(args[i]);
+                    throw ExceptionsHelper.ArgInvalid(args[i]);
                 }
 #else
                 try
@@ -76,7 +76,7 @@ namespace Berrysoft.Console
                 }
                 catch (Exception ex)
                 {
-                    throw new ArgNotValidException(args[i], ex.Message, ex);
+                    throw ExceptionsHelper.ArgInvalid(args[i], ex.Message, ex);
                 }
 #endif
                 if (argValue != null)
@@ -161,12 +161,12 @@ namespace Berrysoft.Console
                     }
                     else
                     {
-                        throw new ArgRepeatedException(prop.Key.LongArg);
+                        throw ExceptionsHelper.ArgRepeated(prop.Key.LongArg);
                     }
                 }
                 if (!help && !assigned && prop.Key.Required)
                 {
-                    throw new ArgRequiredException(prop.Key.LongArg);
+                    throw ExceptionsHelper.ArgRequired(prop.Key.LongArg);
                 }
                 if (propValue != null)
                 {
@@ -183,12 +183,6 @@ namespace Berrysoft.Console
         }
         protected virtual void PrintUsage(OptionAttribute opt)
         { }
-        public IEnumerable<OptionAttribute> GetOptionAttributes()
-        {
-            foreach (var prop in properties)
-            {
-                yield return prop.Key;
-            }
-        }
+        public IEnumerable<OptionAttribute> GetOptionAttributes() => properties.Keys;
     }
 }
