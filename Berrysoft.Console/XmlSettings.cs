@@ -58,11 +58,11 @@ namespace Berrysoft.Console
                 object propValue = null;
                 if (attr.AllowMultiple)
                 {
-                    propValue = ChangeType(attr.Name, settings.Elements(attr.Name).Select(e => e.Value).ToArray(), p.PropertyType);
+                    propValue = ChangeType(attr.Name, settings.Elements(attr.Name)?.Select(e => e.Value)?.ToArray(), p.PropertyType);
                 }
                 else
                 {
-                    propValue = ChangeType(attr.Name, settings.Element(attr.Name).Value, p.PropertyType);
+                    propValue = ChangeType(attr.Name, settings.Element(attr.Name)?.Value, p.PropertyType);
                 }
                 if (propValue != null)
                 {
@@ -87,11 +87,11 @@ namespace Berrysoft.Console
                 object propValue = null;
                 if (attr.AllowMultiple)
                 {
-                    propValue = ChangeType(attr.Name, settings.Elements(attr.Name).Select(e => e.Value).ToArray(), p.PropertyType);
+                    propValue = ChangeType(attr.Name, settings.Elements(attr.Name)?.Select(e => e.Value)?.ToArray(), p.PropertyType);
                 }
                 else
                 {
-                    propValue = ChangeType(attr.Name, settings.Element(attr.Name).Value, p.PropertyType);
+                    propValue = ChangeType(attr.Name, settings.Element(attr.Name)?.Value, p.PropertyType);
                 }
                 lock (syncLock)
                 {
