@@ -35,15 +35,15 @@ namespace Berrysoft.Console
         protected virtual string EventHeader => "Event";
         protected virtual string DebugHeader => "Debug";
         protected virtual string MessageFormatString => "{0}\t{1}";
-        protected virtual string SpecialMessageFormatString => "{0}\t{1}: {2}";
+        protected virtual string SpecialMessageFormatString => "{0}: {1}";
         public virtual void WriteLog(string message)
             => Writer.WriteLine(MessageFormatString, DateTime.Now, message);
         public virtual void WriteException(Exception exception)
-            => Writer.WriteLine(SpecialMessageFormatString, DateTime.Now, ExceptionHeader, exception.Message);
+            => WriteLog(string.Format(SpecialMessageFormatString, ExceptionHeader, exception.Message));
         public virtual void WriteEvent(string eventName)
-            => Writer.WriteLine(SpecialMessageFormatString, DateTime.Now, EventHeader, eventName);
+            => WriteLog(string.Format(SpecialMessageFormatString, EventHeader, eventName));
         public virtual void WriteDebug(string message)
-            => Writer.WriteLine(SpecialMessageFormatString, DateTime.Now, DebugHeader, message);
+            => WriteLog(string.Format(SpecialMessageFormatString, DebugHeader, message));
         public Task WriteLogAsync(string message)
         {
             lock (syncLock)
@@ -52,26 +52,11 @@ namespace Berrysoft.Console
             }
         }
         public Task WriteExceptionAsync(Exception exception)
-        {
-            lock (syncLock)
-            {
-                return Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, ExceptionHeader, exception.Message));
-            }
-        }
+            => WriteLogAsync(string.Format(SpecialMessageFormatString, ExceptionHeader, exception.Message));
         public Task WriteEventAsync(string eventName)
-        {
-            lock (syncLock)
-            {
-                return Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, EventHeader, eventName));
-            }
-        }
+            => WriteLogAsync(string.Format(SpecialMessageFormatString, EventHeader, eventName));
         public Task WriteDebugAsync(string message)
-        {
-            lock (syncLock)
-            {
-                return Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, DebugHeader, message));
-            }
-        }
+            => WriteLogAsync(string.Format(SpecialMessageFormatString, DebugHeader, message));
         #region IDisposable Support
         private bool disposedValue = false;
         protected virtual void Dispose(bool disposing)
