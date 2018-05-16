@@ -29,8 +29,12 @@ namespace Berrysoft.Tsinghua.Net
     public class NetHelperBase : IDisposable
     {
         private HttpClient client;
-        public string Username { get; }
-        public string Password { get; }
+        private readonly object syncLock = new object();
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public NetHelperBase()
+            : this(string.Empty, string.Empty)
+        { }
         public NetHelperBase(string username, string password)
         {
             Username = username;
@@ -47,9 +51,9 @@ namespace Berrysoft.Tsinghua.Net
                 }
             }
         }
-        internal async Task<string> GetAsync(string uri)
+        internal Task<string> GetAsync(string uri)
         {
-            return await client.GetStringAsync(uri);
+            return client.GetStringAsync(uri);
         }
         internal static FluxUser GetFluxUser(string fluxstr)
         {
@@ -69,6 +73,10 @@ namespace Berrysoft.Tsinghua.Net
         }
         internal static string GetMD5(string input)
         {
+            if (string.IsNullOrEmpty(input))
+            {
+                return string.Empty;
+            }
             using (MD5 md5Hash = MD5.Create())
             {
                 byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
@@ -93,10 +101,7 @@ namespace Berrysoft.Tsinghua.Net
                 disposedValue = true;
             }
         }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => Dispose(true);
         #endregion
     }
 }

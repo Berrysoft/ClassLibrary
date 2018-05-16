@@ -18,9 +18,13 @@ namespace Berrysoft.Console
     }
     public class Log : ILog, IDisposable
     {
+        private readonly object syncLock = new object();
         public Log(string fileName)
+            : this(fileName, false)
+        { }
+        public Log(string fileName, bool append)
         {
-            Writer = new StreamWriter(fileName, true, Encoding.Unicode);
+            Writer = new StreamWriter(fileName, append, Encoding.Unicode);
         }
         public Log(StreamWriter stream)
         {
@@ -30,24 +34,44 @@ namespace Berrysoft.Console
         protected virtual string ExceptionHeader => "Exception";
         protected virtual string EventHeader => "Event";
         protected virtual string DebugHeader => "Debug";
-        protected virtual string MessageFormatString => "{0}|{1}";
-        protected virtual string SpecialMessageFormatString => "{0}|{1}: {2}";
-        public virtual void WriteLog(string message) 
+        protected virtual string MessageFormatString => "{0}\t{1}";
+        protected virtual string SpecialMessageFormatString => "{0}\t{1}: {2}";
+        public virtual void WriteLog(string message)
             => Writer.WriteLine(MessageFormatString, DateTime.Now, message);
         public virtual void WriteException(Exception exception)
             => Writer.WriteLine(SpecialMessageFormatString, DateTime.Now, ExceptionHeader, exception.Message);
-        public virtual void WriteEvent(string eventName) 
+        public virtual void WriteEvent(string eventName)
             => Writer.WriteLine(SpecialMessageFormatString, DateTime.Now, EventHeader, eventName);
-        public virtual void WriteDebug(string message) 
+        public virtual void WriteDebug(string message)
             => Writer.WriteLine(SpecialMessageFormatString, DateTime.Now, DebugHeader, message);
         public Task WriteLogAsync(string message)
-            => Writer.WriteLineAsync(string.Format(MessageFormatString, DateTime.Now, message));
+        {
+            lock (syncLock)
+            {
+                return Writer.WriteLineAsync(string.Format(MessageFormatString, DateTime.Now, message));
+            }
+        }
         public Task WriteExceptionAsync(Exception exception)
-            => Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, ExceptionHeader, exception.Message));
+        {
+            lock (syncLock)
+            {
+                return Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, ExceptionHeader, exception.Message));
+            }
+        }
         public Task WriteEventAsync(string eventName)
-            => Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, EventHeader, eventName));
+        {
+            lock (syncLock)
+            {
+                return Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, EventHeader, eventName));
+            }
+        }
         public Task WriteDebugAsync(string message)
-            => Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, DebugHeader, message));
+        {
+            lock (syncLock)
+            {
+                return Writer.WriteLineAsync(string.Format(SpecialMessageFormatString, DateTime.Now, DebugHeader, message));
+            }
+        }
         #region IDisposable Support
         private bool disposedValue = false;
         protected virtual void Dispose(bool disposing)
@@ -61,10 +85,7 @@ namespace Berrysoft.Console
                 disposedValue = true;
             }
         }
-        public void Dispose()
-        {
-            Dispose(true);
-        }
+        public void Dispose() => Dispose(true);
         #endregion
     }
 }

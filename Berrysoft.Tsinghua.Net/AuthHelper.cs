@@ -13,6 +13,9 @@ namespace Berrysoft.Tsinghua.Net
         private readonly string LoginUri;
         private readonly string LogoutUri;
         private readonly string FluxUri;
+        private AuthHelper(int version)
+            : this(string.Empty, string.Empty, version)
+        { }
         private AuthHelper(string username, string password, int version)
             : base(username, password)
         {
@@ -20,25 +23,12 @@ namespace Berrysoft.Tsinghua.Net
             LogoutUri = string.Format(LogoutUriBase, version);
             FluxUri = string.Format(FluxUriBase, version);
         }
-        public static AuthHelper CreateAuth4Helper(string username, string password)
-        {
-            return new AuthHelper(username, password, 4);
-        }
-        public static AuthHelper CreateAuth6Helper(string username, string password)
-        {
-            return new AuthHelper(username, password, 6);
-        }
-        public Task<string> LoginAsync()
-        {
-            return PostAsync(LoginUri, string.Format(LoginData, Username, Password));
-        }
-        public Task<string> LogoutAsync()
-        {
-            return PostAsync(LogoutUri, LogoutData);
-        }
-        public async Task<FluxUser> GetFluxAsync()
-        {
-            return GetFluxUser(await PostAsync(FluxUri, null));
-        }
+        public static AuthHelper CreateAuth4Helper() => new AuthHelper(4);
+        public static AuthHelper CreateAuth4Helper(string username, string password) => new AuthHelper(username, password, 4);
+        public static AuthHelper CreateAuth6Helper() => new AuthHelper(6);
+        public static AuthHelper CreateAuth6Helper(string username, string password) => new AuthHelper(username, password, 6);
+        public Task<string> LoginAsync() => PostAsync(LoginUri, string.Format(LoginData, Username, Password));
+        public Task<string> LogoutAsync() => PostAsync(LogoutUri, LogoutData);
+        public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, null));
     }
 }
