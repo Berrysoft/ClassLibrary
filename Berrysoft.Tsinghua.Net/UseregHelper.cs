@@ -27,21 +27,15 @@ namespace Berrysoft.Tsinghua.Net
         private const string LoginData = "action=login&user_login_name={0}&user_password={1}";
         private const string LogoutData = "action=logout";
         private const string DropData = "action=drop&user_ip={0}";
-        public UseregHelper(string username, string password)
-            : base(username, GetMD5(password ?? string.Empty))
+        public UseregHelper()
+            : base()
         { }
-        public Task<string> LoginAsync()
-        {
-            return PostAsync(LogUri, string.Format(LoginData, Username, Password));
-        }
-        public Task<string> LogoutAsync()
-        {
-            return PostAsync(LogUri, LogoutData);
-        }
-        public Task<string> LogoutAsync(IPAddress ip)
-        {
-            return PostAsync(InfoUri, string.Format(DropData, ip.ToString()));
-        }
+        public UseregHelper(string username, string password)
+            : base(username, GetMD5(password))
+        { }
+        public Task<string> LoginAsync() => PostAsync(LogUri, string.Format(LoginData, Username, Password));
+        public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
+        public Task<string> LogoutAsync(IPAddress ip) => PostAsync(InfoUri, string.Format(DropData, ip.ToString()));
         public async Task<IEnumerable<NetUser>> GetUsersAsync()
         {
             try
