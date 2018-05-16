@@ -5,15 +5,23 @@ VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Data", "Berrysoft.Data\Berrysoft.Data.csproj", "{6670E395-CEC6-425E-8BE8-2A8ED84E0E48}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Test", "Berrysoft.Test\Berrysoft.Test.vbproj", "{13374ABA-1D3E-4DF3-AC54-AE282E355BBC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Console", "Berrysoft.Console\Berrysoft.Console.csproj", "{4F60E317-74F1-4E88-9BAC-3187BB5FCB94}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Tsinghua.Net", "Berrysoft.Tsinghua.Net\Berrysoft.Tsinghua.Net.csproj", "{9854C1E8-59CA-44EF-BBA5-448A146A4BB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{CEC29D71-8F41-4D63-9CF1-C0768612B786}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Berrysoft.Workflow", "Berrysoft.Workflow\Berrysoft.Workflow.csproj", "{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Workflow", "Berrysoft.Workflow\Berrysoft.Workflow.csproj", "{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Data.Test", "Berrysoft.Data.Test\Berrysoft.Data.Test.vbproj", "{093EF355-E852-4CDC-8662-D44D5BB409D9}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Unsafe.Test", "Berrysoft.Unsafe.Test\Berrysoft.Unsafe.Test.vbproj", "{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Console.Test", "Berrysoft.Console.Test\Berrysoft.Console.Test.vbproj", "{3DAB248A-334B-4DD7-A6CE-56F51589F567}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Workflow.Test", "Berrysoft.Workflow.Test\Berrysoft.Workflow.Test.vbproj", "{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +33,6 @@ Global
 		{6670E395-CEC6-425E-8BE8-2A8ED84E0E48}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6670E395-CEC6-425E-8BE8-2A8ED84E0E48}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6670E395-CEC6-425E-8BE8-2A8ED84E0E48}.Release|Any CPU.Build.0 = Release|Any CPU
-		{13374ABA-1D3E-4DF3-AC54-AE282E355BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{13374ABA-1D3E-4DF3-AC54-AE282E355BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{13374ABA-1D3E-4DF3-AC54-AE282E355BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{13374ABA-1D3E-4DF3-AC54-AE282E355BBC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4F60E317-74F1-4E88-9BAC-3187BB5FCB94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4F60E317-74F1-4E88-9BAC-3187BB5FCB94}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4F60E317-74F1-4E88-9BAC-3187BB5FCB94}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -45,9 +49,31 @@ Global
 		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{093EF355-E852-4CDC-8662-D44D5BB409D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{093EF355-E852-4CDC-8662-D44D5BB409D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{093EF355-E852-4CDC-8662-D44D5BB409D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{093EF355-E852-4CDC-8662-D44D5BB409D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DAB248A-334B-4DD7-A6CE-56F51589F567}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DAB248A-334B-4DD7-A6CE-56F51589F567}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DAB248A-334B-4DD7-A6CE-56F51589F567}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DAB248A-334B-4DD7-A6CE-56F51589F567}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{093EF355-E852-4CDC-8662-D44D5BB409D9} = {2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}
+		{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D} = {2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}
+		{3DAB248A-334B-4DD7-A6CE-56F51589F567} = {2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}
+		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2} = {2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {026654C8-5ED5-4C8D-BAB7-6C4F0F68ABE9}
