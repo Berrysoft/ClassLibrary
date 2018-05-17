@@ -1,3 +1,4 @@
+Imports System.Globalization
 Imports Berrysoft.Console
 Imports Berrysoft.Tsinghua.Net
 
@@ -102,7 +103,7 @@ Module Program
             Console.WriteLine("Username: {0}
 Flux: {1}
 Login time: {2}
-Balance: {3:C2}", flux.Username, FluxToString(flux.Flux), flux.OnlineTime, flux.Balance)
+Balance: {3}", flux.Username, FluxToString(flux.Flux), flux.OnlineTime, flux.Balance.ToString("C2", (New CultureInfo("zh-CN"))))
         Catch ex As Exception
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
         End Try
