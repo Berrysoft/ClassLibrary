@@ -13,9 +13,9 @@ namespace Berrysoft.Tsinghua.Net
             : base()
         { }
         public NetHelper(string username, string password)
-            : base(username, GetMD5(password))
+            : base(username, password)
         { }
-        public Task<string> LoginAsync() => PostAsync(LogUri, string.Format(LoginData, Username, Password));
+        public Task<string> LoginAsync() => PostAsync(LogUri, string.Format(LoginData, Username, GetMD5(Password)));
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
         public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, null));
     }
