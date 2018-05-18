@@ -58,12 +58,22 @@ Public Class PointerTest
     End Sub
 
     <TestMethod()>
+    Public Sub ArrayTest()
+        Dim arr As Integer() = {1, 2, 3}
+        Dim ptr As Pointer(Of Integer) = UnsafeMethods.AddressOf(arr)
+        ptr(1) = 222
+        Assert.AreEqual(arr(1), 222)
+    End Sub
+
+    <TestMethod()>
     Public Sub SpanTest()
-        UnsafeMethods.StackAlloc(Of Integer)(1,
+        UnsafeMethods.StackAlloc(Of Integer)(2,
             Sub(ptr)
-                Dim span = ptr.AsSpan(1)
+                Dim span = ptr.AsSpan(2)
                 span(0) = 123
+                span(1) = 456
                 Assert.AreEqual(ptr.Target, 123)
+                Assert.AreEqual(ptr(1), 456)
             End Sub)
     End Sub
 
