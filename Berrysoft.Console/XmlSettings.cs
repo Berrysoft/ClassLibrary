@@ -82,9 +82,8 @@ namespace Berrysoft.Console
                 document = await XDocument.LoadAsync(reader, LoadOptions.None, cancellationToken);
             }
             XElement settings = document.Element(rootName);
-            Parallel.ForEach(properties, prop =>
+            properties.AsParallel().WithCancellation(cancellationToken).ForAll(prop =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 SettingsAttribute attr = prop.Key;
                 PropertyInfo p = prop.Value;
                 object propValue = null;
@@ -136,9 +135,8 @@ namespace Berrysoft.Console
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
             XElement settings = new XElement(rootName);
             document.Add(settings);
-            Parallel.ForEach(properties, prop =>
+            properties.AsParallel().WithCancellation(cancellationToken).ForAll(prop =>
             {
-                cancellationToken.ThrowIfCancellationRequested();
                 SettingsAttribute attr = prop.Key;
                 PropertyInfo p = prop.Value;
                 object propValue = p.GetValue(this);
