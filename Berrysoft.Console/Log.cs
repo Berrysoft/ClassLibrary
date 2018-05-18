@@ -23,9 +23,8 @@ namespace Berrysoft.Console
             : this(fileName, false)
         { }
         public Log(string fileName, bool append)
-        {
-            Writer = new StreamWriter(fileName, append, Encoding.Unicode);
-        }
+            : this(new StreamWriter(fileName, append, Encoding.Unicode))
+        { }
         public Log(StreamWriter stream)
         {
             Writer = stream;
