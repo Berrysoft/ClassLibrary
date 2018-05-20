@@ -1,5 +1,4 @@
-﻿Imports Berrysoft.Unsafe
-Imports Microsoft.VisualStudio.TestTools.UnitTesting
+﻿Imports Microsoft.VisualStudio.TestTools.UnitTesting
 
 <TestClass()>
 Public Class PointerTest

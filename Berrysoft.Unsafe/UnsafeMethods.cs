@@ -13,6 +13,8 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pointer<T> AddressOf<T>(T[] array) => new Pointer<T>(ref array[0]);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ByReference<T> ByRef<T>(ref T value) => new ByReference<T>(ref value);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ref T TargetOf<T>(Pointer<T> ptr) => ref ptr.Target;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void StackAlloc<T>(int size, Action<Pointer<T>> action)
