@@ -6,7 +6,7 @@ using static System.Runtime.CompilerServices.Unsafe;
 namespace Berrysoft.Unsafe
 {
     [DebuggerDisplay("{Ptr}")]
-    public unsafe readonly struct Pointer<T>
+    public unsafe readonly struct Pointer<T> : IEquatable<Pointer<T>>
     {
         private readonly void* _ptr;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -61,17 +61,18 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator IntPtr(Pointer<T> ptr) => (IntPtr)(ptr._ptr);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Pointer<TTo> ToPointer<TTo>() => new Pointer<TTo>(_ptr);
         public override bool Equals(object obj)
         {
             if (obj is Pointer<T> p)
             {
-                return _ptr == p.Ptr;
+                return this == p;
             }
             return false;
         }
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override int GetHashCode() => ((int)_ptr).GetHashCode();
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public override string ToString() => ((int)_ptr).ToString();
+        public bool Equals(Pointer<T> other) => this == other;
+        public override int GetHashCode() => ((IntPtr)_ptr).GetHashCode();
+        public override string ToString() => ((IntPtr)_ptr).ToString();
+        public string ToString(string format) => ((IntPtr)_ptr).ToString(format);
     }
 }
