@@ -9,6 +9,7 @@ namespace Berrysoft.Unsafe
     public unsafe readonly struct Pointer<T> : IEquatable<Pointer<T>>
     {
         private readonly void* _ptr;
+        public static readonly Pointer<T> Null;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Pointer(void* ptr)
         {
@@ -57,9 +58,11 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static implicit operator void*(Pointer<T> ptr) => ptr._ptr;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator Pointer<T>(IntPtr ptr) => new Pointer<T>(ptr);
+        public static explicit operator Pointer<T>(IntPtr ptr) => new Pointer<T>(ptr);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator IntPtr(Pointer<T> ptr) => (IntPtr)(ptr._ptr);
+        public static explicit operator IntPtr(Pointer<T> ptr) => (IntPtr)(ptr._ptr);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool IsNull() => _ptr == null;
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Pointer<TTo> ToPointer<TTo>() => new Pointer<TTo>(_ptr);
         public override bool Equals(object obj)

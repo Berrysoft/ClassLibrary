@@ -29,6 +29,10 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemorySet(IntPtr startAddress, byte value, uint byteCount) => InitBlock((void*)startAddress, value, byteCount);
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemorySet<T>(Pointer<T> startAddress, byte value, uint byteCount) => InitBlock(startAddress, value, byteCount);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void MemoryCopy(IntPtr destination, IntPtr source, uint byteCount) => CopyBlock((void*)destination, (void*)source, byteCount);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void MemoryCopy<TDestination, TSource>(Pointer<TDestination> destination, Pointer<TSource> source, uint byteCount) => CopyBlock(destination, source, byteCount);
     }
 }
