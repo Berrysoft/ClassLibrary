@@ -6,7 +6,7 @@ using static System.Runtime.CompilerServices.Unsafe;
 namespace Berrysoft.Unsafe
 {
     [DebuggerDisplay("{Ptr}")]
-    public unsafe readonly struct Pointer<T> : IEquatable<Pointer<T>>
+    public readonly unsafe struct Pointer<T> : IEquatable<Pointer<T>>
     {
         private readonly void* _ptr;
         public static readonly Pointer<T> Null;
