@@ -41,7 +41,7 @@ namespace Berrysoft.Tsinghua.Net
             Password = password;
             client = new HttpClient();
         }
-        internal async Task<string> PostAsync(string uri, string data)
+        protected async Task<string> PostAsync(string uri, string data)
         {
             using (StringContent content = new StringContent(data ?? string.Empty, Encoding.ASCII, "application/x-www-form-urlencoded"))
             {
@@ -51,7 +51,7 @@ namespace Berrysoft.Tsinghua.Net
                 }
             }
         }
-        internal Task<string> GetAsync(string uri)
+        protected Task<string> GetAsync(string uri)
         {
             return client.GetStringAsync(uri);
         }
