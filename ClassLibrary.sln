@@ -15,13 +15,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Workflow", "Berry
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Data.Test", "Berrysoft.Data.Test\Berrysoft.Data.Test.vbproj", "{093EF355-E852-4CDC-8662-D44D5BB409D9}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Data.Test", "Berrysoft.Data.Test\Berrysoft.Data.Test.vbproj", "{093EF355-E852-4CDC-8662-D44D5BB409D9}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Unsafe.Test", "Berrysoft.Unsafe.Test\Berrysoft.Unsafe.Test.vbproj", "{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Unsafe.Test", "Berrysoft.Unsafe.Test\Berrysoft.Unsafe.Test.vbproj", "{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Console.Test", "Berrysoft.Console.Test\Berrysoft.Console.Test.vbproj", "{3DAB248A-334B-4DD7-A6CE-56F51589F567}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Console.Test", "Berrysoft.Console.Test\Berrysoft.Console.Test.vbproj", "{3DAB248A-334B-4DD7-A6CE-56F51589F567}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Workflow.Test", "Berrysoft.Workflow.Test\Berrysoft.Workflow.Test.vbproj", "{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Workflow.Test", "Berrysoft.Workflow.Test\Berrysoft.Workflow.Test.vbproj", "{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Berrysoft.Tsinghua.Physics", "Berrysoft.Tsinghua.Physics\Berrysoft.Tsinghua.Physics.csproj", "{4F35E204-61E8-444B-9C18-1045FA2C634D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,6 +67,10 @@ Global
 		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4F35E204-61E8-444B-9C18-1045FA2C634D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4F35E204-61E8-444B-9C18-1045FA2C634D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4F35E204-61E8-444B-9C18-1045FA2C634D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4F35E204-61E8-444B-9C18-1045FA2C634D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
