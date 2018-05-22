@@ -18,7 +18,6 @@ namespace Berrysoft.Console
     }
     public class Log : ILog, IDisposable
     {
-        private readonly object syncLock = new object();
         public Log(string fileName)
             : this(fileName, false)
         { }
@@ -44,12 +43,7 @@ namespace Berrysoft.Console
         public virtual void WriteDebug(string message)
             => WriteLog(string.Format(SpecialMessageFormatString, DebugHeader, message));
         public Task WriteLogAsync(string message)
-        {
-            lock (syncLock)
-            {
-                return Writer.WriteLineAsync(string.Format(MessageFormatString, DateTime.Now, message));
-            }
-        }
+            => Writer.WriteLineAsync(string.Format(MessageFormatString, DateTime.Now, message));
         public Task WriteExceptionAsync(Exception exception)
             => WriteLogAsync(string.Format(SpecialMessageFormatString, ExceptionHeader, exception.Message));
         public Task WriteEventAsync(string eventName)
