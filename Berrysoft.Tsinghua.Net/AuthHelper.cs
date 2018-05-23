@@ -85,7 +85,7 @@ namespace Berrysoft.Tsinghua.Net
         {
             int d = a.Count;
             long c = (d - 1) << 2;
-            List<string> aa = new List<string>();
+            StringBuilder aa = new StringBuilder();
             if (b)
             {
                 long m = a[d - 1];
@@ -99,16 +99,19 @@ namespace Berrysoft.Tsinghua.Net
             {
                 long value = a[i];
                 byte* p = (byte*)&value;
-                aa.Add(new string(new char[] { (char)p[0], (char)p[1], (char)p[2], (char)p[3] }));
+                aa.Append((char)p[0]);
+                aa.Append((char)p[1]);
+                aa.Append((char)p[2]);
+                aa.Append((char)p[3]);
                 p = null;
             }
             if (b)
             {
-                return String.Concat(aa).Substring(0, (int)c);
+                return aa.ToString().Substring(0, (int)c);
             }
             else
             {
-                return String.Concat(aa);
+                return aa.ToString();
             }
         }
         private static string Encode(string str, string key)
@@ -134,9 +137,8 @@ namespace Berrysoft.Tsinghua.Net
             uint c = 0x86014019 | 0x183639A0;
             double q = Math.Floor(6.0 + 52 / (n + 1));
             long d = 0;
-            while (0 < q)
+            while (q-- > 0)
             {
-                q -= 1;
                 d = d + c & (0x8CE0D9BF | 0x731F2640);
                 long e = RightShift(d, 2) & 3;
                 for (int p = 0; p < n; p++)
@@ -160,9 +162,9 @@ namespace Berrysoft.Tsinghua.Net
         private unsafe static string Base64Encode(string t)
         {
             string n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
-            string u = "";
+            StringBuilder u = new StringBuilder();
             int a = t.Length;
-            string r = "=";
+            char r = '=';
             for (int o = 0; o < a; o += 3)
             {
                 int h = 0;
@@ -170,20 +172,20 @@ namespace Berrysoft.Tsinghua.Net
                 p[2] = (byte)t[o];
                 p[1] = (byte)(o + 1 < a ? t[o + 1] : 0);
                 p[0] = (byte)(o + 2 < a ? t[o + 2] : 0);
-                for (var i = 0; i < 4; i += 1)
+                for (int i = 0; i < 4; i += 1)
                 {
                     if (o * 8 + i * 6 > a * 8)
                     {
-                        u += r;
+                        u.Append(r);
                     }
                     else
                     {
-                        u += n[h >> 6 * (3 - i) & 63];
+                        u.Append(n[h >> 6 * (3 - i) & 63]);
                     }
                 }
                 p = null;
             }
-            return u;
+            return u.ToString();
         }
         private async Task<string> GetChallengeAsync()
         {
