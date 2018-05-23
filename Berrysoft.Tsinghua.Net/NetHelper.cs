@@ -17,6 +17,6 @@ namespace Berrysoft.Tsinghua.Net
         { }
         public Task<string> LoginAsync() => PostAsync(LogUri, string.Format(LoginData, Username, GetMD5(Password)));
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
-        public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, null));
+        public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, (string)null));
     }
 }

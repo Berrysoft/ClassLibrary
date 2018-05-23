@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -51,6 +52,16 @@ namespace Berrysoft.Tsinghua.Net
                 }
             }
         }
+        protected async Task<string> PostAsync(string uri, Dictionary<string, string> data)
+        {
+            using (HttpContent content = new FormUrlEncodedContent(data))
+            {
+                using (HttpResponseMessage response = await client.PostAsync(uri, content))
+                {
+                    return await response.Content.ReadAsStringAsync();
+                }
+            }
+        }
         protected Task<string> GetAsync(string uri)
         {
             return client.GetStringAsync(uri);
@@ -71,6 +82,15 @@ namespace Berrysoft.Tsinghua.Net
                     decimal.Parse(r[11]));
             }
         }
+        private static string GetHexString(byte[] data)
+        {
+            StringBuilder sBuilder = new StringBuilder();
+            for (int i = 0; i < data.Length; i++)
+            {
+                sBuilder.Append(data[i].ToString("x2"));
+            }
+            return sBuilder.ToString();
+        }
         internal static string GetMD5(string input)
         {
             if (string.IsNullOrEmpty(input))
@@ -80,12 +100,19 @@ namespace Berrysoft.Tsinghua.Net
             using (MD5 md5Hash = MD5.Create())
             {
                 byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(input));
-                StringBuilder sBuilder = new StringBuilder();
-                for (int i = 0; i < data.Length; i++)
-                {
-                    sBuilder.Append(data[i].ToString("x2"));
-                }
-                return sBuilder.ToString();
+                return GetHexString(data);
+            }
+        }
+        internal static string GetSHA1(string input)
+        {
+            if(string.IsNullOrEmpty(input))
+            {
+                return string.Empty;
+            }
+            using (SHA1 sha1 = SHA1.Create())
+            {
+                byte[] data = sha1.ComputeHash(Encoding.GetEncoding("ISO-8859-1").GetBytes(input));
+                return GetHexString(data);
             }
         }
         #region IDisposable Support
