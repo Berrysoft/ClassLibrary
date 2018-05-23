@@ -42,6 +42,8 @@ namespace Berrysoft.Console
             => WriteLog(string.Format(SpecialMessageFormatString, EventHeader, eventName));
         public virtual void WriteDebug(string message)
             => WriteLog(string.Format(SpecialMessageFormatString, DebugHeader, message));
+        public void Flush()
+            => Writer.Flush();
         public Task WriteLogAsync(string message)
             => Writer.WriteLineAsync(string.Format(MessageFormatString, DateTime.Now, message));
         public Task WriteExceptionAsync(Exception exception)
@@ -50,6 +52,8 @@ namespace Berrysoft.Console
             => WriteLogAsync(string.Format(SpecialMessageFormatString, EventHeader, eventName));
         public Task WriteDebugAsync(string message)
             => WriteLogAsync(string.Format(SpecialMessageFormatString, DebugHeader, message));
+        public Task FlushAsync()
+            => Writer.FlushAsync();
         #region IDisposable Support
         private bool disposedValue = false;
         protected virtual void Dispose(bool disposing)
