@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Json;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
@@ -98,7 +99,7 @@ namespace Berrysoft.Tsinghua.Net
             {
                 long value = a[i];
                 byte* p = (byte*)&value;
-                aa.Add(((char)p[0]).ToString() + ((char)p[1]).ToString() + ((char)p[2]).ToString() + ((char)p[3]).ToString());
+                aa.Add(new string(new char[] { (char)p[0], (char)p[1], (char)p[2], (char)p[3] }));
                 p = null;
             }
             if (b)
