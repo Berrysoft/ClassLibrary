@@ -30,7 +30,6 @@ namespace Berrysoft.Tsinghua.Net
     public class NetHelperBase : IDisposable
     {
         private HttpClient client;
-        private readonly object syncLock = new object();
         public string Username { get; set; }
         public string Password { get; set; }
         public NetHelperBase()
