@@ -12,39 +12,39 @@ Public Class SettingsTest
         <Settings("bbb", AllowMultiple:=True)>
         Public Property B As String()
 
-        Protected Overrides Function ChangeType(name As XName, value As Object, conversionType As Type) As Object
+        Protected Overrides Function ChangeType(name As String, value As Object, conversionType As Type) As Object
             If name = "bbb" Then
                 Dim array As String() = value
                 Return array
             Else
-                Return MyBase.ChangeType(name, value, conversionType)
+                Return Convert.ChangeType(value, conversionType)
             End If
         End Function
 
-        Protected Overrides Function ChangeBackType(name As XName, value As Object, conversionType As Type) As Object
+        Protected Overrides Function ChangeBackType(name As String, value As Object, conversionType As Type) As Object
             If name = "bbb" Then
                 Dim array As String() = value
                 Return array
             Else
-                Return MyBase.ChangeBackType(name, value, conversionType)
+                Return value.ToString()
             End If
         End Function
     End Class
-
+    Private Const FileName As String = "settings.xml"
     <TestMethod()>
     Public Sub StdSettingsTest()
         Dim settings As New StdSettingsClass()
-        settings.Open("settings.xml")
+        settings.Open(FileName)
         Assert.AreEqual(settings.A, 123)
         Assert.AreEqual(settings.B(0), "a")
         Assert.AreEqual(settings.B(1), "b")
         settings.B(0) = "hhh"
-        settings.Save("settings.xml")
+        settings.Save(FileName)
         settings.B(0) = "asdf"
-        settings.Open("settings.xml")
+        settings.Open(FileName)
         Assert.AreEqual(settings.B(0), "hhh")
         settings.B(0) = "a"
-        settings.Save("settings.xml")
+        settings.Save(FileName)
     End Sub
 
     <TestMethod()>
@@ -53,17 +53,17 @@ Public Class SettingsTest
     End Sub
     Private Async Function StdSettingsTestAsyncInternal() As Task
         Dim settings As New StdSettingsClass()
-        Await settings.OpenAsync("settings.xml")
+        Await settings.OpenAsync(FileName)
         Assert.AreEqual(settings.A, 123)
         Assert.AreEqual(settings.B(0), "a")
         Assert.AreEqual(settings.B(1), "b")
         settings.B(0) = "hhh"
-        Await settings.SaveAsync("settings.xml")
+        Await settings.SaveAsync(FileName)
         settings.B(0) = "asdf"
-        Await settings.OpenAsync("settings.xml")
+        Await settings.OpenAsync(FileName)
         Assert.AreEqual(settings.B(0), "hhh")
         settings.B(0) = "a"
-        Await settings.SaveAsync("settings.xml")
+        Await settings.SaveAsync(FileName)
     End Function
 
 End Class

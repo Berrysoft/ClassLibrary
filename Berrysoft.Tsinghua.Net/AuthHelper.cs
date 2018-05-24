@@ -67,18 +67,20 @@ namespace Berrysoft.Tsinghua.Net
         {
             int c = a.Length;
             List<long> v = new List<long>();
+            long value = 0;
+            byte* p = (byte*)&value;
             for (int i = 0; i < c; i += 4)
             {
-                long value = 0;
-                byte* p = (byte*)&value;
                 p[0] = (byte)a[i];
                 p[1] = (byte)(i + 1 >= c ? 0 : a[i + 1]);
                 p[2] = (byte)(i + 2 >= c ? 0 : a[i + 2]);
                 p[3] = (byte)(i + 3 >= c ? 0 : a[i + 3]);
                 v.Add(value);
-                p = null;
             }
-            if (b) v.Add(c);
+            if (b)
+            {
+                v.Add(c);
+            }
             return v;
         }
         private static unsafe string L(List<long> a, bool b)
@@ -103,7 +105,6 @@ namespace Berrysoft.Tsinghua.Net
                 aa.Append((char)p[1]);
                 aa.Append((char)p[2]);
                 aa.Append((char)p[3]);
-                p = null;
             }
             if (b)
             {
@@ -165,10 +166,10 @@ namespace Berrysoft.Tsinghua.Net
             StringBuilder u = new StringBuilder();
             int a = t.Length;
             char r = '=';
+            int h = 0;
+            byte* p = (byte*)&h;
             for (int o = 0; o < a; o += 3)
             {
-                int h = 0;
-                byte* p = (byte*)&h;
                 p[2] = (byte)t[o];
                 p[1] = (byte)(o + 1 < a ? t[o + 1] : 0);
                 p[0] = (byte)(o + 2 < a ? t[o + 2] : 0);
@@ -183,7 +184,6 @@ namespace Berrysoft.Tsinghua.Net
                         u.Append(n[h >> 6 * (3 - i) & 63]);
                     }
                 }
-                p = null;
             }
             return u.ToString();
         }
