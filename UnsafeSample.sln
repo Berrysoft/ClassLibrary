@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2000
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{09BC4C6E-2536-460F-8270-8EA61D67C055}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "src\Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{09BC4C6E-2536-460F-8270-8EA61D67C055}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Unsafe.Sample", "Berrysoft.Unsafe.Sample\Berrysoft.Unsafe.Sample.vbproj", "{82721A51-6C26-42B6-B524-1250907CD523}"
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Berrysoft.Unsafe.Sample", "samples\Berrysoft.Unsafe.Sample\Berrysoft.Unsafe.Sample.vbproj", "{82721A51-6C26-42B6-B524-1250907CD523}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

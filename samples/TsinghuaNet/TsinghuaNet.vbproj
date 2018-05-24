@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>TsinghuaNet</RootNamespace>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Berrysoft.Console\Berrysoft.Console.csproj" />
+    <ProjectReference Include="..\..\src\Berrysoft.Tsinghua.Net\Berrysoft.Tsinghua.Net.csproj" />
+  </ItemGroup>
+
+</Project>
