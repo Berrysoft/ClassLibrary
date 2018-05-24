@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -9,24 +8,13 @@ using System.Xml.Linq;
 
 namespace Berrysoft.Console
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-    public sealed class SettingsAttribute : Attribute
+    public abstract class XmlSettings : SettingsBase<object, object>
     {
-        public SettingsAttribute(string name)
-        {
-            Name = name;
-        }
-        public string Name { get; }
-        public bool AllowMultiple { get; set; }
-    }
-    public abstract class XmlSettings
-    {
-        private Dictionary<SettingsAttribute, PropertyInfo> properties;
-        private XName rootName;
 #if NETCOREAPP2_0
         private readonly object syncLock = new object();
 #endif
         public XmlSettings()
+            : base()
         {
             if (Attribute.GetCustomAttribute(GetType().GetTypeInfo(), typeof(SettingsAttribute)) is SettingsAttribute settings)
             {
@@ -36,20 +24,8 @@ namespace Berrysoft.Console
             {
                 rootName = "settings";
             }
-            InitDictionary();
         }
-        private void InitDictionary()
-        {
-            properties = new Dictionary<SettingsAttribute, PropertyInfo>();
-            foreach (PropertyInfo prop in GetType().GetProperties())
-            {
-                if (Attribute.GetCustomAttribute(prop, typeof(SettingsAttribute)) is SettingsAttribute settings)
-                {
-                    properties.Add(settings, prop);
-                }
-            }
-        }
-        public void Open(string fileName)
+        public override void Open(string fileName)
         {
             XDocument document = XDocument.Load(fileName);
             XElement settings = document.Element(rootName);
@@ -95,7 +71,7 @@ namespace Berrysoft.Console
                 {
                     propValue = ChangeType(attr.Name, settings.Element(attr.Name)?.Value, p.PropertyType);
                 }
-                if (propValue != null)  
+                if (propValue != null)
                 {
                     lock (syncLock)
                     {
@@ -105,7 +81,7 @@ namespace Berrysoft.Console
             });
         }
 #endif
-        public void Save(string fileName)
+        public override void Save(string fileName)
         {
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
             XElement settings = new XElement(rootName);
@@ -163,14 +139,5 @@ namespace Berrysoft.Console
             }
         }
 #endif
-        protected virtual object ChangeType(XName name, object value, Type conversionType)
-        {
-            return Convert.ChangeType(value, conversionType);
-        }
-        protected virtual object ChangeBackType(XName name, object value, Type conversionType)
-        {
-            return value.ToString();
-        }
-        public IEnumerable<SettingsAttribute> GetSettingsAttributes() => properties.Keys;
     }
 }
