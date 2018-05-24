@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>Berrysoft.Data.Test</RootNamespace>
+    <RootNamespace>Berrysoft.Unsafe.Test</RootNamespace>
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Berrysoft.Data\Berrysoft.Data.csproj" />
+    <ProjectReference Include="..\..\src\Berrysoft.Unsafe\Berrysoft.Unsafe.csproj" />
   </ItemGroup>
 
 </Project>

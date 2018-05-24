@@ -3,27 +3,27 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2043
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Data", "Berrysoft.Data\Berrysoft.Data.csproj", "{6670E395-CEC6-425E-8BE8-2A8ED84E0E48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Data", "src\Berrysoft.Data\Berrysoft.Data.csproj", "{6670E395-CEC6-425E-8BE8-2A8ED84E0E48}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Console", "Berrysoft.Console\Berrysoft.Console.csproj", "{4F60E317-74F1-4E88-9BAC-3187BB5FCB94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Console", "src\Berrysoft.Console\Berrysoft.Console.csproj", "{4F60E317-74F1-4E88-9BAC-3187BB5FCB94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Tsinghua.Net", "Berrysoft.Tsinghua.Net\Berrysoft.Tsinghua.Net.csproj", "{9854C1E8-59CA-44EF-BBA5-448A146A4BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Tsinghua.Net", "src\Berrysoft.Tsinghua.Net\Berrysoft.Tsinghua.Net.csproj", "{9854C1E8-59CA-44EF-BBA5-448A146A4BB9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{CEC29D71-8F41-4D63-9CF1-C0768612B786}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "src\Berrysoft.Unsafe\Berrysoft.Unsafe.csproj", "{CEC29D71-8F41-4D63-9CF1-C0768612B786}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Workflow", "Berrysoft.Workflow\Berrysoft.Workflow.csproj", "{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Workflow", "src\Berrysoft.Workflow\Berrysoft.Workflow.csproj", "{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Data.Test", "Berrysoft.Data.Test\Berrysoft.Data.Test.vbproj", "{093EF355-E852-4CDC-8662-D44D5BB409D9}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Data.Test", "tests\Berrysoft.Data.Test\Berrysoft.Data.Test.vbproj", "{093EF355-E852-4CDC-8662-D44D5BB409D9}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Unsafe.Test", "Berrysoft.Unsafe.Test\Berrysoft.Unsafe.Test.vbproj", "{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Unsafe.Test", "tests\Berrysoft.Unsafe.Test\Berrysoft.Unsafe.Test.vbproj", "{DE64E6AB-5CA4-41C7-9957-5C6F9E66085D}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Console.Test", "Berrysoft.Console.Test\Berrysoft.Console.Test.vbproj", "{3DAB248A-334B-4DD7-A6CE-56F51589F567}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Console.Test", "tests\Berrysoft.Console.Test\Berrysoft.Console.Test.vbproj", "{3DAB248A-334B-4DD7-A6CE-56F51589F567}"
 EndProject
-Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Workflow.Test", "Berrysoft.Workflow.Test\Berrysoft.Workflow.Test.vbproj", "{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}"
+Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Workflow.Test", "tests\Berrysoft.Workflow.Test\Berrysoft.Workflow.Test.vbproj", "{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Berrysoft.Tsinghua.Physics", "Berrysoft.Tsinghua.Physics\Berrysoft.Tsinghua.Physics.csproj", "{4F35E204-61E8-444B-9C18-1045FA2C634D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Berrysoft.Tsinghua.Physics", "src\Berrysoft.Tsinghua.Physics\Berrysoft.Tsinghua.Physics.csproj", "{4F35E204-61E8-444B-9C18-1045FA2C634D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
