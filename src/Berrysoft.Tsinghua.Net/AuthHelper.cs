@@ -63,11 +63,11 @@ namespace Berrysoft.Tsinghua.Net
         }
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
         public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, (string)null));
-        private static unsafe List<long> S(string a, bool b)
+        private static unsafe List<uint> S(string a, bool b)
         {
             int c = a.Length;
-            List<long> v = new List<long>();
-            long value = 0;
+            List<uint> v = new List<uint>();
+            uint value = 0;
             byte* p = (byte*)&value;
             for (int i = 0; i < c; i += 4)
             {
@@ -79,18 +79,18 @@ namespace Berrysoft.Tsinghua.Net
             }
             if (b)
             {
-                v.Add(c);
+                v.Add((uint)c);
             }
             return v;
         }
-        private static unsafe string L(List<long> a, bool b)
+        private static unsafe string L(List<uint> a, bool b)
         {
             int d = a.Count;
-            long c = (d - 1) << 2;
+            uint c = ((uint)(d - 1)) << 2;
             StringBuilder aa = new StringBuilder();
             if (b)
             {
-                long m = a[d - 1];
+                uint m = a[d - 1];
                 if (m < c - 3 || m > c)
                 {
                     return null;
@@ -99,7 +99,7 @@ namespace Berrysoft.Tsinghua.Net
             }
             for (int i = 0; i < d; i++)
             {
-                long value = a[i];
+                uint value = a[i];
                 byte* p = (byte*)&value;
                 aa.Append((char)p[0]);
                 aa.Append((char)p[1]);
@@ -117,46 +117,49 @@ namespace Berrysoft.Tsinghua.Net
         }
         private static string Encode(string str, string key)
         {
-            long RightShift(long x, int nn)
+            uint RightShift(uint x, int nn)
             {
                 return x >> nn;
             }
-            long LeftShift(long x, int nn)
+            uint LeftShift(uint x, int nn)
             {
-                return (x << nn) & 4294967295;
+                return (x << nn) & 0xFFFFFFFF;
             }
-            if (str.Length == 0) return String.Empty;
-            List<long> v = S(str, true);
-            List<long> k = S(key, false);
+            if (str.Length == 0)
+            {
+                return String.Empty;
+            }
+            List<uint> v = S(str, true);
+            List<uint> k = S(key, false);
             while (k.Count < 4)
             {
                 k.Add(0);
             }
             int n = v.Count - 1;
-            long z = v[n];
-            long y = v[0];
+            uint z = v[n];
+            uint y = v[0];
             uint c = 0x86014019 | 0x183639A0;
             double q = Math.Floor(6.0 + 52 / (n + 1));
-            long d = 0;
+            uint d = 0;
             while (q-- > 0)
             {
                 d = d + c & (0x8CE0D9BF | 0x731F2640);
-                long e = RightShift(d, 2) & 3;
+                uint e = RightShift(d, 2) & 3;
                 for (int p = 0; p < n; p++)
                 {
                     y = v[p + 1];
-                    long mm = RightShift(z, 5) ^ LeftShift(y, 2);
+                    uint mm = RightShift(z, 5) ^ LeftShift(y, 2);
                     mm += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                    long tt = (p & 3) ^ e;
+                    uint tt = ((uint)(p & 3)) ^ e;
                     mm += k[(int)tt] ^ z;
-                    z = v[p] = v[p] + mm & (0xEFB8D130 | 0x10472ECF);
+                    z = v[p] += mm & (0xEFB8D130 | 0x10472ECF);
                 }
                 y = v[0];
-                long m = RightShift(z, 5) ^ LeftShift(y, 2);
+                uint m = RightShift(z, 5) ^ LeftShift(y, 2);
                 m += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                long t = (n & 3) ^ e;
+                uint t = ((uint)(n & 3)) ^ e;
                 m += k[(int)t] ^ z;
-                z = v[n] = v[n] + m & (0xBB390742 | 0x44C6F8BD);
+                z = v[n] += m & (0xBB390742 | 0x44C6F8BD);
             }
             return L(v, false);
         }
@@ -181,7 +184,7 @@ namespace Berrysoft.Tsinghua.Net
                     }
                     else
                     {
-                        u.Append(n[h >> 6 * (3 - i) & 63]);
+                        u.Append(n[h >> 6 * (3 - i) & 0x3F]);
                     }
                 }
             }
