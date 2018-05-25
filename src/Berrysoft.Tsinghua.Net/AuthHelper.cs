@@ -36,7 +36,6 @@ namespace Berrysoft.Tsinghua.Net
             const string type = "1";
             const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
             string challenge = await GetChallengeAsync();
-            if (challenge == null) return null;
             JsonValue result = JsonValue.Parse(challenge);
             string token = result["challenge"];
             var info = new JsonObject()
@@ -97,10 +96,11 @@ namespace Berrysoft.Tsinghua.Net
                 }
                 c = m;
             }
+            uint value = 0;
+            byte* p = (byte*)&value;
             for (int i = 0; i < d; i++)
             {
-                uint value = a[i];
-                byte* p = (byte*)&value;
+                value = a[i];
                 aa.Append((char)p[0]);
                 aa.Append((char)p[1]);
                 aa.Append((char)p[2]);
@@ -138,28 +138,27 @@ namespace Berrysoft.Tsinghua.Net
             int n = v.Count - 1;
             uint z = v[n];
             uint y = v[0];
-            uint c = 0x86014019 | 0x183639A0;
-            double q = Math.Floor(6.0 + 52 / (n + 1));
+            int q = 6 + 52 / (n + 1);
             uint d = 0;
             while (q-- > 0)
             {
-                d = d + c & (0x8CE0D9BF | 0x731F2640);
+                d += 0x9E3779B9;
                 uint e = RightShift(d, 2) & 3;
                 for (int p = 0; p < n; p++)
                 {
                     y = v[p + 1];
                     uint mm = RightShift(z, 5) ^ LeftShift(y, 2);
                     mm += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                    uint tt = ((uint)(p & 3)) ^ e;
-                    mm += k[(int)tt] ^ z;
-                    z = v[p] += mm & (0xEFB8D130 | 0x10472ECF);
+                    int tt = (p & 3) ^ (int)e;
+                    mm += k[tt] ^ z;
+                    z = v[p] += mm;
                 }
                 y = v[0];
                 uint m = RightShift(z, 5) ^ LeftShift(y, 2);
                 m += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                uint t = ((uint)(n & 3)) ^ e;
-                m += k[(int)t] ^ z;
-                z = v[n] += m & (0xBB390742 | 0x44C6F8BD);
+                int t = (n & 3) ^ (int)e;
+                m += k[t] ^ z;
+                z = v[n] += m;
             }
             return L(v, false);
         }
