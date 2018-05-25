@@ -119,7 +119,7 @@ namespace Berrysoft.Tsinghua.Net
             return result.Substring(begin, end - begin + 1);
         }
         /// <summary>
-        /// A function translate from javascript.
+        /// A function translated from javascript.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -160,7 +160,7 @@ namespace Berrysoft.Tsinghua.Net
             return v;
         }
         /// <summary>
-        /// A function translate from javascript.
+        /// A function translated from javascript.
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -221,7 +221,7 @@ namespace Berrysoft.Tsinghua.Net
             }
         }
         /// <summary>
-        /// A function translate from javascript.
+        /// A function translated from javascript.
         /// </summary>
         /// <param name="str"></param>
         /// <param name="key"></param>
@@ -268,14 +268,6 @@ namespace Berrysoft.Tsinghua.Net
         /// </remarks>
         private static string Encode(string str, string key)
         {
-            uint RightShift(uint x, int nn)
-            {
-                return x >> nn;
-            }
-            uint LeftShift(uint x, int nn)
-            {
-                return (x << nn) & 0xFFFFFFFF;
-            }
             if (str.Length == 0)
             {
                 return String.Empty;
@@ -294,25 +286,53 @@ namespace Berrysoft.Tsinghua.Net
             while (q-- > 0)
             {
                 d += 0x9E3779B9;
-                uint e = RightShift(d, 2) & 3;
-                for (int p = 0; p < n; p++)
+                uint e = (d >> 2) & 3;
+                for (int p = 0; p <= n; p++)
                 {
-                    y = v[p + 1];
-                    uint mm = RightShift(z, 5) ^ LeftShift(y, 2);
-                    mm += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                    int tt = (p & 3) ^ (int)e;
-                    mm += k[tt] ^ z;
-                    z = v[p] += mm;
+                    y = v[p == n ? 0 : p + 1];
+                    uint m = (z >> 5) ^ (y << 2);
+                    m += (y >> 3) ^ (z << 4) ^ (d ^ y);
+                    m += k[(p & 3) ^ (int)e] ^ z;
+                    z = v[p] += m;
                 }
-                y = v[0];
-                uint m = RightShift(z, 5) ^ LeftShift(y, 2);
-                m += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                int t = (n & 3) ^ (int)e;
-                m += k[t] ^ z;
-                z = v[n] += m;
             }
             return L(v, false);
         }
+        /// <summary>
+        /// A function translated from javascript.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// Base64: function() {
+        ///     var n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA",
+        ///         r = "=",
+        ///         o = false,
+        ///         f = false;
+        ///     this.encode = function(t) {
+        ///         var o,
+        ///             i,
+        ///             h,
+        ///             u = "",
+        ///             a = t.length;
+        ///         r = r || "=";
+        ///         t = f ? e(t) : t;
+        ///         for (o = 0; o < a; o += 3) {
+        ///             h = t.charCodeAt(o) << 16 | (o + 1 < a ? t.charCodeAt(o+1) << 8 : 0) | (o + 2 < a ? t.charCodeAt(o+2) : 0);
+        ///             for ( i = 0; i < 4; i += 1) {
+        ///                 if (o * 8 + i * 6 > a * 8) {
+        ///                     u += r
+        ///                 } else {
+        ///                     u += n.charAt(h >>> 6 * (3 - i) & 63)
+        ///                 }
+        ///             }
+        ///         }
+        ///         return u
+        ///     };
+        /// }
+        /// ]]></code>
+        /// </remarks>
         private unsafe static string Base64Encode(string t)
         {
             string n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
