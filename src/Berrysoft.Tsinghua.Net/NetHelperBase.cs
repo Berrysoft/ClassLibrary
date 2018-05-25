@@ -25,7 +25,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get information of the user online.
         /// </summary>
-        /// <returns>A <see cref="FluxUser"/> class of the current user.</returns>
+        /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         Task<FluxUser> GetFluxAsync();
     }
     /// <summary>
@@ -200,16 +200,9 @@ namespace Berrysoft.Tsinghua.Net
         /// <param name="uri">The Uri the request is sent to.</param>
         /// <param name="data">The HTTP request string content sent to the server.</param>
         /// <returns>The task object representing the asynchronous operation.</returns>
-        protected async Task<string> GetAsync(string uri, string data)
+        protected Task<string> GetAsync(string uri, string data)
         {
-            using (HttpRequestMessage message = new HttpRequestMessage(HttpMethod.Get, uri))
-            {
-                message.Content = new StringContent(data ?? string.Empty, Encoding.ASCII, "application/x-www-form-urlencoded");
-                using (HttpResponseMessage response = await client.SendAsync(message))
-                {
-                    return await response.Content.ReadAsStringAsync();
-                }
-            }
+            return client.GetStringAsync(uri + "?" + data);
         }
         #region IDisposable Support
         private bool disposedValue = false;
@@ -224,6 +217,9 @@ namespace Berrysoft.Tsinghua.Net
                 disposedValue = true;
             }
         }
+        /// <summary>
+        /// Releases the unmanaged resources and disposes of the managed resources used by the <see cref="HttpClient"/>.
+        /// </summary>
         public void Dispose() => Dispose(true);
         #endregion
     }

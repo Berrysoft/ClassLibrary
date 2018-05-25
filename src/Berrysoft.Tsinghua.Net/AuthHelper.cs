@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
 {
+    /// <summary>
+    /// Exposes methods to login, logout and get flux from https://auth4.tsinghua.edu.cn/ or https://auth6.tsinghua.edu.cn/
+    /// </summary>
     public class AuthHelper : NetHelperBase, IConnect
     {
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
@@ -16,9 +19,19 @@ namespace Berrysoft.Tsinghua.Net
         private readonly string LogUri;
         private readonly string FluxUri;
         private readonly string ChallengeUri;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="version">4 for auth4 and 6 for auth6</param>
         private AuthHelper(int version)
             : this(string.Empty, string.Empty, version)
         { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="version">4 for auth4 and 6 for auth6</param>
         private AuthHelper(string username, string password, int version)
             : base(username, password)
         {
@@ -26,10 +39,34 @@ namespace Berrysoft.Tsinghua.Net
             FluxUri = string.Format(FluxUriBase, version);
             ChallengeUri = string.Format(ChallengeUriBase, version);
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
         public static AuthHelper CreateAuth4Helper() => new AuthHelper(4);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
         public static AuthHelper CreateAuth4Helper(string username, string password) => new AuthHelper(username, password, 4);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
         public static AuthHelper CreateAuth6Helper() => new AuthHelper(6);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
         public static AuthHelper CreateAuth6Helper(string username, string password) => new AuthHelper(username, password, 6);
+        /// <summary>
+        /// Login to the network.
+        /// </summary>
+        /// <returns>The response of the website.</returns>
         public async Task<string> LoginAsync()
         {
             const string n = "200";
@@ -60,8 +97,48 @@ namespace Berrysoft.Tsinghua.Net
             data["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
             return await PostAsync(LogUri, data);
         }
+        /// <summary>
+        /// Logout from the network.
+        /// </summary>
+        /// <returns>The response of the website.</returns>
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
+        /// <summary>
+        /// Get information of the user online.
+        /// </summary>
+        /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
+        /// <summary>
+        /// Get "challenge" to encode the password.
+        /// </summary>
+        /// <returns>The content of the website.</returns>
+        private async Task<string> GetChallengeAsync()
+        {
+            string result = await GetAsync(ChallengeUri, string.Format(ChallengeData, Username));
+            int begin = result.IndexOf('{');
+            int end = result.LastIndexOf('}');
+            return result.Substring(begin, end - begin + 1);
+        }
+        /// <summary>
+        /// A function translate from javascript.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// function s(a, b) {
+        ///    var c = a.length,
+        ///    v = [];
+        ///    for (var i = 0; i<c; i += 4) {
+        ///        v[i >> 2] = a.charCodeAt(i) | a.charCodeAt(i + 1) << 8 | a.charCodeAt(i + 2) << 16 | a.charCodeAt(i + 3) << 24;
+        ///    }
+        ///    if (b) {
+        ///        v[v.length] = c;
+        ///    }
+        ///    return v;
+        /// }
+        /// ]]></code>
+        /// </remarks>
         private static unsafe List<uint> S(string a, bool b)
         {
             int c = a.Length;
@@ -82,6 +159,34 @@ namespace Berrysoft.Tsinghua.Net
             }
             return v;
         }
+        /// <summary>
+        /// A function translate from javascript.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// function l(a, b) {
+        /// var d = a.length,
+        ///     c = (d - 1) << 2;
+        ///     if (b) {
+        ///         var m = a[d - 1];
+        ///         if ((m<c - 3) || (m > c))
+        ///             return null;
+        ///         c = m;
+        ///     }
+        ///     for (var i = 0; i<d; i++) {
+        ///         a[i] = String.fromCharCode(a[i] & 0xff, a[i] >>> 8 & 0xff, a[i] >>> 16 & 0xff, a[i] >>> 24 & 0xff);
+        ///     }
+        ///     if (b) {
+        ///         return a.join('').substring(0, c);
+        ///     } else {
+        ///         return a.join('');
+        ///     }
+        /// }
+        /// ]]></code>
+        /// </remarks>
         private static unsafe string L(List<uint> a, bool b)
         {
             int d = a.Count;
@@ -115,6 +220,52 @@ namespace Berrysoft.Tsinghua.Net
                 return aa.ToString();
             }
         }
+        /// <summary>
+        /// A function translate from javascript.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// xEncode: function(str, key) {
+        ///     if (str == "") {
+        ///         return "";
+        ///     }
+        ///     var v = s(str, true),
+        ///         k = s(key, false);
+        ///     if (k.length< 4) {
+        ///         k.length = 4;
+        ///     }
+        ///     var n = v.length - 1,
+        ///         z = v[n],
+        ///         y = v[0],
+        ///         c = 0x86014019 | 0x183639A0,
+        ///         m,
+        ///         e,
+        ///         p,
+        ///         q = Math.floor(6 + 52 / (n + 1)),
+        ///         d = 0;
+        ///     while (0 < q--) {
+        ///         d = d + c & (0x8CE0D9BF | 0x731F2640);
+        ///         e = d >>> 2 & 3;
+        ///         for (p = 0; p<n; p++) {
+        ///             y = v[p + 1];
+        ///             m = z >>> 5 ^ y << 2;
+        ///             m += (y >>> 3 ^ z << 4) ^ (d ^ y);
+        ///             m += k[(p & 3) ^ e] ^ z;
+        ///             z = v[p] = v[p] + m & (0xEFB8D130 | 0x10472ECF);
+        ///         }
+        ///         y = v[0];
+        ///         m = z >>> 5 ^ y << 2;
+        ///         m += (y >>> 3 ^ z << 4) ^ (d ^ y);
+        ///         m += k[(p & 3) ^ e] ^ z;
+        ///         z = v[n] = v[n] + m & (0xBB390742 | 0x44C6F8BD);
+        ///     }
+        ///     return l(v, false);
+        /// }
+        /// ]]></code>
+        /// </remarks>
         private static string Encode(string str, string key)
         {
             uint RightShift(uint x, int nn)
@@ -188,13 +339,6 @@ namespace Berrysoft.Tsinghua.Net
                 }
             }
             return u.ToString();
-        }
-        private async Task<string> GetChallengeAsync()
-        {
-            string result = await GetAsync(ChallengeUri, string.Format(ChallengeData, Username));
-            int begin = result.IndexOf('{');
-            int end = result.LastIndexOf('}');
-            return result.Substring(begin, end - begin + 1);
         }
     }
 }
