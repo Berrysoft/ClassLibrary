@@ -33,7 +33,7 @@ namespace Berrysoft.Tsinghua.Net
         public UseregHelper(string username, string password)
             : base(username, password)
         { }
-        public Task<string> LoginAsync() => PostAsync(LogUri, string.Format(LoginData, Username, GetMD5(Password)));
+        public Task<string> LoginAsync() => PostAsync(LogUri, string.Format(LoginData, Username, CryptographyHelper.GetMD5(Password)));
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
         public Task<string> LogoutAsync(IPAddress ip) => PostAsync(InfoUri, string.Format(DropData, ip.ToString()));
         public async Task<IEnumerable<NetUser>> GetUsersAsync()
