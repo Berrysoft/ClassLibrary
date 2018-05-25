@@ -57,11 +57,11 @@ namespace Berrysoft.Tsinghua.Net
                 ["username"] = Username,
                 ["password"] = "{MD5}" + passwordMD5
             };
-            data["chksum"] = GetSHA1(token + Username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
+            data["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
             return await PostAsync(LogUri, data);
         }
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
-        public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, (string)null));
+        public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
         private static unsafe List<uint> S(string a, bool b)
         {
             int c = a.Length;
@@ -191,7 +191,7 @@ namespace Berrysoft.Tsinghua.Net
         }
         private async Task<string> GetChallengeAsync()
         {
-            string result = await GetAsync(ChallengeUri + "?" + string.Format(ChallengeData, Username));
+            string result = await GetAsync(ChallengeUri, string.Format(ChallengeData, Username));
             int begin = result.IndexOf('{');
             int end = result.LastIndexOf('}');
             return result.Substring(begin, end - begin + 1);
