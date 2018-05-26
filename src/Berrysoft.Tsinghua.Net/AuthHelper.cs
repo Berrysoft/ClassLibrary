@@ -13,9 +13,8 @@ namespace Berrysoft.Tsinghua.Net
     {
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
         private const string FluxUriBase = "https://auth{0}.tsinghua.edu.cn/rad_user_info.php";
-        private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge";
+        private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge?username={{0}}&double_stack=1&ip&callback=callback";
         private const string LogoutData = "action=logout&ac_id=1&ip=&double_stack=1";
-        private const string ChallengeData = "username={0}&double_stack=1&ip&callback=callback";
         private readonly string LogUri;
         private readonly string FluxUri;
         private readonly string ChallengeUri;
@@ -67,36 +66,7 @@ namespace Berrysoft.Tsinghua.Net
         /// Login to the network.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public async Task<string> LoginAsync()
-        {
-            const string n = "200";
-            const string type = "1";
-            const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
-            string challenge = await GetChallengeAsync();
-            JsonValue result = JsonValue.Parse(challenge);
-            string token = result["challenge"];
-            var info = new JsonObject()
-            {
-                ["username"] = Username,
-                ["password"] = Password,
-                ["ip"] = string.Empty,
-                ["acid"] = "1",
-                ["enc_ver"] = "srun_bx1"
-            };
-            var data = new Dictionary<string, string>
-            {
-                ["info"] = "{SRBX1}" + Base64Encode(Encode(info.ToString(), token)),
-                ["action"] = "login",
-                ["ac_id"] = "1",
-                ["double_stack"] = "1",
-                ["n"] = n,
-                ["type"] = type,
-                ["username"] = Username,
-                ["password"] = "{MD5}" + passwordMD5
-            };
-            data["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
-            return await PostAsync(LogUri, data);
-        }
+        public async Task<string> LoginAsync() => await PostAsync(LogUri, await GetLoginDataAsync());
         /// <summary>
         /// Logout from the network.
         /// </summary>
@@ -113,10 +83,73 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>The content of the website.</returns>
         private async Task<string> GetChallengeAsync()
         {
-            string result = await GetAsync(ChallengeUri, string.Format(ChallengeData, Username));
+            string result = await GetAsync(string.Format(ChallengeUri, Username));
             int begin = result.IndexOf('{');
             int end = result.LastIndexOf('}');
             return result.Substring(begin, end - begin + 1);
+        }
+        private Dictionary<string, string> loginDataDictionary;
+        private JsonObject loginInfo;
+        /// <summary>
+        /// Get login data with username, password and "challenge".
+        /// </summary>
+        /// <returns>A dictionary contains the data.</returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// jQuery.getJSON(url.replace("srun_portal", "get_challenge"), { "username": $data.username, "ip": $data.ip, "double_stack": "1" }, function(data) {
+        ///     var token = "";
+        ///                 if (data.res != "ok") {
+        ///                     alert(data.error);
+        ///                     return;
+        ///                 }
+        ///     token = data.challenge;
+        ///     $data.info = "{SRBX1}" + base64.encode(jQuery.xEncode(JSON.stringify({ "username": $data.username, "password": $data.password, "ip": $data.ip, "acid": $data.ac_id, "enc_ver": enc}), token));
+        ///     var hmd5 = new Hashes.MD5().hex_hmac(token, data.password);
+        ///     $data.password = "{MD5}" + hmd5;
+        ///     $data.chksum = new Hashes.SHA1().hex(token + $data.username + token + hmd5 + token + $data.ac_id + token + $data.ip + token + n + token + type + token + $data.info);
+        ///     $data.n = n;
+        ///     $data.type = type;
+        ///     return get(url, $data, callback, "jsonp");
+        /// });
+        /// ]]></code>
+        /// </remarks>
+        private async Task<Dictionary<string, string>> GetLoginDataAsync()
+        {
+            const string n = "200";
+            const string type = "1";
+            const string acid = "1";
+            const string ip = "";
+            const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
+            if (loginInfo==null)
+            {
+                loginInfo = new JsonObject()
+                {
+                    ["ip"] = ip,
+                    ["acid"] = acid,
+                    ["enc_ver"] = "srun_bx1"
+                };
+            }
+            loginInfo["username"] = Username;
+            loginInfo["password"] = Password;
+            string challenge = await GetChallengeAsync();
+            JsonValue result = JsonValue.Parse(challenge);
+            string token = result["challenge"];
+            if (loginDataDictionary == null)
+            {
+                loginDataDictionary = new Dictionary<string, string>
+                {
+                    ["action"] = "login",
+                    ["ac_id"] = acid,
+                    ["double_stack"] = "1",
+                    ["n"] = n,
+                    ["type"] = type,
+                    ["password"] = "{MD5}" + passwordMD5
+                };
+            }
+            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(Encode(loginInfo.ToString(), token));
+            loginDataDictionary["username"] = Username;
+            loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + acid + token + ip + token + n + token + type + token + loginDataDictionary["info"]);
+            return loginDataDictionary;
         }
         /// <summary>
         /// A function translated from javascript.

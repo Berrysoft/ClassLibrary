@@ -194,16 +194,6 @@ namespace Berrysoft.Tsinghua.Net
         {
             return client.GetStringAsync(uri);
         }
-        /// <summary>
-        /// Send a GET request to the specified Uri as an asynchronous operation.
-        /// </summary>
-        /// <param name="uri">The Uri the request is sent to.</param>
-        /// <param name="data">The HTTP request string content sent to the server.</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
-        protected Task<string> GetAsync(string uri, string data)
-        {
-            return client.GetStringAsync(uri + "?" + data);
-        }
         #region IDisposable Support
         private bool disposedValue = false;
         protected virtual void Dispose(bool disposing)
