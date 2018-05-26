@@ -7,6 +7,33 @@ namespace Berrysoft.Data
     public static class Enumerable
     {
         #region Tree
+        public static int GetDepth<TValue, TNode>(this ITree<TValue, TNode> tree)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            switch (tree)
+            {
+                case Tree<TValue> simpleTree:
+                    return simpleTree.GetDepth();
+                case BinaryTree<TValue> binaryTree:
+                    return binaryTree.GetDepth();
+                default:
+                    return GetDepthInternal<TValue, TNode>(tree.Root, 1);
+            }
+        }
+        private static int GetDepthInternal<TValue, TNode>(TNode node, int depth)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            int result = depth;
+            foreach (TNode child in node.AsEnumerable())
+            {
+                int tempDepth = GetDepthInternal<TValue, TNode>(child, depth + 1);
+                if (tempDepth > result)
+                {
+                    result = tempDepth;
+                }
+            }
+            return result;
+        }
         public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
             => AsDFSEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
