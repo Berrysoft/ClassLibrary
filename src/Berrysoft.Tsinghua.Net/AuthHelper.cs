@@ -6,19 +6,31 @@ using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
 {
+    /// <summary>
+    /// Exposes methods to login, logout and get flux from https://auth4.tsinghua.edu.cn/ or https://auth6.tsinghua.edu.cn/
+    /// </summary>
     public class AuthHelper : NetHelperBase, IConnect
     {
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
         private const string FluxUriBase = "https://auth{0}.tsinghua.edu.cn/rad_user_info.php";
-        private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge";
+        private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge?username={{0}}&double_stack=1&ip&callback=callback";
         private const string LogoutData = "action=logout&ac_id=1&ip=&double_stack=1";
-        private const string ChallengeData = "username={0}&double_stack=1&ip&callback=callback";
         private readonly string LogUri;
         private readonly string FluxUri;
         private readonly string ChallengeUri;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="version">4 for auth4 and 6 for auth6</param>
         private AuthHelper(int version)
             : this(string.Empty, string.Empty, version)
         { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="version">4 for auth4 and 6 for auth6</param>
         private AuthHelper(string username, string password, int version)
             : base(username, password)
         {
@@ -26,48 +38,145 @@ namespace Berrysoft.Tsinghua.Net
             FluxUri = string.Format(FluxUriBase, version);
             ChallengeUri = string.Format(ChallengeUriBase, version);
         }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
         public static AuthHelper CreateAuth4Helper() => new AuthHelper(4);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
         public static AuthHelper CreateAuth4Helper(string username, string password) => new AuthHelper(username, password, 4);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
         public static AuthHelper CreateAuth6Helper() => new AuthHelper(6);
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
         public static AuthHelper CreateAuth6Helper(string username, string password) => new AuthHelper(username, password, 6);
-        public async Task<string> LoginAsync()
+        /// <summary>
+        /// Login to the network.
+        /// </summary>
+        /// <returns>The response of the website.</returns>
+        public async Task<string> LoginAsync() => await PostAsync(LogUri, await GetLoginDataAsync());
+        /// <summary>
+        /// Logout from the network.
+        /// </summary>
+        /// <returns>The response of the website.</returns>
+        public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
+        /// <summary>
+        /// Get information of the user online.
+        /// </summary>
+        /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
+        public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
+        /// <summary>
+        /// Get "challenge" to encode the password.
+        /// </summary>
+        /// <returns>The content of the website.</returns>
+        private async Task<string> GetChallengeAsync()
+        {
+            string result = await GetAsync(string.Format(ChallengeUri, Username));
+            int begin = result.IndexOf('{');
+            int end = result.LastIndexOf('}');
+            return result.Substring(begin, end - begin + 1);
+        }
+        private Dictionary<string, string> loginDataDictionary;
+        private JsonObject loginInfo;
+        /// <summary>
+        /// Get login data with username, password and "challenge".
+        /// </summary>
+        /// <returns>A dictionary contains the data.</returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// jQuery.getJSON(url.replace("srun_portal", "get_challenge"), { "username": $data.username, "ip": $data.ip, "double_stack": "1" }, function(data) {
+        ///     var token = "";
+        ///                 if (data.res != "ok") {
+        ///                     alert(data.error);
+        ///                     return;
+        ///                 }
+        ///     token = data.challenge;
+        ///     $data.info = "{SRBX1}" + base64.encode(jQuery.xEncode(JSON.stringify({ "username": $data.username, "password": $data.password, "ip": $data.ip, "acid": $data.ac_id, "enc_ver": enc}), token));
+        ///     var hmd5 = new Hashes.MD5().hex_hmac(token, data.password);
+        ///     $data.password = "{MD5}" + hmd5;
+        ///     $data.chksum = new Hashes.SHA1().hex(token + $data.username + token + hmd5 + token + $data.ac_id + token + $data.ip + token + n + token + type + token + $data.info);
+        ///     $data.n = n;
+        ///     $data.type = type;
+        ///     return get(url, $data, callback, "jsonp");
+        /// });
+        /// ]]></code>
+        /// </remarks>
+        private async Task<Dictionary<string, string>> GetLoginDataAsync()
         {
             const string n = "200";
             const string type = "1";
+            const string acid = "1";
+            const string ip = "";
             const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
+            if (loginInfo==null)
+            {
+                loginInfo = new JsonObject()
+                {
+                    ["ip"] = ip,
+                    ["acid"] = acid,
+                    ["enc_ver"] = "srun_bx1"
+                };
+            }
+            loginInfo["username"] = Username;
+            loginInfo["password"] = Password;
             string challenge = await GetChallengeAsync();
-            if (challenge == null) return null;
             JsonValue result = JsonValue.Parse(challenge);
             string token = result["challenge"];
-            var info = new JsonObject()
+            if (loginDataDictionary == null)
             {
-                ["username"] = Username,
-                ["password"] = Password,
-                ["ip"] = string.Empty,
-                ["acid"] = "1",
-                ["enc_ver"] = "srun_bx1"
-            };
-            var data = new Dictionary<string, string>
-            {
-                ["info"] = "{SRBX1}" + Base64Encode(Encode(info.ToString(), token)),
-                ["action"] = "login",
-                ["ac_id"] = "1",
-                ["double_stack"] = "1",
-                ["n"] = n,
-                ["type"] = type,
-                ["username"] = Username,
-                ["password"] = "{MD5}" + passwordMD5
-            };
-            data["chksum"] = GetSHA1(token + Username + token + passwordMD5 + token + "1" + token + "" + token + n + token + type + token + data["info"]);
-            return await PostAsync(LogUri, data);
+                loginDataDictionary = new Dictionary<string, string>
+                {
+                    ["action"] = "login",
+                    ["ac_id"] = acid,
+                    ["double_stack"] = "1",
+                    ["n"] = n,
+                    ["type"] = type,
+                    ["password"] = "{MD5}" + passwordMD5
+                };
+            }
+            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(Encode(loginInfo.ToString(), token));
+            loginDataDictionary["username"] = Username;
+            loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + acid + token + ip + token + n + token + type + token + loginDataDictionary["info"]);
+            return loginDataDictionary;
         }
-        public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
-        public async Task<FluxUser> GetFluxAsync() => GetFluxUser(await PostAsync(FluxUri, (string)null));
-        private static unsafe List<long> S(string a, bool b)
+        /// <summary>
+        /// A function translated from javascript.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// function s(a, b) {
+        ///    var c = a.length,
+        ///    v = [];
+        ///    for (var i = 0; i<c; i += 4) {
+        ///        v[i >> 2] = a.charCodeAt(i) | a.charCodeAt(i + 1) << 8 | a.charCodeAt(i + 2) << 16 | a.charCodeAt(i + 3) << 24;
+        ///    }
+        ///    if (b) {
+        ///        v[v.length] = c;
+        ///    }
+        ///    return v;
+        /// }
+        /// ]]></code>
+        /// </remarks>
+        private static unsafe List<uint> S(string a, bool b)
         {
             int c = a.Length;
-            List<long> v = new List<long>();
-            long value = 0;
+            List<uint> v = new List<uint>();
+            uint value = 0;
             byte* p = (byte*)&value;
             for (int i = 0; i < c; i += 4)
             {
@@ -79,28 +188,57 @@ namespace Berrysoft.Tsinghua.Net
             }
             if (b)
             {
-                v.Add(c);
+                v.Add((uint)c);
             }
             return v;
         }
-        private static unsafe string L(List<long> a, bool b)
+        /// <summary>
+        /// A function translated from javascript.
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// function l(a, b) {
+        /// var d = a.length,
+        ///     c = (d - 1) << 2;
+        ///     if (b) {
+        ///         var m = a[d - 1];
+        ///         if ((m<c - 3) || (m > c))
+        ///             return null;
+        ///         c = m;
+        ///     }
+        ///     for (var i = 0; i<d; i++) {
+        ///         a[i] = String.fromCharCode(a[i] & 0xff, a[i] >>> 8 & 0xff, a[i] >>> 16 & 0xff, a[i] >>> 24 & 0xff);
+        ///     }
+        ///     if (b) {
+        ///         return a.join('').substring(0, c);
+        ///     } else {
+        ///         return a.join('');
+        ///     }
+        /// }
+        /// ]]></code>
+        /// </remarks>
+        private static unsafe string L(List<uint> a, bool b)
         {
             int d = a.Count;
-            long c = (d - 1) << 2;
+            uint c = ((uint)(d - 1)) << 2;
             StringBuilder aa = new StringBuilder();
             if (b)
             {
-                long m = a[d - 1];
+                uint m = a[d - 1];
                 if (m < c - 3 || m > c)
                 {
                     return null;
                 }
                 c = m;
             }
+            uint value = 0;
+            byte* p = (byte*)&value;
             for (int i = 0; i < d; i++)
             {
-                long value = a[i];
-                byte* p = (byte*)&value;
+                value = a[i];
                 aa.Append((char)p[0]);
                 aa.Append((char)p[1]);
                 aa.Append((char)p[2]);
@@ -115,51 +253,119 @@ namespace Berrysoft.Tsinghua.Net
                 return aa.ToString();
             }
         }
+        /// <summary>
+        /// A function translated from javascript.
+        /// </summary>
+        /// <param name="str"></param>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// xEncode: function(str, key) {
+        ///     if (str == "") {
+        ///         return "";
+        ///     }
+        ///     var v = s(str, true),
+        ///         k = s(key, false);
+        ///     if (k.length< 4) {
+        ///         k.length = 4;
+        ///     }
+        ///     var n = v.length - 1,
+        ///         z = v[n],
+        ///         y = v[0],
+        ///         c = 0x86014019 | 0x183639A0,
+        ///         m,
+        ///         e,
+        ///         p,
+        ///         q = Math.floor(6 + 52 / (n + 1)),
+        ///         d = 0;
+        ///     while (0 < q--) {
+        ///         d = d + c & (0x8CE0D9BF | 0x731F2640);
+        ///         e = d >>> 2 & 3;
+        ///         for (p = 0; p<n; p++) {
+        ///             y = v[p + 1];
+        ///             m = z >>> 5 ^ y << 2;
+        ///             m += (y >>> 3 ^ z << 4) ^ (d ^ y);
+        ///             m += k[(p & 3) ^ e] ^ z;
+        ///             z = v[p] = v[p] + m & (0xEFB8D130 | 0x10472ECF);
+        ///         }
+        ///         y = v[0];
+        ///         m = z >>> 5 ^ y << 2;
+        ///         m += (y >>> 3 ^ z << 4) ^ (d ^ y);
+        ///         m += k[(p & 3) ^ e] ^ z;
+        ///         z = v[n] = v[n] + m & (0xBB390742 | 0x44C6F8BD);
+        ///     }
+        ///     return l(v, false);
+        /// }
+        /// ]]></code>
+        /// </remarks>
         private static string Encode(string str, string key)
         {
-            long RightShift(long x, int nn)
+            if (str.Length == 0)
             {
-                return x >> nn;
+                return String.Empty;
             }
-            long LeftShift(long x, int nn)
-            {
-                return (x << nn) & 4294967295;
-            }
-            if (str.Length == 0) return String.Empty;
-            List<long> v = S(str, true);
-            List<long> k = S(key, false);
+            List<uint> v = S(str, true);
+            List<uint> k = S(key, false);
             while (k.Count < 4)
             {
                 k.Add(0);
             }
             int n = v.Count - 1;
-            long z = v[n];
-            long y = v[0];
-            uint c = 0x86014019 | 0x183639A0;
-            double q = Math.Floor(6.0 + 52 / (n + 1));
-            long d = 0;
+            uint z = v[n];
+            uint y = v[0];
+            int q = 6 + 52 / (n + 1);
+            uint d = 0;
             while (q-- > 0)
             {
-                d = d + c & (0x8CE0D9BF | 0x731F2640);
-                long e = RightShift(d, 2) & 3;
-                for (int p = 0; p < n; p++)
+                d += 0x9E3779B9;
+                uint e = (d >> 2) & 3;
+                for (int p = 0; p <= n; p++)
                 {
-                    y = v[p + 1];
-                    long mm = RightShift(z, 5) ^ LeftShift(y, 2);
-                    mm += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                    long tt = (p & 3) ^ e;
-                    mm += k[(int)tt] ^ z;
-                    z = v[p] = v[p] + mm & (0xEFB8D130 | 0x10472ECF);
+                    y = v[p == n ? 0 : p + 1];
+                    uint m = (z >> 5) ^ (y << 2);
+                    m += (y >> 3) ^ (z << 4) ^ (d ^ y);
+                    m += k[(p & 3) ^ (int)e] ^ z;
+                    z = v[p] += m;
                 }
-                y = v[0];
-                long m = RightShift(z, 5) ^ LeftShift(y, 2);
-                m += RightShift(y, 3) ^ LeftShift(z, 4) ^ (d ^ y);
-                long t = (n & 3) ^ e;
-                m += k[(int)t] ^ z;
-                z = v[n] = v[n] + m & (0xBB390742 | 0x44C6F8BD);
             }
             return L(v, false);
         }
+        /// <summary>
+        /// A function translated from javascript.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// <code><![CDATA[
+        /// Base64: function() {
+        ///     var n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA",
+        ///         r = "=",
+        ///         o = false,
+        ///         f = false;
+        ///     this.encode = function(t) {
+        ///         var o,
+        ///             i,
+        ///             h,
+        ///             u = "",
+        ///             a = t.length;
+        ///         r = r || "=";
+        ///         t = f ? e(t) : t;
+        ///         for (o = 0; o < a; o += 3) {
+        ///             h = t.charCodeAt(o) << 16 | (o + 1 < a ? t.charCodeAt(o+1) << 8 : 0) | (o + 2 < a ? t.charCodeAt(o+2) : 0);
+        ///             for ( i = 0; i < 4; i += 1) {
+        ///                 if (o * 8 + i * 6 > a * 8) {
+        ///                     u += r
+        ///                 } else {
+        ///                     u += n.charAt(h >>> 6 * (3 - i) & 63)
+        ///                 }
+        ///             }
+        ///         }
+        ///         return u
+        ///     };
+        /// }
+        /// ]]></code>
+        /// </remarks>
         private unsafe static string Base64Encode(string t)
         {
             string n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
@@ -181,18 +387,11 @@ namespace Berrysoft.Tsinghua.Net
                     }
                     else
                     {
-                        u.Append(n[h >> 6 * (3 - i) & 63]);
+                        u.Append(n[h >> 6 * (3 - i) & 0x3F]);
                     }
                 }
             }
             return u.ToString();
-        }
-        private async Task<string> GetChallengeAsync()
-        {
-            string result = await GetAsync(ChallengeUri + "?" + string.Format(ChallengeData, Username));
-            int begin = result.IndexOf('{');
-            int end = result.LastIndexOf('}');
-            return result.Substring(begin, end - begin + 1);
         }
     }
 }
