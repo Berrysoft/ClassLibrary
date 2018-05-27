@@ -6,7 +6,7 @@ namespace Berrysoft.Data
 {
     #region Interfaces
     /// <summary>
-    /// Exposes method and property of a tree data structure.
+    /// Exposes members of a tree data structure.
     /// </summary>
     /// <typeparam name="TValue">The type of value the node contains.</typeparam>
     /// <typeparam name="TNode">The type of node.</typeparam>
@@ -19,7 +19,7 @@ namespace Berrysoft.Data
         TNode Root { get; }
     }
     /// <summary>
-    /// Exposes method and properties of a node.
+    /// Exposes members of a node.
     /// </summary>
     /// <typeparam name="TValue">The type of value the node contains.</typeparam>
     /// <typeparam name="TNode">The type of node.</typeparam>
@@ -40,14 +40,44 @@ namespace Berrysoft.Data
         /// <returns></returns>
         IEnumerable<TNode> AsEnumerable();
     }
+    /// <summary>
+    /// Exposes members of a node with many children.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+    /// <typeparam name="TNode">The type of node.</typeparam>
     public interface INode<TValue, TNode> : INodeBase<TValue, TNode>
         where TNode : INode<TValue, TNode>
     {
+        /// <summary>
+        /// The count of children.
+        /// </summary>
         int Count { get; }
+        /// <summary>
+        /// Add a child.
+        /// </summary>
+        /// <param name="child">The child node to be added.</param>
         void Add(TNode child);
+        /// <summary>
+        /// Insert a child.
+        /// </summary>
+        /// <param name="index">The zero-based index at which child should be inserted.</param>
+        /// <param name="child">The child to insert.</param>
         void Insert(int index, TNode child);
+        /// <summary>
+        /// Determines whether a child is in the <see cref="INode{TValue, TNode}"/>.
+        /// </summary>
+        /// <param name="child">The child to locate in the <see cref="INode{TValue, TNode}"/>.</param>
+        /// <returns>true if the child is found; otherwise, false.</returns>
         bool Contains(TNode child);
+        /// <summary>
+        /// Remove a child.
+        /// </summary>
+        /// <param name="child">The child node to be removed.</param>
+        /// <returns>true if the child is successfully removed; otherwise, false.</returns>
         bool Remove(TNode child);
+        /// <summary>
+        /// Clear all children.
+        /// </summary>
         void Clear();
     }
     #endregion
