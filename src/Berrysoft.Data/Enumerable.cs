@@ -10,6 +10,19 @@ namespace Berrysoft.Data
         public static int GetDepth<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
+            int GetDepthInternal(TNode node, int depth)
+            {
+                int result = depth;
+                foreach (TNode child in node.AsEnumerable())
+                {
+                    int tempDepth = GetDepthInternal(child, depth + 1);
+                    if (tempDepth > result)
+                    {
+                        result = tempDepth;
+                    }
+                }
+                return result;
+            }
             switch (tree)
             {
                 case Tree<TValue> simpleTree:
@@ -17,22 +30,8 @@ namespace Berrysoft.Data
                 case BinaryTree<TValue> binaryTree:
                     return binaryTree.GetDepth();
                 default:
-                    return GetDepthInternal<TValue, TNode>(tree.Root, 1);
+                    return GetDepthInternal(tree.Root, 1);
             }
-        }
-        private static int GetDepthInternal<TValue, TNode>(TNode node, int depth)
-            where TNode : INodeBase<TValue, TNode>
-        {
-            int result = depth;
-            foreach (TNode child in node.AsEnumerable())
-            {
-                int tempDepth = GetDepthInternal<TValue, TNode>(child, depth + 1);
-                if (tempDepth > result)
-                {
-                    result = tempDepth;
-                }
-            }
-            return result;
         }
         public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
@@ -329,81 +328,81 @@ namespace Berrysoft.Data
                 }
             }
         }
-        public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
+        public static IEnumerable<TSource> ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
         {
             switch (source ?? throw ExceptionHelper.ArgumentNull(nameof(source)))
             {
                 case TSource[] array:
-                    ForEachArrayIterator(array, action);
-                    break;
+                    return ForEachArrayIterator(array, action);
                 case IList<TSource> collection:
-                    ForEachListIterator(collection, action);
-                    break;
+                    return ForEachListIterator(collection, action);
                 default:
-                    ForEachIterator(source, action);
-                    break;
+                    return ForEachIterator(source, action);
             }
         }
-        private static void ForEachArrayIterator<TSource>(TSource[] source, Action<TSource> action)
+        private static IEnumerable<TSource> ForEachArrayIterator<TSource>(TSource[] source, Action<TSource> action)
         {
             int n = source.Length;
             for (int i = 0; i < n; i++)
             {
                 action(source[i]);
+                yield return source[i];
             }
         }
-        private static void ForEachListIterator<TSource>(IList<TSource> source, Action<TSource> action)
+        private static IEnumerable<TSource> ForEachListIterator<TSource>(IList<TSource> source, Action<TSource> action)
         {
             int n = source.Count;
             for (int i = 0; i < n; i++)
             {
                 action(source[i]);
+                yield return source[i];
             }
         }
-        private static void ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource> action)
+        private static IEnumerable<TSource> ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource> action)
         {
             foreach (TSource item in source)
             {
                 action(item);
+                yield return item;
             }
         }
-        public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action)
+        public static IEnumerable<TSource> ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action)
         {
             switch (source ?? throw ExceptionHelper.ArgumentNull(nameof(source)))
             {
                 case TSource[] array:
-                    ForEachArrayIterator(array, action);
-                    break;
+                    return ForEachArrayIterator(array, action);
                 case IList<TSource> collection:
-                    ForEachListIterator(collection, action);
-                    break;
+                    return ForEachListIterator(collection, action);
                 default:
-                    ForEachIterator(source, action);
-                    break;
+                    return ForEachIterator(source, action);
             }
         }
-        private static void ForEachArrayIterator<TSource>(TSource[] source, Action<TSource, int> action)
+        private static IEnumerable<TSource> ForEachArrayIterator<TSource>(TSource[] source, Action<TSource, int> action)
         {
             int n = source.Length;
             for (int i = 0; i < n; i++)
             {
                 action(source[i], i);
+                yield return source[i];
             }
         }
-        private static void ForEachListIterator<TSource>(IList<TSource> source, Action<TSource, int> action)
+        private static IEnumerable<TSource> ForEachListIterator<TSource>(IList<TSource> source, Action<TSource, int> action)
         {
             int n = source.Count;
             for (int i = 0; i < n; i++)
             {
                 action(source[i], i);
+                yield return source[i];
             }
         }
-        private static void ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource, int> action)
+        private static IEnumerable<TSource> ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource, int> action)
         {
             int i = 0;
             foreach (TSource item in source)
             {
                 action(item, i);
+                yield return item;
                 i++;
             }
         }
