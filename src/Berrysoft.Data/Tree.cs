@@ -5,9 +5,17 @@ using System.Linq;
 namespace Berrysoft.Data
 {
     #region Interfaces
+    /// <summary>
+    /// Exposes method and property of a tree data structure.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+    /// <typeparam name="TNode">The type of node.</typeparam>
     public interface ITree<TValue, TNode>
         where TNode : INodeBase<TValue, TNode>
     {
+        /// <summary>
+        /// The root node of a tree.
+        /// </summary>
         TNode Root { get; }
     }
     /// <summary>
