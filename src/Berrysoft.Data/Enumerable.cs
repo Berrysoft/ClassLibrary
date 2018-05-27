@@ -23,7 +23,7 @@ namespace Berrysoft.Data
                 }
                 return result;
             }
-            switch (tree)
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
             {
                 case Tree<TValue> simpleTree:
                     return simpleTree.GetDepth();
@@ -35,7 +35,15 @@ namespace Berrysoft.Data
         }
         public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
-            => AsDFSEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        {
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case BinaryTree<TValue> binaryTree:
+                    return (IEnumerable<TNode>)binaryTree.AsDFSEnumerable();
+                default:
+                    return AsDFSEnumerableIterator(tree);
+            }
+        }
         private static IEnumerable<TNode> AsDFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -53,7 +61,15 @@ namespace Berrysoft.Data
         }
         public static IEnumerable<TNode> AsBFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
-            => AsBFSEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        {
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case BinaryTree<TValue> binaryTree:
+                    return (IEnumerable<TNode>)binaryTree.AsBFSEnumerable();
+                default:
+                    return AsBFSEnumerableIterator(tree);
+            }
+        }
         private static IEnumerable<TNode> AsBFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
