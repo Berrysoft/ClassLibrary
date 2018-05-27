@@ -329,6 +329,84 @@ namespace Berrysoft.Data
                 }
             }
         }
+        public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
+        {
+            switch (source ?? throw ExceptionHelper.ArgumentNull(nameof(source)))
+            {
+                case TSource[] array:
+                    ForEachArrayIterator(array, action);
+                    break;
+                case IList<TSource> collection:
+                    ForEachListIterator(collection, action);
+                    break;
+                default:
+                    ForEachIterator(source, action);
+                    break;
+            }
+        }
+        private static void ForEachArrayIterator<TSource>(TSource[] source, Action<TSource> action)
+        {
+            int n = source.Length;
+            for (int i = 0; i < n; i++)
+            {
+                action(source[i]);
+            }
+        }
+        private static void ForEachListIterator<TSource>(IList<TSource> source, Action<TSource> action)
+        {
+            int n = source.Count;
+            for (int i = 0; i < n; i++)
+            {
+                action(source[i]);
+            }
+        }
+        private static void ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource> action)
+        {
+            foreach (TSource item in source)
+            {
+                action(item);
+            }
+        }
+        public static void ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action)
+        {
+            switch (source ?? throw ExceptionHelper.ArgumentNull(nameof(source)))
+            {
+                case TSource[] array:
+                    ForEachArrayIterator(array, action);
+                    break;
+                case IList<TSource> collection:
+                    ForEachListIterator(collection, action);
+                    break;
+                default:
+                    ForEachIterator(source, action);
+                    break;
+            }
+        }
+        private static void ForEachArrayIterator<TSource>(TSource[] source, Action<TSource, int> action)
+        {
+            int n = source.Length;
+            for (int i = 0; i < n; i++)
+            {
+                action(source[i], i);
+            }
+        }
+        private static void ForEachListIterator<TSource>(IList<TSource> source, Action<TSource, int> action)
+        {
+            int n = source.Count;
+            for (int i = 0; i < n; i++)
+            {
+                action(source[i], i);
+            }
+        }
+        private static void ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource, int> action)
+        {
+            int i = 0;
+            foreach (TSource item in source)
+            {
+                action(item, i);
+                i++;
+            }
+        }
         public static IEnumerable<TSource> Random<TSource>(this IEnumerable<TSource> source)
             => RandomIterator(source ?? throw ExceptionHelper.ArgumentNull(nameof(source)));
         private static IEnumerable<TSource> RandomIterator<TSource>(IEnumerable<TSource> source)
