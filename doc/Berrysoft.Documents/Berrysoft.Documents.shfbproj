@@ -33,7 +33,7 @@
       <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.dll" />
     </DocumentationSources>
     <HelpFileFormat>Markdown</HelpFileFormat>
-    <SyntaxFilters>None</SyntaxFilters>
+    <SyntaxFilters>Standard</SyntaxFilters>
     <PresentationStyle>Markdown</PresentationStyle>
     <CleanIntermediates>True</CleanIntermediates>
     <KeepLogFile>True</KeepLogFile>
