@@ -4,24 +4,52 @@ using System.Collections.Generic;
 namespace Berrysoft.Data
 {
     #region Interfaces
+    /// <summary>
+    /// Exposes members of a binary tree data structure.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+    /// <typeparam name="TNode">The type of node.</typeparam>
     public interface IBinaryNode<TValue, TNode> : INodeBase<TValue, TNode>
         where TNode : IBinaryNode<TValue, TNode>
     {
+        /// <summary>
+        /// Left child of the tree.
+        /// </summary>
         TNode LeftChild { get; set; }
+        /// <summary>
+        /// Right child of the tree.
+        /// </summary>
         TNode RightChild { get; set; }
     }
     #endregion
+    /// <summary>
+    /// Represents a binary tree with a root <see cref="BinaryNode{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of value the node contains.</typeparam>
     public class BinaryTree<T> : ITree<T, BinaryNode<T>>
     {
         private BinaryNode<T> _root;
+        /// <summary>
+        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
+        /// </summary>
         public BinaryTree()
         {
             _root = new BinaryNode<T>();
         }
+        /// <summary>
+        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
+        /// </summary>
+        /// <param name="value">The value of root node.</param>
         public BinaryTree(T value)
         {
             _root = new BinaryNode<T>(value);
         }
+        /// <summary>
+        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
+        /// </summary>
+        /// <param name="root">Root node.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="root"/> is null.</exception>
+        /// <exception cref="ArgumentException">When <paramref name="root"/> has a parent.</exception>
         public BinaryTree(BinaryNode<T> root)
         {
             if (root == null)
@@ -34,37 +62,52 @@ namespace Berrysoft.Data
             }
             _root = root;
         }
+        /// <summary>
+        /// The root node of the tree.
+        /// </summary>
         public BinaryNode<T> Root => _root;
+        /// <summary>
+        /// Get depth of the tree.
+        /// </summary>
+        /// <returns>The depth of the tree.</returns>
         public int GetDepth()
         {
+            int GetDepthInternal(BinaryNode<T> root, int depth)
+            {
+                int result = depth;
+                int tempDepth;
+                if (root.LeftChild != null)
+                {
+                    tempDepth = GetDepthInternal(root.LeftChild, depth + 1);
+                    if (tempDepth > result)
+                    {
+                        result = tempDepth;
+                    }
+                }
+                if (root.RightChild != null)
+                {
+                    tempDepth = GetDepthInternal(root.RightChild, depth + 1);
+                    if (tempDepth > result)
+                    {
+                        result = tempDepth;
+                    }
+                }
+                return result;
+            }
             return GetDepthInternal(_root, 1);
         }
-        private int GetDepthInternal(BinaryNode<T> root, int depth)
-        {
-            int result = depth;
-            int tempDepth;
-            if (root.LeftChild != null)
-            {
-                tempDepth = GetDepthInternal(root.LeftChild, depth + 1);
-                if (tempDepth > result)
-                {
-                    result = tempDepth;
-                }
-            }
-            if (root.RightChild != null)
-            {
-                tempDepth = GetDepthInternal(root.RightChild, depth + 1);
-                if (tempDepth > result)
-                {
-                    result = tempDepth;
-                }
-            }
-            return result;
-        }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of deep-first-search.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of deep-first-search.</returns>
         public IEnumerable<BinaryNode<T>> AsDFSEnumerable()
         {
             return AsPreOrderEnumerableIterator();
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of deep-first-search.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of deep-first-search.</returns>
         public IEnumerable<BinaryNode<T>> AsPreOrderEnumerable()
         {
             return AsPreOrderEnumerableIterator();

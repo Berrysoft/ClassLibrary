@@ -37,7 +37,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Get an <see cref="IEnumerable{TNode}"/> of its children.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
         IEnumerable<TNode> AsEnumerable();
     }
     /// <summary>
@@ -268,7 +268,15 @@ namespace Berrysoft.Data
         /// </summary>
         /// <returns></returns>
         public IEnumerable<Node<T>> AsEnumerable() => _children;
+        /// <summary>
+        /// Convert <see cref="Node{T}"/> to <typeparamref name="T"/> explicitly.
+        /// </summary>
+        /// <param name="node">Node to be converted.</param>
         public static explicit operator T(Node<T> node) => node.Value;
+        /// <summary>
+        /// Convert <typeparamref name="T"/> to <see cref="Node{T}"/> implicitly.
+        /// </summary>
+        /// <param name="value">Value to be converted.</param>
         public static implicit operator Node<T>(T value) => new Node<T>(value);
         /// <summary>
         /// Returns a string that represents the value.
