@@ -18,11 +18,26 @@ namespace Berrysoft.Data
         /// </summary>
         TNode Root { get; }
     }
+    /// <summary>
+    /// Exposes method and properties of a node.
+    /// </summary>
+    /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+    /// <typeparam name="TNode">The type of node.</typeparam>
     public interface INodeBase<TValue, TNode>
         where TNode : INodeBase<TValue, TNode>
     {
+        /// <summary>
+        /// Value the node contains.
+        /// </summary>
         TValue Value { get; set; }
+        /// <summary>
+        /// Parent of the node.
+        /// </summary>
         TNode Parent { get; }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// </summary>
+        /// <returns></returns>
         IEnumerable<TNode> AsEnumerable();
     }
     public interface INode<TValue, TNode> : INodeBase<TValue, TNode>
