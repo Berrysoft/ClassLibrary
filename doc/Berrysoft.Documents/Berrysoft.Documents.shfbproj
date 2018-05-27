@@ -29,6 +29,8 @@
     <DocumentationSources>
       <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\Debug\net472\Berrysoft.Tsinghua.Net.xml" />
       <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\Debug\net472\Berrysoft.Tsinghua.Net.dll" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.xml" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.dll" />
     </DocumentationSources>
     <HelpFileFormat>Markdown</HelpFileFormat>
     <SyntaxFilters>None</SyntaxFilters>
@@ -41,15 +43,17 @@
     <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
     <HelpTitle>A Sandcastle Documented Class Library</HelpTitle>
     <HelpFileVersion>1.0.0.0</HelpFileVersion>
-    <RootNamespaceContainer>False</RootNamespaceContainer>
-    <NamespaceGrouping>False</NamespaceGrouping>
+    <RootNamespaceContainer>True</RootNamespaceContainer>
+    <NamespaceGrouping>True</NamespaceGrouping>
     <MaximumGroupParts>2</MaximumGroupParts>
     <Preliminary>False</Preliminary>
     <SdkLinkTarget>Blank</SdkLinkTarget>
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Berrysoft.Tsinghua.Net" isDocumented="True">A namespace contains classes to connect to Tsinghua campus network.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Berrysoft.Data" isDocumented="True">A namespace of some complex data structure.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <NamingMethod>MemberName</NamingMethod>
+    <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->
