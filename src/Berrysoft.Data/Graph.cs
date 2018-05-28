@@ -33,10 +33,10 @@ namespace Berrysoft.Data
         /// <param name="heads">The specified vertexes.</param>
         void AddAsTail(T vertex, params T[] heads);
         /// <summary>
-        /// Determines whether a <seealso cref="IGraph{T}"/> object contains specified vertex.
+        /// Determines whether a <see cref="IGraph{T}"/> object contains specified vertex.
         /// </summary>
         /// <param name="vertex">The specified vertex.</param>
-        /// <returns>true if the <seealso cref="IGraph{T}"/> contains the vertex; otherwise, false.</returns>
+        /// <returns>true if the <see cref="IGraph{T}"/> contains the vertex; otherwise, false.</returns>
         bool Contains(T vertex);
         /// <summary>
         /// Remove a vertex. This will remove all the arcs related to the vertex.
@@ -61,18 +61,18 @@ namespace Berrysoft.Data
         /// <param name="head2">Another head of the edge.</param>
         void AddEdge(T head1, T head2);
         /// <summary>
-        /// Determines whether a <seealso cref="IGraph{T}"/> object contains an arc of specified tail and head.
+        /// Determines whether a <see cref="IGraph{T}"/> object contains an arc of specified tail and head.
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
-        /// <returns>true if the <seealso cref="IGraph{T}"/> contains the arc; otherwise, false.</returns>
+        /// <returns>true if the <see cref="IGraph{T}"/> contains the arc; otherwise, false.</returns>
         bool ContainsArc(T tail, T head);
         /// <summary>
-        /// Determines whether a <seealso cref="IGraph{T}"/> object contains an edge of specified heads.
+        /// Determines whether a <see cref="IGraph{T}"/> object contains an edge of specified heads.
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
-        /// <returns>true if the <seealso cref="IGraph{T}"/> contains the edge; otherwise, false.</returns>
+        /// <returns>true if the <see cref="IGraph{T}"/> contains the edge; otherwise, false.</returns>
         bool ContainsEdge(T head1, T head2);
         /// <summary>
         /// Remove an arc of specified tail and head.
@@ -108,41 +108,41 @@ namespace Berrysoft.Data
         /// <param name="head">The specified vertex.</param>
         void ClearTails(T head);
         /// <summary>
-        /// Get a <seealso cref="Lookup{TKey, TElement}"/> contains all heads and their arcs.
+        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all heads and their arcs.
         /// </summary>
-        /// <returns>An instance of <seealso cref="Lookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetHeads();
         /// <summary>
-        /// Get a <seealso cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
-        /// <returns>An instance of <seealso cref="IEnumerable{T}"/>.</returns>
+        /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         IEnumerable<T> GetHeads(T tail);
         /// <summary>
-        /// Get a <seealso cref="Lookup{TKey, TElement}"/> contains all tails and their arcs.
+        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all tails and their arcs.
         /// </summary>
-        /// <returns>An instance of <seealso cref="Lookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetTails();
         /// <summary>
-        /// Get a <seealso cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// </summary>
         /// <param name="head">The specified head.</param>
-        /// <returns>An instance of <seealso cref="IEnumerable{T}"/>.</returns>
+        /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         IEnumerable<T> GetTails(T head);
         /// <summary>
-        /// Get a <seealso cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// A return value indicates whether succeeded or failed.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
-        /// <param name="heads">An instance of <seealso cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
+        /// <param name="heads">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
         /// <returns>true if no exceptions; otherwise, false.</returns>
         bool TryGetHeads(T tail, out IEnumerable<T> heads);
         /// <summary>
-        /// Get a <seealso cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// A return value indicates whether succeeded or failed.
         /// </summary>
         /// <param name="head">The specified head.</param>
-        /// <param name="tails">An instance of <seealso cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
+        /// <param name="tails">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
         /// <returns>true if no exceptions; otherwise, false.</returns>
         bool TryGetTails(T head, out IEnumerable<T> tails);
     }
@@ -156,7 +156,7 @@ namespace Berrysoft.Data
         private HashSet<T> _vertexes;
         private KeyLookup<T, T> _arcs;
         /// <summary>
-        /// Initialize an instance of <seealso cref="Graph{T}"/>.
+        /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         public Graph()
 #if NETCOREAPP2_0 || NET472
@@ -166,9 +166,9 @@ namespace Berrysoft.Data
 #endif
         { }
         /// <summary>
-        /// Initialize an instance of <seealso cref="Graph{T}"/>.
+        /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
-        /// <param name="comparer">An instance of <seealso cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
+        /// <param name="comparer">An instance of <see cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
         public Graph(IEqualityComparer<T> comparer)
 #if NETCOREAPP2_0 || NET472
             : this(0, 0, comparer)
@@ -181,11 +181,11 @@ namespace Berrysoft.Data
 #endif
 #if NETCOREAPP2_0 || NET472
         /// <summary>
-        /// Initialize an instance of <seealso cref="Graph{T}"/>.
+        /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         /// <param name="vertexCapacity">The capacity of vertexes.</param>
         /// <param name="arcCapacity">The capacity of arcs.</param>
-        /// <param name="comparer">An instance of <seealso cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
+        /// <param name="comparer">An instance of <see cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
         public Graph(int vertexCapacity, int arcCapacity, IEqualityComparer<T> comparer)
         {
             _vertexes = new HashSet<T>(vertexCapacity, comparer);
@@ -193,17 +193,17 @@ namespace Berrysoft.Data
         }
 #endif
         /// <summary>
-        /// Initialize an instance of <seealso cref="Graph{T}"/>.
+        /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         /// <param name="vertexes">The specified collection of vertexes.</param>
         public Graph(IEnumerable<T> vertexes)
             : this(vertexes, null)
         { }
         /// <summary>
-        /// Initialize an instance of <seealso cref="Graph{T}"/>.
+        /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         /// <param name="vertexes">The specified collection of vertexes.</param>
-        /// <param name="comparer">An instance of <seealso cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
+        /// <param name="comparer">An instance of <see cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
         public Graph(IEnumerable<T> vertexes, IEqualityComparer<T> comparer)
         {
             _vertexes = new HashSet<T>(vertexes);
