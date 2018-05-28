@@ -244,7 +244,7 @@ namespace Berrysoft.Tsinghua.Net
             {
                 byte* pb = (byte*)pa;
                 int n = d << 2;
-                Span<char> aa = new char[n];
+                Span<char> aa = stackalloc char[n];
                 for (int i = 0; i < n; i++)
                 {
                     aa[i] = (char)pb[i];
