@@ -95,6 +95,7 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         /// <returns>A dictionary contains the data.</returns>
         /// <remarks>
+        /// This is a function translated from javascript.
         /// <code><![CDATA[
         /// jQuery.getJSON(url.replace("srun_portal", "get_challenge"), { "username": $data.username, "ip": $data.ip, "double_stack": "1" }, function(data) {
         ///     var token = "";
@@ -120,7 +121,7 @@ namespace Berrysoft.Tsinghua.Net
             const string acid = "1";
             const string ip = "";
             const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
-            if (loginInfo==null)
+            if (loginInfo == null)
             {
                 loginInfo = new JsonObject()
                 {
@@ -152,17 +153,18 @@ namespace Berrysoft.Tsinghua.Net
             return loginDataDictionary;
         }
         /// <summary>
-        /// A function translated from javascript.
+        /// Encode a <see cref="string"/> to its UTF-8 form.
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
+        /// <param name="a">String to be encoded.</param>
+        /// <param name="b">Whether to add the length of the string in the end.</param>
+        /// <returns>A <see cref="Span{UInt32}"/> contains encoded string.</returns>
         /// <remarks>
+        /// This is a function translated from javascript.
         /// <code><![CDATA[
         /// function s(a, b) {
         ///    var c = a.length,
         ///    v = [];
-        ///    for (var i = 0; i<c; i += 4) {
+        ///    for (var i = 0; i < c; i += 4) {
         ///        v[i >> 2] = a.charCodeAt(i) | a.charCodeAt(i + 1) << 8 | a.charCodeAt(i + 2) << 16 | a.charCodeAt(i + 3) << 24;
         ///    }
         ///    if (b) {
@@ -172,33 +174,38 @@ namespace Berrysoft.Tsinghua.Net
         /// }
         /// ]]></code>
         /// </remarks>
-        private static unsafe List<uint> S(string a, bool b)
+        private static unsafe Span<uint> S(string a, bool b)
         {
             int c = a.Length;
-            List<uint> v = new List<uint>();
-            uint value = 0;
-            byte* p = (byte*)&value;
-            for (int i = 0; i < c; i += 4)
-            {
-                p[0] = (byte)a[i];
-                p[1] = (byte)(i + 1 >= c ? 0 : a[i + 1]);
-                p[2] = (byte)(i + 2 >= c ? 0 : a[i + 2]);
-                p[3] = (byte)(i + 3 >= c ? 0 : a[i + 3]);
-                v.Add(value);
-            }
+            int n = c % 4 == 0 ? c / 4 : c / 4 + 1;
+            Span<uint> v;
             if (b)
             {
-                v.Add((uint)c);
+                v = new uint[n + 1];
+                v[n] = (uint)c;
+            }
+            else
+            {
+                v = new uint[n];
+            }
+            fixed (uint* pv = v)
+            {
+                byte* pb = (byte*)pv;
+                for (int i = 0; i < c; i++)
+                {
+                    pb[i] = (byte)a[i];
+                }
             }
             return v;
         }
         /// <summary>
-        /// A function translated from javascript.
+        /// Decode a <see cref="string"/> from its UTF-8 form.
         /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns></returns>
+        /// <param name="a">A <see cref="Span{UInt32}"/> contains the encoded string.</param>
+        /// <param name="b">Whether the length of the original string is in the end.</param>
+        /// <returns>Decoded string.</returns>
         /// <remarks>
+        /// This is a function translated from javascript.
         /// <code><![CDATA[
         /// function l(a, b) {
         /// var d = a.length,
@@ -209,7 +216,7 @@ namespace Berrysoft.Tsinghua.Net
         ///             return null;
         ///         c = m;
         ///     }
-        ///     for (var i = 0; i<d; i++) {
+        ///     for (var i = 0; i < d; i++) {
         ///         a[i] = String.fromCharCode(a[i] & 0xff, a[i] >>> 8 & 0xff, a[i] >>> 16 & 0xff, a[i] >>> 24 & 0xff);
         ///     }
         ///     if (b) {
@@ -220,11 +227,10 @@ namespace Berrysoft.Tsinghua.Net
         /// }
         /// ]]></code>
         /// </remarks>
-        private static unsafe string L(List<uint> a, bool b)
+        private static unsafe string L(Span<uint> a, bool b)
         {
-            int d = a.Count;
+            int d = a.Length;
             uint c = ((uint)(d - 1)) << 2;
-            StringBuilder aa = new StringBuilder();
             if (b)
             {
                 uint m = a[d - 1];
@@ -234,32 +240,33 @@ namespace Berrysoft.Tsinghua.Net
                 }
                 c = m;
             }
-            uint value = 0;
-            byte* p = (byte*)&value;
-            for (int i = 0; i < d; i++)
+            fixed (uint* pa = a)
             {
-                value = a[i];
-                aa.Append((char)p[0]);
-                aa.Append((char)p[1]);
-                aa.Append((char)p[2]);
-                aa.Append((char)p[3]);
-            }
-            if (b)
-            {
-                return aa.ToString().Substring(0, (int)c);
-            }
-            else
-            {
-                return aa.ToString();
+                byte* pb = (byte*)pa;
+                int n = d << 2;
+                Span<char> aa = new char[n];
+                for (int i = 0; i < n; i++)
+                {
+                    aa[i] = (char)pb[i];
+                }
+                if (b)
+                {
+                    return aa.Slice(0, (int)c).ToString();
+                }
+                else
+                {
+                    return aa.ToString();
+                }
             }
         }
         /// <summary>
-        /// A function translated from javascript.
+        /// Encode a string by a special TEA algorithm.
         /// </summary>
-        /// <param name="str"></param>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="str">String to be encoded.</param>
+        /// <param name="key">Key to encode.</param>
+        /// <returns>Encoded string.</returns>
         /// <remarks>
+        /// This is a function translated from javascript.
         /// <code><![CDATA[
         /// xEncode: function(str, key) {
         ///     if (str == "") {
@@ -305,13 +312,15 @@ namespace Berrysoft.Tsinghua.Net
             {
                 return String.Empty;
             }
-            List<uint> v = S(str, true);
-            List<uint> k = S(key, false);
-            while (k.Count < 4)
+            Span<uint> v = S(str, true);
+            Span<uint> k = S(key, false);
+            while (k.Length < 4)
             {
-                k.Add(0);
+                Span<uint> t = new uint[4];
+                k.CopyTo(t);
+                k = t;
             }
-            int n = v.Count - 1;
+            int n = v.Length - 1;
             uint z = v[n];
             uint y = v[0];
             int q = 6 + 52 / (n + 1);
@@ -332,11 +341,12 @@ namespace Berrysoft.Tsinghua.Net
             return L(v, false);
         }
         /// <summary>
-        /// A function translated from javascript.
+        /// Encode a string to base64 in a special way.
         /// </summary>
-        /// <param name="t"></param>
-        /// <returns></returns>
+        /// <param name="t">String to be encoded.</param>
+        /// <returns>Encoded string.</returns>
         /// <remarks>
+        /// This is a function translated from javascript.
         /// <code><![CDATA[
         /// Base64: function() {
         ///     var n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA",

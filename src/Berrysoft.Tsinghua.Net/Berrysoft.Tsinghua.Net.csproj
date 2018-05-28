@@ -12,8 +12,13 @@
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Berrysoft.Tsinghua.Net.xml</DocumentationFile>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Json" Version="4.4.0" />
+    <PackageReference Include="System.Memory" Version="4.5.0-rc1" />
   </ItemGroup>
 
   <ItemGroup>
