@@ -23,21 +23,72 @@ namespace Berrysoft.Data
     }
     #endregion
     /// <summary>
-    /// Represents a binary tree with a root <see cref="BinaryNode{T}"/>.
+    /// Represents a binary tree with a root <seealso cref="BinaryNode{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
+    /// <example>
+    /// This is an example to instantiatea binary tree with its pre and in order.
+    /// 
+    /// <code language="C#"><![CDATA[
+    /// static BinaryTree<int> tree;
+    /// static BinaryNode<int> current;
+    /// static void Main(string[] args)
+    /// {
+    ///     tree = new BinaryTree<int>();
+    ///     Console.WriteLine("Please enter the values by pre order, splited by space:");
+    ///     int[] front = Console.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
+    ///     Console.WriteLine("Please enter the values by in order, splited by space:");
+    ///     int[] mid = Console.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
+    ///     if (front.Length != mid.Length)
+    ///     {
+    ///         Console.WriteLine("The length of the two arrays should be equal.");
+    ///         return;
+    ///     }
+    ///     tree.Root.LeftChild = null;
+    ///     tree.Root.RightChild = null;
+    ///     current = tree.Root;
+    ///     Create(front, mid);
+    ///     Console.WriteLine("The post order of this tree is:");
+    ///     Console.WriteLine(String.Join(" ", tree.AsPostOrderEnumerable().Select(node => node.ToString()).ToArray()));
+    /// }
+    /// static void Create(in Span<int> front, in Span<int> mid)
+    /// {
+    ///     int n = front.Length;
+    ///     BinaryNode<int> tr = current;
+    ///     tr.Value = front[0];
+    ///     int i;
+    ///     for (i = 0; i < n; i++)
+    ///     {
+    ///         if (mid[i] == front[0])
+    ///         {
+    ///             break;
+    ///         }
+    ///     }
+    ///     if (i > 0)
+    ///     {
+    ///         current = (tr.LeftChild = new BinaryNode<int>());
+    ///         Create(front.Slice(1, i), mid);
+    ///     }
+    ///     if (n - 1 - i > 0)
+    ///     {
+    ///         current = (tr.RightChild = new BinaryNode<int>());
+    ///         Create(front.Slice(i + 1, n - 1 - i), mid.Slice(i + 1, n - 1 - i));
+    ///     }
+    /// }
+    /// ]]></code>
+    /// </example>
     public class BinaryTree<T> : ITree<T, BinaryNode<T>>
     {
         private BinaryNode<T> _root;
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
+        /// Initialize an instance of <seealso cref="BinaryTree{T}"/>.
         /// </summary>
         public BinaryTree()
         {
             _root = new BinaryNode<T>();
         }
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
+        /// Initialize an instance of <seealso cref="BinaryTree{T}"/>.
         /// </summary>
         /// <param name="value">The value of root node.</param>
         public BinaryTree(T value)
@@ -45,7 +96,7 @@ namespace Berrysoft.Data
             _root = new BinaryNode<T>(value);
         }
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
+        /// Initialize an instance of <seealso cref="BinaryTree{T}"/>.
         /// </summary>
         /// <param name="root">Root node.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="root"/> is null.</exception>
@@ -97,19 +148,19 @@ namespace Berrysoft.Data
             return GetDepthInternal(_root, 1);
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
+        /// Get an <seealso cref="IEnumerable{T}"/> with order of depth-first-search.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
         public IEnumerable<BinaryNode<T>> AsDFSEnumerable() => AsPreOrderEnumerableIterator();
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with pre-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with pre order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with pre-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with pre order.</returns>
         public IEnumerable<BinaryNode<T>> AsPreOrderEnumerable() => AsPreOrderEnumerableIterator();
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with pre-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with pre order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with pre-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with pre order.</returns>
         private IEnumerable<BinaryNode<T>> AsPreOrderEnumerableIterator()
         {
             Stack<BinaryNode<T>> nodes = new Stack<BinaryNode<T>>();
@@ -129,14 +180,14 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with in-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with in order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with in-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with in order.</returns>
         public IEnumerable<BinaryNode<T>> AsInOrderEnumerable() => AsInOrderEnumerableIterator();
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with in-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with in order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with in-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with in order.</returns>
         private IEnumerable<BinaryNode<T>> AsInOrderEnumerableIterator()
         {
             Stack<BinaryNode<T>> nodes = new Stack<BinaryNode<T>>();
@@ -157,14 +208,14 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with post-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with post order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with post-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with post order.</returns>
         public IEnumerable<BinaryNode<T>> AsPostOrderEnumerable() => AsPostOrderEnumerableIterator();
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with post-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with post order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with post-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with post order.</returns>
         private IEnumerable<BinaryNode<T>> AsPostOrderEnumerableIterator()
         {
             Stack<BinaryNode<T>> nodes = new Stack<BinaryNode<T>>();
@@ -193,19 +244,19 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// Get an <seealso cref="IEnumerable{T}"/> with order of breadth-first-search.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
         public IEnumerable<BinaryNode<T>> AsBFSEnumerable() => AsLevelOrderEnumerableIterator();
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with level-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with level order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with level-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with level order.</returns>
         public IEnumerable<BinaryNode<T>> AsLevelOrderEnumerable() => AsLevelOrderEnumerableIterator();
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with level-order.
+        /// Get an <seealso cref="IEnumerable{T}"/> with level order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with level-order.</returns>
+        /// <returns>An <seealso cref="IEnumerable{T}"/> with level order.</returns>
         private IEnumerable<BinaryNode<T>> AsLevelOrderEnumerableIterator()
         {
             Queue<BinaryNode<T>> nodes = new Queue<BinaryNode<T>>();
@@ -226,7 +277,7 @@ namespace Berrysoft.Data
         }
     }
     /// <summary>
-    /// Represents a binary node of a <see cref="BinaryTree{T}"/>.
+    /// Represents a binary node of a <seealso cref="BinaryTree{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
     public class BinaryNode<T> : IBinaryNode<T, BinaryNode<T>>
@@ -236,13 +287,13 @@ namespace Berrysoft.Data
         private BinaryNode<T> _left;
         private BinaryNode<T> _right;
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryNode{T}"/>.
+        /// Initialize an instance of <seealso cref="BinaryNode{T}"/>.
         /// </summary>
         public BinaryNode()
             : this(default)
         { }
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryNode{T}"/>.
+        /// Initialize an instance of <seealso cref="BinaryNode{T}"/>.
         /// </summary>
         /// <param name="value">Value of the node.</param>
         public BinaryNode(T value)
@@ -250,7 +301,7 @@ namespace Berrysoft.Data
             _value = value;
         }
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryNode{T}"/>.
+        /// Initialize an instance of <seealso cref="BinaryNode{T}"/>.
         /// </summary>
         /// <param name="value">Value of the node.</param>
         /// <param name="left">Left child of the node.</param>
@@ -312,17 +363,17 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// Get an <seealso cref="IEnumerable{TNode}"/> of its children.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
+        /// <returns>An <seealso cref="IEnumerable{TNode}"/> of its children.</returns>
         public IEnumerable<BinaryNode<T>> AsEnumerable() => new BinaryNode<T>[] { _left, _right };
         /// <summary>
-        /// Convert <see cref="BinaryNode{T}"/> to <typeparamref name="T"/> explicitly.
+        /// Convert <seealso cref="BinaryNode{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
         /// <param name="node">Node to be converted.</param>
         public static explicit operator T(BinaryNode<T> node) => node.Value;
         /// <summary>
-        /// Convert <typeparamref name="T"/> to <see cref="BinaryNode{T}"/> implicitly.
+        /// Convert <typeparamref name="T"/> to <seealso cref="BinaryNode{T}"/> implicitly.
         /// </summary>
         /// <param name="value">Value to be converted.</param>
         public static implicit operator BinaryNode<T>(T value) => new BinaryNode<T>(value);

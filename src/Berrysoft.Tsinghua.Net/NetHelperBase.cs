@@ -25,7 +25,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get information of the user online.
         /// </summary>
-        /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
+        /// <returns>An instance of <seealso cref="FluxUser"/> class of the current user.</returns>
         Task<FluxUser> GetFluxAsync();
     }
     /// <summary>
@@ -34,7 +34,7 @@ namespace Berrysoft.Tsinghua.Net
     public class FluxUser
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="FluxUser"/> class.
+        /// Initializes a new instance of the <seealso cref="FluxUser"/> class.
         /// </summary>
         /// <param name="username">Username of the user.</param>
         /// <param name="flux">Flux used by the user this month.</param>
@@ -64,10 +64,10 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public decimal Balance { get; }
         /// <summary>
-        /// Converts the string representation of informathion of current user to its <see cref="FluxUser"/> equivalent.
+        /// Converts the string representation of informathion of current user to its <seealso cref="FluxUser"/> equivalent.
         /// </summary>
         /// <param name="fluxstr">A string containing information to convert.</param>
-        /// <returns>An instance of <see cref="FluxUser"/>.</returns>
+        /// <returns>An instance of <seealso cref="FluxUser"/>.</returns>
         public static FluxUser Parse(string fluxstr)
         {
             string[] r = fluxstr.Split(',');
@@ -85,11 +85,11 @@ namespace Berrysoft.Tsinghua.Net
             }
         }
         /// <summary>
-        /// Converts the string representation of informathion of current user to its <see cref="FluxUser"/> equivalent.
+        /// Converts the string representation of informathion of current user to its <seealso cref="FluxUser"/> equivalent.
         /// A return value indicates whether the conversion succeeded or failed.
         /// </summary>
         /// <param name="fluxstr">A string containing information to convert.</param>
-        /// <param name="user">An instance of <see cref="FluxUser"/>, when succeed; otherwise null.</param>
+        /// <param name="user">An instance of <seealso cref="FluxUser"/>, when succeed; otherwise null.</param>
         /// <returns>true if fluxstr was converted successfully; otherwise, false.</returns>
         public static bool TryParse(string fluxstr, out FluxUser user)
         {
@@ -122,13 +122,13 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public string Password { get; set; }
         /// <summary>
-        /// Initializes a new instance of the <see cref="NetHelperBase"/> class.
+        /// Initializes a new instance of the <seealso cref="NetHelperBase"/> class.
         /// </summary>
         public NetHelperBase()
             : this(string.Empty, string.Empty)
         { }
         /// <summary>
-        /// Initializes a new instance of the <see cref="NetHelperBase"/> class.
+        /// Initializes a new instance of the <seealso cref="NetHelperBase"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
@@ -197,7 +197,7 @@ namespace Berrysoft.Tsinghua.Net
         #region IDisposable Support
         private bool disposedValue = false;
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="HttpClient"/> and optionally disposes of the managed resources.
+        /// Releases the unmanaged resources used by the <seealso cref="HttpClient"/> and optionally disposes of the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to releases only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
@@ -212,7 +212,7 @@ namespace Berrysoft.Tsinghua.Net
             }
         }
         /// <summary>
-        /// Releases the unmanaged resources and disposes of the managed resources used by the <see cref="HttpClient"/>.
+        /// Releases the unmanaged resources and disposes of the managed resources used by the <seealso cref="HttpClient"/>.
         /// </summary>
         public void Dispose() => Dispose(true);
         #endregion
