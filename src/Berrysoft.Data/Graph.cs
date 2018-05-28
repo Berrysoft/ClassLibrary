@@ -33,7 +33,7 @@ namespace Berrysoft.Data
         /// <param name="heads">The specified vertexes.</param>
         void AddAsTail(T vertex, params T[] heads);
         /// <summary>
-        /// Determines whether a <see cref="IGraph{T}"/> object contains specified vertex.
+        /// Determines whether an <see cref="IGraph{T}"/> object contains specified vertex.
         /// </summary>
         /// <param name="vertex">The specified vertex.</param>
         /// <returns>true if the <see cref="IGraph{T}"/> contains the vertex; otherwise, false.</returns>
@@ -61,14 +61,14 @@ namespace Berrysoft.Data
         /// <param name="head2">Another head of the edge.</param>
         void AddEdge(T head1, T head2);
         /// <summary>
-        /// Determines whether a <see cref="IGraph{T}"/> object contains an arc of specified tail and head.
+        /// Determines whether an <see cref="IGraph{T}"/> object contains an arc of specified tail and head.
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
         /// <returns>true if the <see cref="IGraph{T}"/> contains the arc; otherwise, false.</returns>
         bool ContainsArc(T tail, T head);
         /// <summary>
-        /// Determines whether a <see cref="IGraph{T}"/> object contains an edge of specified heads.
+        /// Determines whether an <see cref="IGraph{T}"/> object contains an edge of specified heads.
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
@@ -113,7 +113,7 @@ namespace Berrysoft.Data
         /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetHeads();
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
@@ -124,13 +124,13 @@ namespace Berrysoft.Data
         /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetTails();
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// </summary>
         /// <param name="head">The specified head.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         IEnumerable<T> GetTails(T head);
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// A return value indicates whether succeeded or failed.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
@@ -138,7 +138,7 @@ namespace Berrysoft.Data
         /// <returns>true if no exceptions; otherwise, false.</returns>
         bool TryGetHeads(T tail, out IEnumerable<T> heads);
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// A return value indicates whether succeeded or failed.
         /// </summary>
         /// <param name="head">The specified head.</param>
@@ -251,7 +251,7 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="vertex">Value of the new vertex.</param>
         /// <param name="heads">The specified vertexes.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="vertex"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="vertex"/> is <see langword="null"/>.</exception>
         public void AddAsTail(T vertex, params T[] heads)
         {
             if (vertex == null)
@@ -301,7 +301,7 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="tail"/> or <paramref name="head"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="tail"/> or <paramref name="head"/> is <see langword="null"/>.</exception>
         /// <exception cref="KeyNotFoundException">When <paramref name="tail"/> or <paramref name="head"/> isn't found.</exception>
         public void AddArc(T tail, T head)
         {
@@ -327,7 +327,7 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="head1"/> or <paramref name="head2"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="head1"/> or <paramref name="head2"/> is <see langword="null"/>.</exception>
         /// <exception cref="KeyNotFoundException">When <paramref name="head1"/> or <paramref name="head2"/> isn't found.</exception>
         public void AddEdge(T head1, T head2)
         {
@@ -406,7 +406,7 @@ namespace Berrysoft.Data
         /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetHeads() => _arcs.ToLookupFromKey1();
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
@@ -417,13 +417,13 @@ namespace Berrysoft.Data
         /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetTails() => _arcs.ToLookupFromKey2();
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// </summary>
         /// <param name="head">The specified head.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<T> GetTails(T head) => _arcs.GetValuesFromKey2(head);
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// A return value indicates whether succeeded or failed.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
@@ -431,7 +431,7 @@ namespace Berrysoft.Data
         /// <returns>true if no exceptions; otherwise, false.</returns>
         public bool TryGetHeads(T tail, out IEnumerable<T> heads) => _arcs.TryGetValuesFromKey1(tail, out heads);
         /// <summary>
-        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// A return value indicates whether succeeded or failed.
         /// </summary>
         /// <param name="head">The specified head.</param>
