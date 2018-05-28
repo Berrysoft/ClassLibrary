@@ -13,13 +13,13 @@ namespace Berrysoft.Tsinghua.Net
         private const string FluxUri = "http://net.tsinghua.edu.cn/rad_user_info.php";
         private const string LogoutData = "action=logout";
         /// <summary>
-        /// Initializes a new instance of the <seealso cref="NetHelper"/> class.
+        /// Initializes a new instance of the <see cref="NetHelper"/> class.
         /// </summary>
         public NetHelper()
             : base()
         { }
         /// <summary>
-        /// Initializes a new instance of the <seealso cref="NetHelper"/> class.
+        /// Initializes a new instance of the <see cref="NetHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
@@ -39,7 +39,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get information of the user online.
         /// </summary>
-        /// <returns>An instance of <seealso cref="FluxUser"/> class of the current user.</returns>
+        /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
         private Dictionary<string, string> loginDataDictionary;
         /// <summary>

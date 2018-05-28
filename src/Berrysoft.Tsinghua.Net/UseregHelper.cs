@@ -14,7 +14,7 @@ namespace Berrysoft.Tsinghua.Net
     public class NetUser
     {
         /// <summary>
-        /// Initializes a new instance of the <seealso cref="NetUser"/> class.
+        /// Initializes a new instance of the <see cref="NetUser"/> class.
         /// </summary>
         /// <param name="address">IP address the connection was allocated.</param>
         /// <param name="loginTime">Online time used this time of the connection.</param>
@@ -34,7 +34,7 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public DateTime LoginTime { get; }
         /// <summary>
-        /// The client used by this connection. It may be "Unknown" through <seealso cref="NetHelper"/>, and "Windows NT", "Windows 8", "Windows 7" or "Unknown" through <seealso cref="AuthHelper"/>.
+        /// The client used by this connection. It may be "Unknown" through <see cref="NetHelper"/>, and "Windows NT", "Windows 8", "Windows 7" or "Unknown" through <see cref="AuthHelper"/>.
         /// </summary>
         public string Client { get; }
     }
@@ -48,13 +48,13 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogoutData = "action=logout";
         private const string DropData = "action=drop&user_ip={0}";
         /// <summary>
-        /// Initializes a new instance of the <seealso cref="UseregHelper"/> class.
+        /// Initializes a new instance of the <see cref="UseregHelper"/> class.
         /// </summary>
         public UseregHelper()
             : base()
         { }
         /// <summary>
-        /// Initializes a new instance of the <seealso cref="UseregHelper"/> class.
+        /// Initializes a new instance of the <see cref="UseregHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
@@ -80,7 +80,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get all connections of this user.
         /// </summary>
-        /// <returns><seealso cref="IEnumerable{NetUser}"/></returns>
+        /// <returns><see cref="IEnumerable{NetUser}"/></returns>
         public async Task<IEnumerable<NetUser>> GetUsersAsync()
         {
             try
