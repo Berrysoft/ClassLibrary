@@ -266,7 +266,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Get an <see cref="IEnumerable{TNode}"/> of its children.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
         public IEnumerable<Node<T>> AsEnumerable() => _children;
         /// <summary>
         /// Convert <see cref="Node{T}"/> to <typeparamref name="T"/> explicitly.
@@ -282,9 +282,6 @@ namespace Berrysoft.Data
         /// Returns a string that represents the value.
         /// </summary>
         /// <returns>A string that represents the value.</returns>
-        public override string ToString()
-        {
-            return _value.ToString();
-        }
+        public override string ToString() => _value.ToString();
     }
 }
