@@ -19,14 +19,14 @@ namespace Berrysoft.Tsinghua.Net
         private readonly string FluxUri;
         private readonly string ChallengeUri;
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// Initializes a new instance of the <seealso cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="version">4 for auth4 and 6 for auth6</param>
         private AuthHelper(int version)
             : this(string.Empty, string.Empty, version)
         { }
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// Initializes a new instance of the <seealso cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
@@ -39,28 +39,28 @@ namespace Berrysoft.Tsinghua.Net
             ChallengeUri = string.Format(ChallengeUriBase, version);
         }
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// Initializes a new instance of the <seealso cref="AuthHelper"/> class.
         /// </summary>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
+        /// <returns>An instance of <seealso cref="AuthHelper"/> class with version 4.</returns>
         public static AuthHelper CreateAuth4Helper() => new AuthHelper(4);
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// Initializes a new instance of the <seealso cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
+        /// <returns>An instance of <seealso cref="AuthHelper"/> class with version 4.</returns>
         public static AuthHelper CreateAuth4Helper(string username, string password) => new AuthHelper(username, password, 4);
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// Initializes a new instance of the <seealso cref="AuthHelper"/> class.
         /// </summary>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
+        /// <returns>An instance of <seealso cref="AuthHelper"/> class with version 6.</returns>
         public static AuthHelper CreateAuth6Helper() => new AuthHelper(6);
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// Initializes a new instance of the <seealso cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
+        /// <returns>An instance of <seealso cref="AuthHelper"/> class with version 6.</returns>
         public static AuthHelper CreateAuth6Helper(string username, string password) => new AuthHelper(username, password, 6);
         /// <summary>
         /// Login to the network.
@@ -75,7 +75,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get information of the user online.
         /// </summary>
-        /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
+        /// <returns>An instance of <seealso cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
         /// <summary>
         /// Get "challenge" to encode the password.
@@ -153,11 +153,11 @@ namespace Berrysoft.Tsinghua.Net
             return loginDataDictionary;
         }
         /// <summary>
-        /// Encode a <see cref="string"/> to its UTF-8 form.
+        /// Encode a <seealso cref="string"/> to its UTF-8 form.
         /// </summary>
         /// <param name="a">String to be encoded.</param>
         /// <param name="b">Whether to add the length of the string in the end.</param>
-        /// <returns>A <see cref="Span{UInt32}"/> contains encoded string.</returns>
+        /// <returns>A <seealso cref="Span{UInt32}"/> contains encoded string.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
         /// <code><![CDATA[
@@ -199,9 +199,9 @@ namespace Berrysoft.Tsinghua.Net
             return v;
         }
         /// <summary>
-        /// Decode a <see cref="string"/> from its UTF-8 form.
+        /// Decode a <seealso cref="string"/> from its UTF-8 form.
         /// </summary>
-        /// <param name="a">A <see cref="Span{UInt32}"/> contains the encoded string.</param>
+        /// <param name="a">A <seealso cref="Span{UInt32}"/> contains the encoded string.</param>
         /// <param name="b">Whether the length of the original string is in the end.</param>
         /// <returns>Decoded string.</returns>
         /// <remarks>

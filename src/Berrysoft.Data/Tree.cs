@@ -35,9 +35,9 @@ namespace Berrysoft.Data
         /// </summary>
         TNode Parent { get; }
         /// <summary>
-        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// Get an <seealso cref="IEnumerable{TNode}"/> of its children.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
+        /// <returns>An <seealso cref="IEnumerable{TNode}"/> of its children.</returns>
         IEnumerable<TNode> AsEnumerable();
     }
     /// <summary>
@@ -64,9 +64,9 @@ namespace Berrysoft.Data
         /// <param name="child">The child to insert.</param>
         void Insert(int index, TNode child);
         /// <summary>
-        /// Determines whether a child is in the <see cref="INode{TValue, TNode}"/>.
+        /// Determines whether a child is in the <seealso cref="INode{TValue, TNode}"/>.
         /// </summary>
-        /// <param name="child">The child to locate in the <see cref="INode{TValue, TNode}"/>.</param>
+        /// <param name="child">The child to locate in the <seealso cref="INode{TValue, TNode}"/>.</param>
         /// <returns>true if the child is found; otherwise, false.</returns>
         bool Contains(TNode child);
         /// <summary>
@@ -82,21 +82,21 @@ namespace Berrysoft.Data
     }
     #endregion
     /// <summary>
-    /// Represents a tree with a root <see cref="Node{T}"/>.
+    /// Represents a tree with a root <seealso cref="Node{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
     public class Tree<T> : ITree<T, Node<T>>
     {
         private Node<T> _root;
         /// <summary>
-        /// Initialize an instance of <see cref="Tree{T}"/>.
+        /// Initialize an instance of <seealso cref="Tree{T}"/>.
         /// </summary>
         public Tree()
         {
             _root = new Node<T>();
         }
         /// <summary>
-        /// Initialize an instance of <see cref="Tree{T}"/> with root value.
+        /// Initialize an instance of <seealso cref="Tree{T}"/> with root value.
         /// </summary>
         /// <param name="value">The value of root node.</param>
         public Tree(T value)
@@ -104,7 +104,7 @@ namespace Berrysoft.Data
             _root = new Node<T>(value);
         }
         /// <summary>
-        /// Initialize an instance of <see cref="Tree{T}"/> with root node.
+        /// Initialize an instance of <seealso cref="Tree{T}"/> with root node.
         /// </summary>
         /// <param name="root">Root node.</param>
         /// <exception cref="ArgumentNullException">When <paramref name="root"/> is null.</exception>
@@ -148,7 +148,7 @@ namespace Berrysoft.Data
         }
     }
     /// <summary>
-    /// Represents a node of a <see cref="Tree{T}"/>.
+    /// Represents a node of a <seealso cref="Tree{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
     public class Node<T> : INode<T, Node<T>>
@@ -157,13 +157,13 @@ namespace Berrysoft.Data
         private Node<T> _parent;
         private List<Node<T>> _children;
         /// <summary>
-        /// Initialize an instance of <see cref="Node{T}"/>.
+        /// Initialize an instance of <seealso cref="Node{T}"/>.
         /// </summary>
         public Node()
             : this(default)
         { }
         /// <summary>
-        /// Initialize an instance of <see cref="Node{T}"/> with value.
+        /// Initialize an instance of <seealso cref="Node{T}"/> with value.
         /// </summary>
         /// <param name="value">Value of the node.</param>
         public Node(T value)
@@ -172,7 +172,7 @@ namespace Berrysoft.Data
             _children = new List<Node<T>>();
         }
         /// <summary>
-        /// Initialize an instance of <see cref="Node{T}"/> with value and children.
+        /// Initialize an instance of <seealso cref="Node{T}"/> with value and children.
         /// </summary>
         /// <param name="value">Value of the node.</param>
         /// <param name="children">Children of the node.</param>
@@ -185,6 +185,7 @@ namespace Berrysoft.Data
         /// Set the child's parent as this node.
         /// </summary>
         /// <param name="child">Child to be set.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="child"/> is null.</exception>
         private void SetParent(Node<T> child)
         {
             (child ?? throw ExceptionHelper.ArgumentNull(nameof(child)))._parent = this;
@@ -218,6 +219,7 @@ namespace Berrysoft.Data
         /// Add children.
         /// </summary>
         /// <param name="children">The child nodes to be added.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="children"/> is null.</exception>
         public void AddRange(IEnumerable<Node<T>> children)
         {
             _children.AddRange((children ?? throw ExceptionHelper.ArgumentNull(nameof(children))).ForEach(SetParent));
@@ -233,9 +235,9 @@ namespace Berrysoft.Data
             _children.Insert(index, child);
         }
         /// <summary>
-        /// Determines whether a child is in the <see cref="INode{TValue, TNode}"/>.
+        /// Determines whether a child is in the <seealso cref="INode{TValue, TNode}"/>.
         /// </summary>
-        /// <param name="child">The child to locate in the <see cref="INode{TValue, TNode}"/>.</param>
+        /// <param name="child">The child to locate in the <seealso cref="INode{TValue, TNode}"/>.</param>
         /// <returns>true if the child is found; otherwise, false.</returns>
         public bool Contains(Node<T> child)
         {
@@ -264,17 +266,17 @@ namespace Berrysoft.Data
             _children.Clear();
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// Get an <seealso cref="IEnumerable{TNode}"/> of its children.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
+        /// <returns>An <seealso cref="IEnumerable{TNode}"/> of its children.</returns>
         public IEnumerable<Node<T>> AsEnumerable() => _children;
         /// <summary>
-        /// Convert <see cref="Node{T}"/> to <typeparamref name="T"/> explicitly.
+        /// Convert <seealso cref="Node{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
         /// <param name="node">Node to be converted.</param>
         public static explicit operator T(Node<T> node) => node.Value;
         /// <summary>
-        /// Convert <typeparamref name="T"/> to <see cref="Node{T}"/> implicitly.
+        /// Convert <typeparamref name="T"/> to <seealso cref="Node{T}"/> implicitly.
         /// </summary>
         /// <param name="value">Value to be converted.</param>
         public static implicit operator Node<T>(T value) => new Node<T>(value);
