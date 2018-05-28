@@ -5,7 +5,7 @@ using System.Linq;
 namespace Berrysoft.Data
 {
     /// <summary>
-    /// Provides a set of static (Shared in Visual Basic) methods for querying objects.
+    /// Provides a set of <see langword="static"/> methods for querying objects.
     /// </summary>
     public static class Enumerable
     {
@@ -17,7 +17,7 @@ namespace Berrysoft.Data
         /// <typeparam name="TNode">The type of node.</typeparam>
         /// <param name="tree">A tree to calculte depth.</param>
         /// <returns>The depth of the tree.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
         public static int GetDepth<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -51,7 +51,7 @@ namespace Berrysoft.Data
         /// <typeparam name="TNode">The type of node.</typeparam>
         /// <param name="tree">A tree to enumerate.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
         public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -92,7 +92,7 @@ namespace Berrysoft.Data
         /// <typeparam name="TNode">The type of node.</typeparam>
         /// <param name="tree">A tree to enumerate.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is null.</exception>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
         public static IEnumerable<TNode> AsBFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -128,6 +128,15 @@ namespace Berrysoft.Data
         }
         #endregion
         #region Graph
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static IEnumerable<T> AsDFSEnumerable<T>(this IGraph<T> graph, T root)
         {
             if (graph == null)
