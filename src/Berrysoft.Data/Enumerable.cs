@@ -4,9 +4,20 @@ using System.Linq;
 
 namespace Berrysoft.Data
 {
+    /// <summary>
+    /// Provides a set of static (Shared in Visual Basic) methods for querying objects.
+    /// </summary>
     public static class Enumerable
     {
         #region Tree
+        /// <summary>
+        /// Get depth of the tree.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to calculte depth.</param>
+        /// <returns>The depth of the tree.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is null.</exception>
         public static int GetDepth<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -33,6 +44,14 @@ namespace Berrysoft.Data
                     return GetDepthInternal(tree.Root, 1);
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is null.</exception>
         public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -44,6 +63,13 @@ namespace Berrysoft.Data
                     return AsDFSEnumerableIterator(tree);
             }
         }
+        /// <summary>
+        /// Get an iterator with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
         private static IEnumerable<TNode> AsDFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -59,6 +85,14 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is null.</exception>
         public static IEnumerable<TNode> AsBFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {
@@ -70,6 +104,13 @@ namespace Berrysoft.Data
                     return AsBFSEnumerableIterator(tree);
             }
         }
+        /// <summary>
+        /// Get an iterator with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
         private static IEnumerable<TNode> AsBFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
             where TNode : INodeBase<TValue, TNode>
         {

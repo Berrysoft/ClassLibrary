@@ -209,7 +209,14 @@ namespace Berrysoft.Data
             _vertexes = new HashSet<T>(vertexes);
             _arcs = new KeyLookup<T, T>(comparer, comparer);
         }
+        /// <summary>
+        /// Count of vertexes.
+        /// </summary>
         public int Count => _vertexes.Count;
+        /// <summary>
+        /// Add a vertex.
+        /// </summary>
+        /// <param name="vertex">Value of the new vertex.</param>
         public void Add(T vertex)
         {
             if (vertex == null)
@@ -218,6 +225,12 @@ namespace Berrysoft.Data
             }
             _vertexes.Add(vertex);
         }
+        /// <summary>
+        /// Add a vertex as head of specified vertexes.
+        /// </summary>
+        /// <param name="vertex">Value of the new vertex.</param>
+        /// <param name="tails">The specified vertexes.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="vertex"/> is <see langword="null"/>.</exception>
         public void AddAsHead(T vertex, params T[] tails)
         {
             if (vertex == null)
@@ -233,6 +246,12 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Add a vertex as tail of specified vertexes.
+        /// </summary>
+        /// <param name="vertex">Value of the new vertex.</param>
+        /// <param name="heads">The specified vertexes.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="vertex"/> is null.</exception>
         public void AddAsTail(T vertex, params T[] heads)
         {
             if (vertex == null)
@@ -248,7 +267,17 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Determines whether a <see cref="Graph{T}"/> object contains specified vertex.
+        /// </summary>
+        /// <param name="vertex">The specified vertex.</param>
+        /// <returns>true if the <see cref="Graph{T}"/> contains the vertex; otherwise, false.</returns>
         public bool Contains(T vertex) => _vertexes.Contains(vertex);
+        /// <summary>
+        /// Remove a vertex. This will remove all the arcs related to the vertex.
+        /// </summary>
+        /// <param name="vertex">The vertex to be removed.</param>
+        /// <returns>true if the vertex is removed successfully; otherwise, false.</returns>
         public bool Remove(T vertex)
         {
             if (_vertexes.Remove(vertex))
@@ -259,11 +288,21 @@ namespace Berrysoft.Data
             }
             return false;
         }
+        /// <summary>
+        /// Clear all vertexes. This will remove all the arcs.
+        /// </summary>
         public void Clear()
         {
             _vertexes.Clear();
             _arcs.Clear();
         }
+        /// <summary>
+        /// Add an arc.
+        /// </summary>
+        /// <param name="tail">The tail of the arc.</param>
+        /// <param name="head">The head of the arc.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="tail"/> or <paramref name="head"/> is null.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="tail"/> or <paramref name="head"/> isn't found.</exception>
         public void AddArc(T tail, T head)
         {
             if (tail == null)
@@ -283,6 +322,13 @@ namespace Berrysoft.Data
                 throw ExceptionHelper.KeyNotFound();
             }
         }
+        /// <summary>
+        /// Add an edge.
+        /// </summary>
+        /// <param name="head1">One head of the edge.</param>
+        /// <param name="head2">Another head of the edge.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="head1"/> or <paramref name="head2"/> is null.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="head1"/> or <paramref name="head2"/> isn't found.</exception>
         public void AddEdge(T head1, T head2)
         {
             if (head1 == null)
@@ -303,23 +349,94 @@ namespace Berrysoft.Data
                 throw ExceptionHelper.KeyNotFound();
             }
         }
+        /// <summary>
+        /// Determines whether a <see cref="Graph{T}"/> object contains an arc of specified tail and head.
+        /// </summary>
+        /// <param name="tail">The tail of the arc.</param>
+        /// <param name="head">The head of the arc.</param>
+        /// <returns>true if the <see cref="Graph{T}"/> contains the arc; otherwise, false.</returns>
         public bool ContainsArc(T tail, T head) => _arcs.Contains(tail, head);
+        /// <summary>
+        /// Determines whether a <see cref="Graph{T}"/> object contains an edge of specified heads.
+        /// </summary>
+        /// <param name="head1">One head of the edge.</param>
+        /// <param name="head2">Another head of the edge.</param>
+        /// <returns>true if the <see cref="Graph{T}"/> contains the edge; otherwise, false.</returns>
         public bool ContainsEdge(T head1, T head2) => _arcs.Contains(head1, head2) && _arcs.Contains(head2, head1);
+        /// <summary>
+        /// Remove an arc of specified tail and head.
+        /// </summary>
+        /// <param name="tail">The tail of the arc.</param>
+        /// <param name="head">The head of the arc.</param>
+        /// <returns>true if the arc is removed successfully; otherwise, false.</returns>
         public bool RemoveArc(T tail, T head) => _arcs.Remove(tail, head);
+        /// <summary>
+        /// Remove an edge of specified heads.
+        /// </summary>
+        /// <param name="head1">One head of the edge.</param>
+        /// <param name="head2">Another head of the edge.</param>
+        /// <returns>true if the edge is removed successfully; otherwise, false.</returns>
         public bool RemoveEdge(T head1, T head2) => _arcs.Remove(head1, head2) || _arcs.Remove(head2, head1);
+        /// <summary>
+        /// Clear all arcs.
+        /// </summary>
         public void ClearArc() => _arcs.Clear();
+        /// <summary>
+        /// Clear all arcs of specified vertex.
+        /// </summary>
+        /// <param name="vertex">The specified vertex.</param>
         public void ClearArc(T vertex)
         {
             ClearHeads(vertex);
             ClearTails(vertex);
         }
+        /// <summary>
+        /// Clear all arcs whose tail is the specified vertex.
+        /// </summary>
+        /// <param name="tail">The specified vertex.</param>
         public void ClearHeads(T tail) => _arcs.RemoveKey1(tail);
+        /// <summary>
+        /// Clear all arcs whose head is the specified vertex.
+        /// </summary>
+        /// <param name="head">The specified vertex.</param>
         public void ClearTails(T head) => _arcs.RemoveKey2(head);
+        /// <summary>
+        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all heads and their arcs.
+        /// </summary>
+        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetHeads() => _arcs.ToLookupFromKey1();
+        /// <summary>
+        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// </summary>
+        /// <param name="tail">The specified tail.</param>
+        /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<T> GetHeads(T tail) => _arcs.GetValuesFromKey1(tail);
+        /// <summary>
+        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all tails and their arcs.
+        /// </summary>
+        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetTails() => _arcs.ToLookupFromKey2();
+        /// <summary>
+        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// </summary>
+        /// <param name="head">The specified head.</param>
+        /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         public IEnumerable<T> GetTails(T head) => _arcs.GetValuesFromKey2(head);
+        /// <summary>
+        /// Get a <see cref="IEnumerable{T}"/> of all heads of a specified tail.
+        /// A return value indicates whether succeeded or failed.
+        /// </summary>
+        /// <param name="tail">The specified tail.</param>
+        /// <param name="heads">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
+        /// <returns>true if no exceptions; otherwise, false.</returns>
         public bool TryGetHeads(T tail, out IEnumerable<T> heads) => _arcs.TryGetValuesFromKey1(tail, out heads);
+        /// <summary>
+        /// Get a <see cref="IEnumerable{T}"/> of all tails of a specified head.
+        /// A return value indicates whether succeeded or failed.
+        /// </summary>
+        /// <param name="head">The specified head.</param>
+        /// <param name="tails">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
+        /// <returns>true if no exceptions; otherwise, false.</returns>
         public bool TryGetTails(T head, out IEnumerable<T> tails) => _arcs.TryGetValuesFromKey2(head, out tails);
     }
 }
