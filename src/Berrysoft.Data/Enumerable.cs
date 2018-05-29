@@ -129,12 +129,12 @@ namespace Berrysoft.Data
         #endregion
         #region Graph
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
         /// </summary>
         /// <typeparam name="T">The type of vertex.</typeparam>
         /// <param name="graph">The graph to enumerate.</param>
         /// <param name="root">The first vertex to enumerate.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static IEnumerable<T> AsDFSEnumerable<T>(this IGraph<T> graph, T root)
@@ -149,6 +149,13 @@ namespace Berrysoft.Data
             }
             return AsDFSEnumerableIterator(graph, root);
         }
+        /// <summary>
+        /// Get an iterator with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
         private static IEnumerable<T> AsDFSEnumerableIterator<T>(IGraph<T> graph, T root)
         {
             Stack<T> nodes = new Stack<T>();
@@ -180,6 +187,15 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static IEnumerable<T> AsBFSEnumerable<T>(this IGraph<T> graph, T root)
         {
             if (graph == null)
@@ -192,6 +208,13 @@ namespace Berrysoft.Data
             }
             return AsBFSEnumerableIterator(graph, root);
         }
+        /// <summary>
+        /// Get an iterator with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
         private static IEnumerable<T> AsBFSEnumerableIterator<T>(IGraph<T> graph, T root)
         {
             Queue<T> nodes = new Queue<T>();
@@ -223,8 +246,28 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get a <see cref="Tree{T}"/> with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A <see cref="Tree{T}"/> with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static Tree<T> ToDFSTree<T>(this Graph<T> graph, T root)
             => ToDFSTree<T, Tree<T>, Node<T>>(graph, root);
+        /// <summary>
+        /// Get a tree with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of vertex.</typeparam>
+        /// <typeparam name="TTree">The type of tree.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A tree with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static TTree ToDFSTree<TValue, TTree, TNode>(this IGraph<TValue> graph, TValue root)
             where TTree : ITree<TValue, TNode>, new()
             where TNode : INode<TValue, TNode>, new()
@@ -277,8 +320,28 @@ namespace Berrysoft.Data
             ret:
             return result;
         }
+        /// <summary>
+        /// Get a <see cref="Tree{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A <see cref="Tree{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static Tree<T> ToBFSTree<T>(this Graph<T> graph, T root)
             => ToBFSTree<T, Tree<T>, Node<T>>(graph, root);
+        /// <summary>
+        /// Get a tree with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of vertex.</typeparam>
+        /// <typeparam name="TTree">The type of tree.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A tree with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static TTree ToBFSTree<TValue, TTree, TNode>(this IGraph<TValue> graph, TValue root)
             where TTree : ITree<TValue, TNode>, new()
             where TNode : INode<TValue, TNode>, new()
@@ -381,8 +444,25 @@ namespace Berrysoft.Data
         }
         #endregion
         #region Linq
+        /// <summary>
+        /// Projects each element of a sequence into a new form, based on a predicate.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <typeparam name="TResult">The type of the value returned by <paramref name="predicate"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}"/> to filter and invoke a transform function on.</param>
+        /// <param name="predicate">A function to test each source element for a condition and tramsform each element.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> whose elements are the result of invoking the transform function on each element of source.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="source"/> or <paramref name="predicate"/> is <see langword="null"/>.</exception>
         public static IEnumerable<TResult> SelectWhen<TSource, TResult>(this IEnumerable<TSource> source, Func<TSource, (bool Select, TResult Result)> predicate)
             => SelectWhenIterator(source ?? throw ExceptionHelper.ArgumentNull(nameof(source)), predicate ?? throw ExceptionHelper.ArgumentNull(nameof(predicate)));
+        /// <summary>
+        /// Get an iterator projects each element of a sequence into a new form, based on a predicate.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <typeparam name="TResult">The type of the value returned by <paramref name="predicate"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{T}"/> to filter and invoke a transform function on.</param>
+        /// <param name="predicate">A function to test each source element for a condition and tramsform each element.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> whose elements are the result of invoking the transform function on each element of source.</returns>
         private static IEnumerable<TResult> SelectWhenIterator<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, (bool Select, TResult Result)> predicate)
         {
             foreach (TSource item in source)
@@ -394,6 +474,14 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Performs the specified action on each element of the <see cref="IEnumerable{TSource}"/>.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{TSource}"/> to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="source"/> is <see langword="null"/>.</exception>
         public static IEnumerable<TSource> ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource> action)
         {
             switch (source ?? throw ExceptionHelper.ArgumentNull(nameof(source)))
@@ -406,6 +494,13 @@ namespace Berrysoft.Data
                     return ForEachIterator(source, action);
             }
         }
+        /// <summary>
+        /// An iterator performs the specified action on each element of the array.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An array to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
         private static IEnumerable<TSource> ForEachArrayIterator<TSource>(TSource[] source, Action<TSource> action)
         {
             int n = source.Length;
@@ -415,6 +510,13 @@ namespace Berrysoft.Data
                 yield return source[i];
             }
         }
+        /// <summary>
+        /// An iterator performs the specified action on each element of the <see cref="IList{TSource}"/>.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IList{TSource}"/> to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
         private static IEnumerable<TSource> ForEachListIterator<TSource>(IList<TSource> source, Action<TSource> action)
         {
             int n = source.Count;
@@ -424,6 +526,13 @@ namespace Berrysoft.Data
                 yield return source[i];
             }
         }
+        /// <summary>
+        /// An iterator performs the specified action on each element of the <see cref="IEnumerable{TSource}"/>.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{TSource}"/> to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
         private static IEnumerable<TSource> ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource> action)
         {
             foreach (TSource item in source)
@@ -432,6 +541,14 @@ namespace Berrysoft.Data
                 yield return item;
             }
         }
+        /// <summary>
+        /// Performs the specified action on each element of the <see cref="IEnumerable{TSource}"/>. Each element's index is used in the logic of the action.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{TSource}"/> to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="source"/> is <see langword="null"/>.</exception>
         public static IEnumerable<TSource> ForEach<TSource>(this IEnumerable<TSource> source, Action<TSource, int> action)
         {
             switch (source ?? throw ExceptionHelper.ArgumentNull(nameof(source)))
@@ -444,6 +561,13 @@ namespace Berrysoft.Data
                     return ForEachIterator(source, action);
             }
         }
+        /// <summary>
+        /// An iterator performs the specified action on each element of the array. Each element's index is used in the logic of the action.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An array to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
         private static IEnumerable<TSource> ForEachArrayIterator<TSource>(TSource[] source, Action<TSource, int> action)
         {
             int n = source.Length;
@@ -453,6 +577,13 @@ namespace Berrysoft.Data
                 yield return source[i];
             }
         }
+        /// <summary>
+        /// An iterator performs the specified action on each element of the <see cref="IList{TSource}"/>. Each element's index is used in the logic of the action.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IList{TSource}"/> to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
         private static IEnumerable<TSource> ForEachListIterator<TSource>(IList<TSource> source, Action<TSource, int> action)
         {
             int n = source.Count;
@@ -462,6 +593,13 @@ namespace Berrysoft.Data
                 yield return source[i];
             }
         }
+        /// <summary>
+        /// An iterator performs the specified action on each element of the <see cref="IEnumerable{TSource}"/>. Each element's index is used in the logic of the action.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{TSource}"/> to perform.</param>
+        /// <param name="action">The <see cref="Action{TSource}"/> delegate to perform on each element of the <see cref="IEnumerable{TSource}"/>.</param>
+        /// <returns>Each element of <paramref name="source"/> is yield immediately after the <paramref name="action"/> performs.</returns>
         private static IEnumerable<TSource> ForEachIterator<TSource>(IEnumerable<TSource> source, Action<TSource, int> action)
         {
             int i = 0;
@@ -472,8 +610,20 @@ namespace Berrysoft.Data
                 i++;
             }
         }
+        /// <summary>
+        /// Enumerate the sequence in a random order.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{TSource}"/> to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{TSource}"/> in random order.</returns>
         public static IEnumerable<TSource> Random<TSource>(this IEnumerable<TSource> source)
             => RandomIterator(source ?? throw ExceptionHelper.ArgumentNull(nameof(source)));
+        /// <summary>
+        /// An iterator to enumerate the sequence in a random order.
+        /// </summary>
+        /// <typeparam name="TSource">The type of the elements of <paramref name="source"/>.</typeparam>
+        /// <param name="source">An <see cref="IEnumerable{TSource}"/> to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{TSource}"/> in random order.</returns>
         private static IEnumerable<TSource> RandomIterator<TSource>(IEnumerable<TSource> source)
         {
             Random random = new Random();
