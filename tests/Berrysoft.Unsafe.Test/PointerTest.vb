@@ -1,11 +1,12 @@
 ﻿Imports Microsoft.VisualStudio.TestTools.UnitTesting
+Imports Berrysoft.Unsafe.UnsafeMethods
 
 <TestClass()>
 Public Class PointerTest
 
     <TestMethod()>
     Public Sub StackAllocTest()
-        UnsafeMethods.StackAlloc(Of Byte)(2,
+        StackAlloc(Of Byte)(2,
             Sub(ptr)
                 ptr(0) = 111
                 ptr(1) = 222
@@ -15,16 +16,16 @@ Public Class PointerTest
 
     <TestMethod()>
     Public Sub MemoryTest()
-        UnsafeMethods.StackAlloc(Of Byte)(2,
+        StackAlloc(Of Byte)(2,
             Sub(ptr)
-                UnsafeMethods.MemorySet(ptr, 100, 2)
+                MemorySet(ptr, 100, 2)
                 Assert.AreEqual(ptr(0), CByte(100))
                 ptr += 1
                 Assert.AreEqual(ptr(0), CByte(100))
                 ptr.Target = 200
-                UnsafeMethods.StackAlloc(Of Byte)(1,
+                StackAlloc(Of Byte)(1,
                     Sub(ptr2)
-                        UnsafeMethods.MemoryCopy(ptr2, ptr, 1)
+                        MemoryCopy(ptr2, ptr, 1)
                         Assert.AreEqual(ptr.Target, CByte(200))
                     End Sub)
             End Sub)
@@ -33,21 +34,21 @@ Public Class PointerTest
     <TestMethod()>
     Public Sub PointerTest()
         Dim i As Byte = 1
-        Dim ptr = UnsafeMethods.AddressOf(i)
+        Dim ptr = PointerOf(i)
         ptr.Target = 2
         Assert.AreEqual(i, CByte(2))
-        UnsafeMethods.TargetOf(ptr) = 3
+        TargetOf(ptr) = 3
         Assert.AreEqual(i, CByte(3))
     End Sub
 
     <TestMethod()>
     Public Sub SizeTest()
-        Assert.AreEqual(UnsafeMethods.GetSize(Of Integer), 4)
+        Assert.AreEqual(GetSize(Of Integer), 4)
     End Sub
 
     <TestMethod()>
     Public Sub CalTest()
-        UnsafeMethods.StackAlloc(Of Short)(2,
+        StackAlloc(Of Short)(2,
             Sub(ptr)
                 ptr(0) = 2
                 ptr(1) = 1
@@ -59,14 +60,14 @@ Public Class PointerTest
     <TestMethod()>
     Public Sub ArrayTest()
         Dim arr As Integer() = {1, 2, 3}
-        Dim ptr As Pointer(Of Integer) = UnsafeMethods.AddressOf(arr)
+        Dim ptr As Pointer(Of Integer) = PointerOf(arr)
         ptr(1) = 222
         Assert.AreEqual(arr(1), 222)
     End Sub
 
     <TestMethod()>
     Public Sub SpanTest()
-        UnsafeMethods.StackAlloc(Of Integer)(2,
+        StackAlloc(Of Integer)(2,
             Sub(ptr)
                 Dim span = ptr.AsSpan(2)
                 span(0) = 123

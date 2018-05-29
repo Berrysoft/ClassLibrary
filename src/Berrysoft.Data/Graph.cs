@@ -36,13 +36,13 @@ namespace Berrysoft.Data
         /// Determines whether an <see cref="IGraph{T}"/> object contains specified vertex.
         /// </summary>
         /// <param name="vertex">The specified vertex.</param>
-        /// <returns>true if the <see cref="IGraph{T}"/> contains the vertex; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the <see cref="IGraph{T}"/> contains the vertex; otherwise, <see langword="false"/>.</returns>
         bool Contains(T vertex);
         /// <summary>
         /// Remove a vertex. This will remove all the arcs related to the vertex.
         /// </summary>
         /// <param name="vertex">The vertex to be removed.</param>
-        /// <returns>true if the vertex is removed successfully; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the vertex is removed successfully; otherwise, <see langword="false"/>.</returns>
         bool Remove(T vertex);
         /// <summary>
         /// Clear all vertexes. This will remove all the arcs.
@@ -65,28 +65,28 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
-        /// <returns>true if the <see cref="IGraph{T}"/> contains the arc; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the <see cref="IGraph{T}"/> contains the arc; otherwise, <see langword="false"/>.</returns>
         bool ContainsArc(T tail, T head);
         /// <summary>
         /// Determines whether an <see cref="IGraph{T}"/> object contains an edge of specified heads.
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
-        /// <returns>true if the <see cref="IGraph{T}"/> contains the edge; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the <see cref="IGraph{T}"/> contains the edge; otherwise, <see langword="false"/>.</returns>
         bool ContainsEdge(T head1, T head2);
         /// <summary>
         /// Remove an arc of specified tail and head.
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
-        /// <returns>true if the arc is removed successfully; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the arc is removed successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveArc(T tail, T head);
         /// <summary>
         /// Remove an edge of specified heads.
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
-        /// <returns>true if the edge is removed successfully; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the edge is removed successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveEdge(T head1, T head2);
         /// <summary>
         /// Clear all arcs.
@@ -271,13 +271,13 @@ namespace Berrysoft.Data
         /// Determines whether a <see cref="Graph{T}"/> object contains specified vertex.
         /// </summary>
         /// <param name="vertex">The specified vertex.</param>
-        /// <returns>true if the <see cref="Graph{T}"/> contains the vertex; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the <see cref="Graph{T}"/> contains the vertex; otherwise, <see langword="false"/>.</returns>
         public bool Contains(T vertex) => _vertexes.Contains(vertex);
         /// <summary>
         /// Remove a vertex. This will remove all the arcs related to the vertex.
         /// </summary>
         /// <param name="vertex">The vertex to be removed.</param>
-        /// <returns>true if the vertex is removed successfully; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the vertex is removed successfully; otherwise, <see langword="false"/>.</returns>
         public bool Remove(T vertex)
         {
             if (_vertexes.Remove(vertex))
@@ -354,28 +354,28 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
-        /// <returns>true if the <see cref="Graph{T}"/> contains the arc; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the <see cref="Graph{T}"/> contains the arc; otherwise, <see langword="false"/>.</returns>
         public bool ContainsArc(T tail, T head) => _arcs.Contains(tail, head);
         /// <summary>
         /// Determines whether a <see cref="Graph{T}"/> object contains an edge of specified heads.
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
-        /// <returns>true if the <see cref="Graph{T}"/> contains the edge; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the <see cref="Graph{T}"/> contains the edge; otherwise, <see langword="false"/>.</returns>
         public bool ContainsEdge(T head1, T head2) => _arcs.Contains(head1, head2) && _arcs.Contains(head2, head1);
         /// <summary>
         /// Remove an arc of specified tail and head.
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
-        /// <returns>true if the arc is removed successfully; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the arc is removed successfully; otherwise, <see langword="false"/>.</returns>
         public bool RemoveArc(T tail, T head) => _arcs.Remove(tail, head);
         /// <summary>
         /// Remove an edge of specified heads.
         /// </summary>
         /// <param name="head1">One head of the edge.</param>
         /// <param name="head2">Another head of the edge.</param>
-        /// <returns>true if the edge is removed successfully; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the edge is removed successfully; otherwise, <see langword="false"/>.</returns>
         public bool RemoveEdge(T head1, T head2) => _arcs.Remove(head1, head2) || _arcs.Remove(head2, head1);
         /// <summary>
         /// Clear all arcs.

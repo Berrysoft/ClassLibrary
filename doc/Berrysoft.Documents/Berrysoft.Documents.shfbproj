@@ -31,6 +31,8 @@
       <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\Debug\net472\Berrysoft.Tsinghua.Net.dll" />
       <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.xml" />
       <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.dll" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\Debug\net472\Berrysoft.Unsafe.xml" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\Debug\net472\Berrysoft.Unsafe.dll" />
     </DocumentationSources>
     <HelpFileFormat>Markdown</HelpFileFormat>
     <SyntaxFilters>Standard</SyntaxFilters>
@@ -51,9 +53,11 @@
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Berrysoft.Tsinghua.Net" isDocumented="True">A namespace contains classes to connect to Tsinghua campus network.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Berrysoft.Data" isDocumented="True">A namespace of some complex data structure.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Berrysoft.Unsafe" isDocumented="True">A namespace comtains unsafe or unmanaged structures and methods. All members support safe languages (like Visual Basic).</NamespaceSummaryItem>
     </NamespaceSummaries>
     <NamingMethod>MemberName</NamingMethod>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>
+    <ProjectSummary>This is Berrysoft class library.</ProjectSummary>
   </PropertyGroup>
   <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
 			 the build.  The others are optional common platform types that may appear. -->

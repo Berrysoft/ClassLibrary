@@ -67,13 +67,13 @@ namespace Berrysoft.Data
         /// Determines whether a child is in the <see cref="INode{TValue, TNode}"/>.
         /// </summary>
         /// <param name="child">The child to locate in the <see cref="INode{TValue, TNode}"/>.</param>
-        /// <returns>true if the child is found; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the child is found; otherwise, <see langword="false"/>.</returns>
         bool Contains(TNode child);
         /// <summary>
         /// Remove a child.
         /// </summary>
         /// <param name="child">The child node to be removed.</param>
-        /// <returns>true if the child is successfully removed; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the child is successfully removed; otherwise, <see langword="false"/>.</returns>
         bool Remove(TNode child);
         /// <summary>
         /// Clear all children.
@@ -238,7 +238,7 @@ namespace Berrysoft.Data
         /// Determines whether a child is in the <see cref="INode{TValue, TNode}"/>.
         /// </summary>
         /// <param name="child">The child to locate in the <see cref="INode{TValue, TNode}"/>.</param>
-        /// <returns>true if the child is found; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the child is found; otherwise, <see langword="false"/>.</returns>
         public bool Contains(Node<T> child)
         {
             return _children.Contains(child);
@@ -247,7 +247,7 @@ namespace Berrysoft.Data
         /// Remove a child.
         /// </summary>
         /// <param name="child">The child node to be removed.</param>
-        /// <returns>true if the child is successfully removed; otherwise, false.</returns>
+        /// <returns><see langword="true"/> if the child is successfully removed; otherwise, <see langword="false"/>.</returns>
         public bool Remove(Node<T> child)
         {
             if (_children.Remove(child))
@@ -274,11 +274,13 @@ namespace Berrysoft.Data
         /// Convert <see cref="Node{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
         /// <param name="node">Node to be converted.</param>
+        /// <returns>Value of the node.</returns>
         public static explicit operator T(Node<T> node) => node.Value;
         /// <summary>
         /// Convert <typeparamref name="T"/> to <see cref="Node{T}"/> implicitly.
         /// </summary>
         /// <param name="value">Value to be converted.</param>
+        /// <returns>A new <see cref="Node{T}"/>.</returns>
         public static implicit operator Node<T>(T value) => new Node<T>(value);
         /// <summary>
         /// Returns a string that represents the value.

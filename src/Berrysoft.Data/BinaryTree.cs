@@ -28,7 +28,6 @@ namespace Berrysoft.Data
     /// <typeparam name="T">The type of value the node contains.</typeparam>
     /// <example>
     /// This is an example to instantiatea binary tree with its pre and in order.
-    /// 
     /// <code language="C#"><![CDATA[
     /// static BinaryTree<int> tree;
     /// static BinaryNode<int> current;
@@ -371,11 +370,13 @@ namespace Berrysoft.Data
         /// Convert <see cref="BinaryNode{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
         /// <param name="node">Node to be converted.</param>
+        /// <returns>Value of the node.</returns>
         public static explicit operator T(BinaryNode<T> node) => node.Value;
         /// <summary>
         /// Convert <typeparamref name="T"/> to <see cref="BinaryNode{T}"/> implicitly.
         /// </summary>
         /// <param name="value">Value to be converted.</param>
+        /// <returns>A new <see cref="BinaryNode{T}"/>.</returns>
         public static implicit operator BinaryNode<T>(T value) => new BinaryNode<T>(value);
         /// <summary>
         /// Returns a string that represents the value.
