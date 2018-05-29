@@ -7,26 +7,105 @@ using System.Text;
 namespace Berrysoft.Data
 {
     #region Interfaces
-    public interface IKeyDictionary<TKey1, TKey2> : ICollection<KeyPair<TKey1, TKey2>>
+    /// <summary>
+    /// Exposes members of a two-way dictionary.
+    /// </summary>
+    /// <typeparam name="TKey1">Type of key1.</typeparam>
+    /// <typeparam name="TKey2">Type of key2.</typeparam>
+    public interface IMap<TKey1, TKey2> : ICollection<KeyPair<TKey1, TKey2>>
     {
+        /// <summary>
+        /// Gets an <see cref="IEnumerable{TKey1}"/> containing the keys in the <see cref="IMap{TKey1, TKey2}"/>.
+        /// </summary>
         IEnumerable<TKey1> Keys1 { get; }
+        /// <summary>
+        /// Gets an <see cref="IEnumerable{TKey2}"/> containing the keys in the <see cref="IMap{TKey1, TKey2}"/>.
+        /// </summary>
         IEnumerable<TKey2> Keys2 { get; }
+        /// <summary>
+        /// Get key2 with the specified key1.
+        /// </summary>
+        /// <param name="key">The key1 of the key2 to get.</param>
+        /// <returns>Key2 related to the specified key1.</returns>
         TKey2 GetValueFromKey1(TKey1 key);
+        /// <summary>
+        /// Get key1 with the specified key2.
+        /// </summary>
+        /// <param name="key">The key2 of the key1 to get.</param>
+        /// <returns>Key1 related to the specified key2.</returns>
         TKey1 GetValueFromKey2(TKey2 key);
+        /// <summary>
+        /// Gets the key2 associated with the specified key1.
+        /// </summary>
+        /// <param name="key">The key1 of the key2 to get.</param>
+        /// <param name="value">When this method returns, contains the key2 associated with the specified key1, if the key1 is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the <see cref="IMap{TKey1, TKey2}"/> contains an element with the specified key1; otherwise, <see langword="false"/>.</returns>
         bool TryGetValueFromKey1(TKey1 key, out TKey2 value);
+        /// <summary>
+        /// Gets the key1 associated with the specified key2.
+        /// </summary>
+        /// <param name="key">The key2 of the key1 to get.</param>
+        /// <param name="value">When this method returns, contains the key1 associated with the specified key2, if the key2 is found; otherwise, the default value for the type of the <paramref name="value"/> parameter. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the <see cref="IMap{TKey1, TKey2}"/> contains an element with the specified key2; otherwise, <see langword="false"/>.</returns>
         bool TryGetValueFromKey2(TKey2 key, out TKey1 value);
+        /// <summary>
+        /// Adds the specified key1 and key2.
+        /// </summary>
+        /// <param name="key1">The key1 of the element to add.</param>
+        /// <param name="key2">The key2 of the element to add.</param>
         void Add(TKey1 key1, TKey2 key2);
+        /// <summary>
+        /// Sets the specified key1 and key2 related.
+        /// </summary>
+        /// <param name="key1">The key1 of the element to add.</param>
+        /// <param name="key2">The key2 of the element to add.</param>
+        /// <returns><see langword="true"/> if key1 or key2 is/are not contained in the <see cref="IMap{TKey1, TKey2}"/> and set successfully; otherwise, <see langword="false"/>.</returns>
         bool SetPair(TKey1 key1, TKey2 key2);
+        /// <summary>
+        /// Determines whether the <see cref="IMap{TKey1, TKey2}"/> contains the specified key1.
+        /// </summary>
+        /// <param name="key">The specified key1.</param>
+        /// <returns><see langword="true"/> if it contains; otherwise, <see langword="false"/>.</returns>
         bool ContainsKey1(TKey1 key);
+        /// <summary>
+        /// Determines whether the <see cref="IMap{TKey1, TKey2}"/> contains the specified key2.
+        /// </summary>
+        /// <param name="key">The specified key2.</param>
+        /// <returns><see langword="true"/> if it contains; otherwise, <see langword="false"/>.</returns>
         bool ContainsKey2(TKey2 key);
+        /// <summary>
+        /// Determines whether the <see cref="IMap{TKey1, TKey2}"/> contains the element with specified key1 and key2.
+        /// </summary>
+        /// <param name="key1">The specified key1.</param>
+        /// <param name="key2">The specified key2.</param>
+        /// <returns><see langword="true"/> if it contains; otherwise, <see langword="false"/>.</returns>
         bool Contains(TKey1 key1, TKey2 key2);
+        /// <summary>
+        /// Remove element with specified key1.
+        /// </summary>
+        /// <param name="key">The specified key1.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveKey1(TKey1 key);
+        /// <summary>
+        /// Remove element with specified key2.
+        /// </summary>
+        /// <param name="key">The specified key2.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveKey2(TKey2 key);
+        /// <summary>
+        /// Remove element with specified key1 and key2.
+        /// </summary>
+        /// <param name="key1">The specified key1.</param>
+        /// <param name="key2">The specified key2.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool Remove(TKey1 key1, TKey2 key2);
-        IDictionary<TKey1, TKey2> ToDictionaryFromKey1();
-        IDictionary<TKey2, TKey1> ToDictionaryFromKey2();
     }
     #endregion
+    /// <summary>
+    /// Represents pair with two keys.
+    /// </summary>
+    /// <typeparam name="TKey1">Type of key1.</typeparam>
+    /// <typeparam name="TKey2">Type of key2.</typeparam>
     public struct KeyPair<TKey1, TKey2>
     {
         private TKey1 key1;
@@ -55,30 +134,30 @@ namespace Berrysoft.Data
             return stringBuilder.ToString();
         }
     }
-    public class KeyDictionary<TKey1, TKey2> : IKeyDictionary<TKey1, TKey2>
+    public class Map<TKey1, TKey2> : IMap<TKey1, TKey2>
     {
         private List<KeyPair<TKey1, TKey2>> list;
         private IEqualityComparer<TKey1> comparer1;
         private IEqualityComparer<TKey2> comparer2;
-        public KeyDictionary()
+        public Map()
             : this(0, null, null)
         { }
-        public KeyDictionary(int capacity)
+        public Map(int capacity)
             : this(capacity, null, null)
         { }
-        public KeyDictionary(IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
+        public Map(IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
             : this(0, comparer1, comparer2)
         { }
-        public KeyDictionary(int capacity, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
+        public Map(int capacity, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
         {
             this.list = new List<KeyPair<TKey1, TKey2>>(capacity);
             this.comparer1 = comparer1 ?? EqualityComparer<TKey1>.Default;
             this.comparer2 = comparer2 ?? EqualityComparer<TKey2>.Default;
         }
-        public KeyDictionary(IKeyDictionary<TKey1, TKey2> dictionary)
+        public Map(IMap<TKey1, TKey2> dictionary)
             : this(dictionary, null, null)
         { }
-        public KeyDictionary(IKeyDictionary<TKey1, TKey2> dictionary, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
+        public Map(IMap<TKey1, TKey2> dictionary, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
             : this(dictionary != null ? dictionary.Count : 0, comparer1, comparer2)
         {
             if (dictionary == null)

@@ -5,7 +5,7 @@ Public Class DictionaryTest
 
     <TestMethod()>
     Public Sub KeyDicAddTest()
-        Dim keydic As New KeyDictionary(Of Integer, String)()
+        Dim keydic As New Map(Of Integer, String)()
         keydic.Add(123, "123")
         keydic.Add(456, "456")
         Assert.AreEqual(keydic.GetValueFromKey1(123), "123")
@@ -17,7 +17,7 @@ Public Class DictionaryTest
 
     <TestMethod()>
     Public Sub KeyDicContainsAndRemoveTest()
-        Dim keydic As New KeyDictionary(Of Integer, String)()
+        Dim keydic As New Map(Of Integer, String)()
         keydic.Add(123, "123")
         keydic.Add(456, "456")
         Assert.IsTrue(keydic.ContainsKey1(123))
@@ -31,7 +31,7 @@ Public Class DictionaryTest
 
     <TestMethod()>
     Public Sub KeyDicCollectionTest()
-        Dim keydic As New KeyDictionary(Of Integer, String)()
+        Dim keydic As New Map(Of Integer, String)()
         keydic.Add(123, "123")
         keydic.Add(456, "456")
         Dim key1collection = keydic.Keys1

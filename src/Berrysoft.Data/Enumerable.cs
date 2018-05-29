@@ -396,9 +396,9 @@ namespace Berrysoft.Data
         }
         #endregion
         #region Key
-        public static KeyDictionary<TKey1, TKey2> ToKeyDictionary<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector)
+        public static Map<TKey1, TKey2> ToKeyDictionary<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector)
             => ToKeyDictionary(source, key1Selector, key2Selector, null, null);
-        public static KeyDictionary<TKey1, TKey2> ToKeyDictionary<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
+        public static Map<TKey1, TKey2> ToKeyDictionary<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
         {
             if (source == null)
             {
@@ -412,7 +412,7 @@ namespace Berrysoft.Data
             {
                 throw ExceptionHelper.ArgumentNull(nameof(key2Selector));
             }
-            KeyDictionary<TKey1, TKey2> dictionary = new KeyDictionary<TKey1, TKey2>(comparer1, comparer2);
+            Map<TKey1, TKey2> dictionary = new Map<TKey1, TKey2>(comparer1, comparer2);
             foreach (TSource item in source)
             {
                 dictionary.Add(key1Selector(item), key2Selector(item));
