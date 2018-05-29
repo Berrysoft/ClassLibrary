@@ -147,6 +147,275 @@ namespace Berrysoft.Data
         bool TryGetTails(T head, out IEnumerable<T> tails);
     }
     #endregion
+    public static partial class Enumerable
+    {
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
+        public static IEnumerable<T> AsDFSEnumerable<T>(this IGraph<T> graph, T root)
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(root))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            return AsDFSEnumerableIterator(graph, root);
+        }
+        /// <summary>
+        /// Get an iterator with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
+        private static IEnumerable<T> AsDFSEnumerableIterator<T>(IGraph<T> graph, T root)
+        {
+            Stack<T> nodes = new Stack<T>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Push(root);
+            while (nodes.Count != 0)
+            {
+                T current;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        yield break;
+                    }
+                    current = nodes.Pop();
+                }
+                while (visited.Contains(current));
+                visited.Add(current);
+                yield return current;
+                if (graph.TryGetHeads(current, out var heads))
+                {
+                    foreach (var child in heads.Reverse())
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Push(child);
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
+        public static IEnumerable<T> AsBFSEnumerable<T>(this IGraph<T> graph, T root)
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(root))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            return AsBFSEnumerableIterator(graph, root);
+        }
+        /// <summary>
+        /// Get an iterator with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        private static IEnumerable<T> AsBFSEnumerableIterator<T>(IGraph<T> graph, T root)
+        {
+            Queue<T> nodes = new Queue<T>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Enqueue(root);
+            while (nodes.Count != 0)
+            {
+                T current;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        yield break;
+                    }
+                    current = nodes.Dequeue();
+                }
+                while (visited.Contains(current));
+                visited.Add(current);
+                yield return current;
+                if (graph.TryGetHeads(current, out var heads))
+                {
+                    foreach (var child in heads)
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Enqueue(child);
+                        }
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// Get a <see cref="Tree{T}"/> with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A <see cref="Tree{T}"/> with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
+        public static Tree<T> ToDFSTree<T>(this Graph<T> graph, T root)
+            => ToDFSTree<T, Tree<T>, Node<T>>(graph, root);
+        /// <summary>
+        /// Get a tree with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of vertex.</typeparam>
+        /// <typeparam name="TTree">The type of tree.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A tree with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
+        public static TTree ToDFSTree<TValue, TTree, TNode>(this IGraph<TValue> graph, TValue root)
+            where TTree : ITree<TValue, TNode>, new()
+            where TNode : INode<TValue, TNode>, new()
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(root))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            TTree result = new TTree();
+            result.Root.Value = root;
+            Stack<TNode> nodes = new Stack<TNode>();
+            HashSet<TValue> visited = new HashSet<TValue>();
+            nodes.Push(result.Root);
+            while (nodes.Count != 0)
+            {
+                TNode current;
+                for (; ; )
+                {
+                    if (nodes.Count == 0)
+                    {
+                        goto ret;
+                    }
+                    current = nodes.Pop();
+                    if (visited.Contains(current.Value))
+                    {
+                        current.Parent.Remove(current);
+                        continue;
+                    }
+                    break;
+                }
+                visited.Add(current.Value);
+                if (graph.TryGetHeads(current.Value, out var heads))
+                {
+                    foreach (var child in heads.Reverse())
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            TNode nc = new TNode();
+                            nc.Value = child;
+                            nodes.Push(nc);
+                            current.Add(nc);
+                        }
+                    }
+                }
+            }
+            ret:
+            return result;
+        }
+        /// <summary>
+        /// Get a <see cref="Tree{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A <see cref="Tree{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
+        public static Tree<T> ToBFSTree<T>(this Graph<T> graph, T root)
+            => ToBFSTree<T, Tree<T>, Node<T>>(graph, root);
+        /// <summary>
+        /// Get a tree with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of vertex.</typeparam>
+        /// <typeparam name="TTree">The type of tree.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="graph">The graph to convert.</param>
+        /// <param name="root">The value of root node.</param>
+        /// <returns>A tree with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
+        public static TTree ToBFSTree<TValue, TTree, TNode>(this IGraph<TValue> graph, TValue root)
+            where TTree : ITree<TValue, TNode>, new()
+            where TNode : INode<TValue, TNode>, new()
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(root))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            TTree result = new TTree();
+            result.Root.Value = root;
+            Queue<TNode> nodes = new Queue<TNode>();
+            HashSet<TValue> visited = new HashSet<TValue>();
+            nodes.Enqueue(result.Root);
+            while (nodes.Count != 0)
+            {
+                TNode current;
+                for (; ; )
+                {
+                    if (nodes.Count == 0)
+                    {
+                        goto ret;
+                    }
+                    current = nodes.Dequeue();
+                    if (visited.Contains(current.Value))
+                    {
+                        current.Parent.Remove(current);
+                        continue;
+                    }
+                    break;
+                }
+                visited.Add(current.Value);
+                if (graph.TryGetHeads(current.Value, out var heads))
+                {
+                    foreach (var child in heads)
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            TNode nc = new TNode();
+                            nc.Value = child;
+                            nodes.Enqueue(nc);
+                            current.Add(nc);
+                        }
+                    }
+                }
+            }
+            ret:
+            return result;
+        }
+    }
     /// <summary>
     /// Represents a graph data structure.
     /// </summary>

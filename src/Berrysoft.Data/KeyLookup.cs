@@ -26,6 +26,32 @@ namespace Berrysoft.Data
         ILookup<TKey2, TKey1> ToLookupFromKey2();
     }
     #endregion
+    public static partial class Enumerable
+    {
+        public static KeyLookup<TKey1, TKey2> ToKeyLookup<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector)
+            => ToKeyLookup(source, key1Selector, key2Selector, null, null);
+        public static KeyLookup<TKey1, TKey2> ToKeyLookup<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
+        {
+            if (source == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(source));
+            }
+            if (key1Selector == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(key1Selector));
+            }
+            if (key2Selector == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(key2Selector));
+            }
+            KeyLookup<TKey1, TKey2> lookup = new KeyLookup<TKey1, TKey2>(comparer1, comparer2);
+            foreach (TSource item in source)
+            {
+                lookup.Add(key1Selector(item), key2Selector(item));
+            }
+            return lookup;
+        }
+    }
     public class KeyLookup<TKey1, TKey2> : IKeyLookup<TKey1, TKey2>
     {
         List<KeyPair<TKey1, TKey2>> list;
