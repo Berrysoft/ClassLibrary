@@ -81,6 +81,125 @@ namespace Berrysoft.Data
         void Clear();
     }
     #endregion
+    public static partial class Enumerable
+    {
+        /// <summary>
+        /// Get depth of the tree.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to calculte depth.</param>
+        /// <returns>The depth of the tree.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
+        public static int GetDepth<TValue, TNode>(this ITree<TValue, TNode> tree)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            int GetDepthInternal(TNode node, int depth)
+            {
+                int result = depth;
+                foreach (TNode child in node.AsEnumerable())
+                {
+                    int tempDepth = GetDepthInternal(child, depth + 1);
+                    if (tempDepth > result)
+                    {
+                        result = tempDepth;
+                    }
+                }
+                return result;
+            }
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case Tree<TValue> simpleTree:
+                    return simpleTree.GetDepth();
+                case BinaryTree<TValue> binaryTree:
+                    return binaryTree.GetDepth();
+                default:
+                    return GetDepthInternal(tree.Root, 1);
+            }
+        }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
+        public static IEnumerable<TNode> AsDFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case BinaryTree<TValue> binaryTree:
+                    return (IEnumerable<TNode>)binaryTree.AsDFSEnumerable();
+                default:
+                    return AsDFSEnumerableIterator(tree);
+            }
+        }
+        /// <summary>
+        /// Get an iterator with order of depth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
+        private static IEnumerable<TNode> AsDFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            Stack<TNode> nodes = new Stack<TNode>();
+            nodes.Push(tree.Root);
+            while (nodes.Count != 0)
+            {
+                TNode current = nodes.Pop();
+                yield return current;
+                foreach (var child in current.AsEnumerable().Reverse())
+                {
+                    nodes.Push(child);
+                }
+            }
+        }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
+        public static IEnumerable<TNode> AsBFSEnumerable<TValue, TNode>(this ITree<TValue, TNode> tree)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case BinaryTree<TValue> binaryTree:
+                    return (IEnumerable<TNode>)binaryTree.AsBFSEnumerable();
+                default:
+                    return AsBFSEnumerableIterator(tree);
+            }
+        }
+        /// <summary>
+        /// Get an iterator with order of breadth-first-search.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
+        private static IEnumerable<TNode> AsBFSEnumerableIterator<TValue, TNode>(ITree<TValue, TNode> tree)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            Queue<TNode> nodes = new Queue<TNode>();
+            nodes.Enqueue(tree.Root);
+            while (nodes.Count != 0)
+            {
+                TNode current = nodes.Dequeue();
+                yield return current;
+                foreach (var child in current.AsEnumerable())
+                {
+                    nodes.Enqueue(child);
+                }
+            }
+        }
+    }
     /// <summary>
     /// Represents a tree with a root <see cref="Node{T}"/>.
     /// </summary>
