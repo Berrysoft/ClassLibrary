@@ -10,7 +10,7 @@ namespace Berrysoft.Console
 {
     public abstract class XmlSettings : SettingsBase<object, object>
     {
-#if NETCOREAPP2_0
+#if NETCOREAPP2_1
         private readonly object syncLock = new object();
 #endif
         public XmlSettings()
@@ -48,7 +48,7 @@ namespace Berrysoft.Console
                 }
             }
         }
-#if NETCOREAPP2_0
+#if NETCOREAPP2_1
         public Task OpenAsync(string fileName) => OpenAsync(fileName, CancellationToken.None);
         public async Task OpenAsync(string fileName, CancellationToken cancellationToken)
         {
@@ -104,7 +104,7 @@ namespace Berrysoft.Console
             }
             document.Save(fileName);
         }
-#if NETCOREAPP2_0
+#if NETCOREAPP2_1
         public Task SaveAsync(string fileName) => SaveAsync(fileName, CancellationToken.None);
         public async Task SaveAsync(string fileName, CancellationToken cancellationToken)
         {

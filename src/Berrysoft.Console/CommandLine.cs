@@ -64,7 +64,7 @@ namespace Berrysoft.Console
                 {
                     throw ExceptionsHelper.ArgInvalid(args[i]);
                 }
-#if NETCOREAPP2_0
+#if NETCOREAPP2_1
                 if (!Args.TryAdd(args[i], argValue))
                 {
                     throw ExceptionsHelper.ArgInvalid(args[i]);
