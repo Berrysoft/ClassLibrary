@@ -79,19 +79,19 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if it contains; otherwise, <see langword="false"/>.</returns>
         bool Contains(TKey1 key1, TKey2 key2);
         /// <summary>
-        /// Remove element with specified key1.
+        /// Removes an element with specified key1.
         /// </summary>
         /// <param name="key">The specified key1.</param>
         /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveKey1(TKey1 key);
         /// <summary>
-        /// Remove element with specified key2.
+        /// Removes an element with specified key2.
         /// </summary>
         /// <param name="key">The specified key2.</param>
         /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveKey2(TKey2 key);
         /// <summary>
-        /// Remove element with specified key1 and key2.
+        /// Removes an element with specified key1 and key2.
         /// </summary>
         /// <param name="key1">The specified key1.</param>
         /// <param name="key2">The specified key2.</param>
@@ -125,6 +125,7 @@ namespace Berrysoft.Data
         /// <param name="comparer1">Comparer of key1.</param>
         /// <param name="comparer2">Comparer of key2.</param>
         /// <returns>An instance of <see cref="Map{TKey1, TKey2}"/>.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="source"/> or <paramref name="key1Selector"/> or <paramref name="key2Selector"/> is <see langword="null"/>.</exception>
         public static Map<TKey1, TKey2> ToMap<TSource, TKey1, TKey2>(this IEnumerable<TSource> source, Func<TSource, TKey1> key1Selector, Func<TSource, TKey2> key2Selector, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
         {
             if (source == null)
@@ -240,6 +241,7 @@ namespace Berrysoft.Data
         /// Initialize a new instance of <see cref="Map{TKey1, TKey2}"/>.
         /// </summary>
         /// <param name="map">Existed map.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="map"/> is <see langword="null"/>.</exception>
         public Map(IMap<TKey1, TKey2> map)
             : this(map, null, null)
         { }
@@ -249,6 +251,7 @@ namespace Berrysoft.Data
         /// <param name="map">Existed map.</param>
         /// <param name="comparer1">Comparer of key1.</param>
         /// <param name="comparer2">Comparer of key2.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="map"/> is <see langword="null"/>.</exception>
         public Map(IMap<TKey1, TKey2> map, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
             : this(map?.Count ?? 0, comparer1, comparer2)
         {
@@ -393,9 +396,24 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied from <see cref="Map{TKey1, TKey2}"/>. The <see cref="Array"/> must have zero-based indexing.</param>
         /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="array"/> is <see langword="null"/>.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">When <paramref name="arrayIndex"/> is smaller than zero or larger than the length of <paramref name="array"/>.</exception>
+        /// <exception cref="ArgumentException">When <paramref name="array"/> is too small.</exception>
         public void CopyTo(KeyPair<TKey1, TKey2>[] array, int arrayIndex)
         {
-            foreach(var pair in dic)
+            if (array == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(array));
+            }
+            if (arrayIndex < 0 || arrayIndex > array.Length)
+            {
+                throw ExceptionHelper.ArgumentOutOfRange(nameof(arrayIndex));
+            }
+            if (array.Length - arrayIndex < dic.Count)
+            {
+                throw ExceptionHelper.ArrayTooSmall();
+            }
+            foreach (var pair in dic)
             {
                 array[arrayIndex] = new KeyPair<TKey1, TKey2>(pair.Key, pair.Value);
                 arrayIndex++;
