@@ -108,27 +108,27 @@ namespace Berrysoft.Data
         /// <param name="head">The specified vertex.</param>
         void ClearTails(T head);
         /// <summary>
-        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all heads and their arcs.
+        /// Get a <see cref="ILookup{TKey, TElement}"/> contains all heads and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetHeads();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
-        IEnumerable<T> GetHeads(T tail);
+        ICollection<T> GetHeads(T tail);
         /// <summary>
-        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all tails and their arcs.
+        /// Get a <see cref="ILookup{TKey, TElement}"/> contains all tails and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetTails();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// </summary>
         /// <param name="head">The specified head.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
-        IEnumerable<T> GetTails(T head);
+        ICollection<T> GetTails(T head);
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// A return value indicates whether succeeded or failed.
@@ -136,7 +136,7 @@ namespace Berrysoft.Data
         /// <param name="tail">The specified tail.</param>
         /// <param name="heads">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
         /// <returns>true if no exceptions; otherwise, false.</returns>
-        bool TryGetHeads(T tail, out IEnumerable<T> heads);
+        bool TryGetHeads(T tail, out ICollection<T> heads);
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// A return value indicates whether succeeded or failed.
@@ -144,7 +144,7 @@ namespace Berrysoft.Data
         /// <param name="head">The specified head.</param>
         /// <param name="tails">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
         /// <returns>true if no exceptions; otherwise, false.</returns>
-        bool TryGetTails(T head, out IEnumerable<T> tails);
+        bool TryGetTails(T head, out ICollection<T> tails);
     }
     #endregion
     public static partial class Enumerable
@@ -670,27 +670,27 @@ namespace Berrysoft.Data
         /// <param name="head">The specified vertex.</param>
         public void ClearTails(T head) => _arcs.RemoveKey2(head);
         /// <summary>
-        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all heads and their arcs.
+        /// Get an <see cref="ILookup{TKey, TElement}"/> contains all heads and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetHeads() => _arcs.ToLookupFromKey1();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// </summary>
         /// <param name="tail">The specified tail.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
-        public IEnumerable<T> GetHeads(T tail) => _arcs.GetValuesFromKey1(tail);
+        public ICollection<T> GetHeads(T tail) => _arcs.GetValuesFromKey1(tail);
         /// <summary>
-        /// Get a <see cref="Lookup{TKey, TElement}"/> contains all tails and their arcs.
+        /// Get an <see cref="ILookup{TKey, TElement}"/> contains all tails and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="Lookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetTails() => _arcs.ToLookupFromKey2();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// </summary>
         /// <param name="head">The specified head.</param>
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
-        public IEnumerable<T> GetTails(T head) => _arcs.GetValuesFromKey2(head);
+        public ICollection<T> GetTails(T head) => _arcs.GetValuesFromKey2(head);
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
         /// A return value indicates whether succeeded or failed.
@@ -698,7 +698,7 @@ namespace Berrysoft.Data
         /// <param name="tail">The specified tail.</param>
         /// <param name="heads">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
         /// <returns>true if no exceptions; otherwise, false.</returns>
-        public bool TryGetHeads(T tail, out IEnumerable<T> heads) => _arcs.TryGetValuesFromKey1(tail, out heads);
+        public bool TryGetHeads(T tail, out ICollection<T> heads) => _arcs.TryGetValuesFromKey1(tail, out heads);
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
         /// A return value indicates whether succeeded or failed.
@@ -706,6 +706,6 @@ namespace Berrysoft.Data
         /// <param name="head">The specified head.</param>
         /// <param name="tails">An instance of <see cref="IEnumerable{T}"/>, when succeed; otherwise, null.</param>
         /// <returns>true if no exceptions; otherwise, false.</returns>
-        public bool TryGetTails(T head, out IEnumerable<T> tails) => _arcs.TryGetValuesFromKey2(head, out tails);
+        public bool TryGetTails(T head, out ICollection<T> tails) => _arcs.TryGetValuesFromKey2(head, out tails);
     }
 }
