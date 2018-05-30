@@ -6,9 +6,20 @@ using System.Linq;
 namespace Berrysoft.Data
 {
     #region Interfaces
+    /// <summary>
+    /// Exposes members of a multi-value map.
+    /// </summary>
+    /// <typeparam name="TKey1">Type of key1.</typeparam>
+    /// <typeparam name="TKey2">Type of key2.</typeparam>
     public interface IMultiMap<TKey1, TKey2> : ICollection<KeyPair<TKey1, TKey2>>
     {
+        /// <summary>
+        /// Gets an <see cref="ICollection{TKey1}"/> containing the keys in the <see cref="IMultiMap{TKey1, TKey2}"/>.
+        /// </summary>
         ICollection<TKey1> Keys1 { get; }
+        /// <summary>
+        /// Gets an <see cref="ICollection{TKey2}"/> containing the keys in the <see cref="IMultiMap{TKey1, TKey2}"/>.
+        /// </summary>
         ICollection<TKey2> Keys2 { get; }
         ICollection<TKey2> GetValuesFromKey1(TKey1 key);
         ICollection<TKey1> GetValuesFromKey2(TKey2 key);
