@@ -147,7 +147,7 @@ namespace Berrysoft.Tsinghua.Net
                     ["password"] = "{MD5}" + passwordMD5
                 };
             }
-            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(Encode(loginInfo.ToString(), token));
+            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(XEncode(loginInfo.ToString(), token));
             loginDataDictionary["username"] = Username;
             loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + acid + token + ip + token + n + token + type + token + loginDataDictionary["info"]);
             return loginDataDictionary;
@@ -157,7 +157,7 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         /// <param name="a">String to be encoded.</param>
         /// <param name="b">Whether to add the length of the string in the end.</param>
-        /// <returns>A <see cref="Span{UInt32}"/> contains encoded string.</returns>
+        /// <returns>A <see cref="uint"/> array contains encoded string.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
         /// <code><![CDATA[
@@ -174,11 +174,11 @@ namespace Berrysoft.Tsinghua.Net
         /// }
         /// ]]></code>
         /// </remarks>
-        private static unsafe Span<uint> S(string a, bool b)
+        private static unsafe uint[] S(string a, bool b)
         {
             int c = a.Length;
             int n = c % 4 == 0 ? c / 4 : c / 4 + 1;
-            Span<uint> v;
+            uint[] v;
             if (b)
             {
                 v = new uint[n + 1];
@@ -186,7 +186,7 @@ namespace Berrysoft.Tsinghua.Net
             }
             else
             {
-                v = new uint[n];
+                v = new uint[n >= 4 ? n : 4];
             }
             fixed (uint* pv = v)
             {
@@ -201,7 +201,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Decode a <see cref="string"/> from its UTF-8 form.
         /// </summary>
-        /// <param name="a">A <see cref="Span{UInt32}"/> contains the encoded string.</param>
+        /// <param name="a">A <see cref="uint"/> array contains the encoded string.</param>
         /// <param name="b">Whether the length of the original string is in the end.</param>
         /// <returns>Decoded string.</returns>
         /// <remarks>
@@ -227,7 +227,7 @@ namespace Berrysoft.Tsinghua.Net
         /// }
         /// ]]></code>
         /// </remarks>
-        private static unsafe string L(Span<uint> a, bool b)
+        private static unsafe string L(uint[] a, bool b)
         {
             int d = a.Length;
             uint c = ((uint)(d - 1)) << 2;
@@ -244,18 +244,18 @@ namespace Berrysoft.Tsinghua.Net
             {
                 byte* pb = (byte*)pa;
                 int n = d << 2;
-                Span<char> aa = stackalloc char[n];
+                char* aa = stackalloc char[n];
                 for (int i = 0; i < n; i++)
                 {
                     aa[i] = (char)pb[i];
                 }
                 if (b)
                 {
-                    return aa.Slice(0, (int)c).ToString();
+                    return new string(aa, 0, (int)c);
                 }
                 else
                 {
-                    return aa.ToString();
+                    return new string(aa, 0, n);
                 }
             }
         }
@@ -274,7 +274,7 @@ namespace Berrysoft.Tsinghua.Net
         ///     }
         ///     var v = s(str, true),
         ///         k = s(key, false);
-        ///     if (k.length< 4) {
+        ///     if (k.length < 4) {
         ///         k.length = 4;
         ///     }
         ///     var n = v.length - 1,
@@ -306,20 +306,14 @@ namespace Berrysoft.Tsinghua.Net
         /// }
         /// ]]></code>
         /// </remarks>
-        private static string Encode(string str, string key)
+        private static string XEncode(string str, string key)
         {
             if (str.Length == 0)
             {
                 return String.Empty;
             }
-            Span<uint> v = S(str, true);
-            Span<uint> k = S(key, false);
-            while (k.Length < 4)
-            {
-                Span<uint> t = new uint[4];
-                k.CopyTo(t);
-                k = t;
-            }
+            uint[] v = S(str, true);
+            uint[] k = S(key, false);
             int n = v.Length - 1;
             uint z = v[n];
             uint y = v[0];
