@@ -7,6 +7,14 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyVersion>1.0.112.0</AssemblyVersion>
+    <FileVersion>1.0.112.0</FileVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.112-preview2</Version>
+    <Authors>Berrysoft</Authors>
   </PropertyGroup>
 
   <PropertyGroup>

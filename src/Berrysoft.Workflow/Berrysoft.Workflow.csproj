@@ -4,4 +4,9 @@
     <TargetFrameworks>netcoreapp2.0;netstandard2.0;net472</TargetFrameworks>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <AssemblyVersion>1.0.112.0</AssemblyVersion>
+    <FileVersion>1.0.112.0</FileVersion>
+  </PropertyGroup>
+
 </Project>
