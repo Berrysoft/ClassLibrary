@@ -18,5 +18,11 @@ namespace Berrysoft.Data
             => new ArgumentException($"{keyMessage} is existed.");
         public static Exception KeysExisted()
             => new ArgumentException("Both keys are existed.");
+        public static Exception ArgumentOutOfRange(string paramName)
+            => new ArgumentOutOfRangeException(paramName);
+        public static Exception NotSupported()
+            => new NotSupportedException();
+        public static Exception ArrayTooSmall()
+            => new ArgumentException("The array is too small.");
     }
 }

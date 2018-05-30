@@ -401,12 +401,17 @@ namespace Berrysoft.Data
                 arrayIndex++;
             }
         }
-        public Enumerator GetEnumerator() => new Enumerator(this);
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Map{TKey1, TKey2}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Map{TKey1, TKey2}"/>.</returns>
-        IEnumerator<KeyPair<TKey1, TKey2>> IEnumerable<KeyPair<TKey1, TKey2>>.GetEnumerator() => GetEnumerator();
+        public IEnumerator<KeyPair<TKey1, TKey2>> GetEnumerator()
+        {
+            foreach (var item in dic)
+            {
+                yield return new KeyPair<TKey1, TKey2>(item.Key, item.Value);
+            }
+        }
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Map{TKey1, TKey2}"/>.
         /// </summary>
@@ -422,25 +427,5 @@ namespace Berrysoft.Data
         /// </summary>
         /// <returns>An instance of <see cref="Dictionary{TKey, TValue}"/>.</returns>
         public Dictionary<TKey2, TKey1> ToDictionaryFromKey2() => new Dictionary<TKey2, TKey1>(rev);
-        public struct Enumerator : IEnumerator<KeyPair<TKey1, TKey2>>
-        {
-            private Dictionary<TKey1, TKey2>.Enumerator enumerator;
-            internal Enumerator(Map<TKey1, TKey2> map)
-            {
-                enumerator = map.dic.GetEnumerator();
-            }
-            public KeyPair<TKey1, TKey2> Current
-            {
-                get
-                {
-                    var current = enumerator.Current;
-                    return new KeyPair<TKey1, TKey2>(current.Key, current.Value);
-                }
-            }
-            object IEnumerator.Current => Current;
-            public void Dispose() => enumerator.Dispose();
-            public bool MoveNext() => enumerator.MoveNext();
-            void IEnumerator.Reset() => ((IEnumerator)enumerator).Reset();
-        }
     }
 }
