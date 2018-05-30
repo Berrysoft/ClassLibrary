@@ -423,7 +423,7 @@ namespace Berrysoft.Data
     public class Graph<T> : IGraph<T>
     {
         private HashSet<T> _vertexes;
-        private KeyLookup<T, T> _arcs;
+        private MultiMap<T, T> _arcs;
         /// <summary>
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
@@ -445,7 +445,7 @@ namespace Berrysoft.Data
 #else
         {
             _vertexes = new HashSet<T>(comparer);
-            _arcs = new KeyLookup<T, T>(comparer, comparer);
+            _arcs = new MultiMap<T, T>(comparer, comparer);
         }
 #endif
 #if NETCOREAPP2_0 || NET472
@@ -458,7 +458,7 @@ namespace Berrysoft.Data
         public Graph(int vertexCapacity, int arcCapacity, IEqualityComparer<T> comparer)
         {
             _vertexes = new HashSet<T>(vertexCapacity, comparer);
-            _arcs = new KeyLookup<T, T>(arcCapacity, comparer, comparer);
+            _arcs = new MultiMap<T, T>(arcCapacity, comparer, comparer);
         }
 #endif
         /// <summary>
@@ -476,7 +476,7 @@ namespace Berrysoft.Data
         public Graph(IEnumerable<T> vertexes, IEqualityComparer<T> comparer)
         {
             _vertexes = new HashSet<T>(vertexes);
-            _arcs = new KeyLookup<T, T>(comparer, comparer);
+            _arcs = new MultiMap<T, T>(comparer, comparer);
         }
         /// <summary>
         /// Count of vertexes.

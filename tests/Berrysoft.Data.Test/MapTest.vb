@@ -1,10 +1,10 @@
 ﻿Imports Microsoft.VisualStudio.TestTools.UnitTesting
 
 <TestClass()>
-Public Class DictionaryTest
+Public Class MapTest
 
     <TestMethod()>
-    Public Sub KeyDicAddTest()
+    Public Sub MapAddTest()
         Dim keydic As New Map(Of Integer, String)()
         keydic.Add(123, "123")
         keydic.Add(456, "456")
@@ -16,7 +16,7 @@ Public Class DictionaryTest
     End Sub
 
     <TestMethod()>
-    Public Sub KeyDicContainsAndRemoveTest()
+    Public Sub MapContainsAndRemoveTest()
         Dim keydic As New Map(Of Integer, String)()
         keydic.Add(123, "123")
         keydic.Add(456, "456")
@@ -30,7 +30,7 @@ Public Class DictionaryTest
     End Sub
 
     <TestMethod()>
-    Public Sub KeyDicCollectionTest()
+    Public Sub MapCollectionTest()
         Dim keydic As New Map(Of Integer, String)()
         keydic.Add(123, "123")
         keydic.Add(456, "456")
@@ -48,8 +48,8 @@ Public Class DictionaryTest
     End Sub
 
     <TestMethod()>
-    Public Sub KeyLookupAddTest()
-        Dim keylook As New KeyLookup(Of Integer, String)()
+    Public Sub MultiMapAddTest()
+        Dim keylook As New MultiMap(Of Integer, String)()
         keylook.Add(123, "123")
         keylook.Add(456, "456")
         keylook.Add(123, "abc")
@@ -60,8 +60,8 @@ Public Class DictionaryTest
     End Sub
 
     <TestMethod()>
-    Public Sub KeyLookupRemoveTest()
-        Dim keylook As New KeyLookup(Of Integer, String)()
+    Public Sub MultiMapRemoveTest()
+        Dim keylook As New MultiMap(Of Integer, String)()
         keylook.Add(123, "123")
         keylook.Add(456, "456")
         keylook.Add(123, "abc")
