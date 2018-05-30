@@ -8,12 +8,12 @@ namespace Berrysoft.Data
     #region Interfaces
     public interface IMultiMap<TKey1, TKey2> : ICollection<KeyPair<TKey1, TKey2>>
     {
-        IEnumerable<TKey1> Keys1 { get; }
-        IEnumerable<TKey2> Keys2 { get; }
-        IEnumerable<TKey2> GetValuesFromKey1(TKey1 key);
-        IEnumerable<TKey1> GetValuesFromKey2(TKey2 key);
-        bool TryGetValuesFromKey1(TKey1 key, out IEnumerable<TKey2> values);
-        bool TryGetValuesFromKey2(TKey2 key, out IEnumerable<TKey1> values);
+        ICollection<TKey1> Keys1 { get; }
+        ICollection<TKey2> Keys2 { get; }
+        ICollection<TKey2> GetValuesFromKey1(TKey1 key);
+        ICollection<TKey1> GetValuesFromKey2(TKey2 key);
+        bool TryGetValuesFromKey1(TKey1 key, out ICollection<TKey2> values);
+        bool TryGetValuesFromKey2(TKey2 key, out ICollection<TKey1> values);
         void Add(TKey1 key1, TKey2 key2);
         bool TryAdd(TKey1 key1, TKey2 key2);
         bool ContainsKey1(TKey1 key);
@@ -81,8 +81,10 @@ namespace Berrysoft.Data
         }
         public int Count => lkp.Count;
         public bool IsReadOnly => false;
-        public IEnumerable<TKey1> Keys1 => lkp.Keys;
-        public IEnumerable<TKey2> Keys2 => rev.Keys;
+        public Dictionary<TKey1, HashSet<TKey2>>.KeyCollection Keys1 => lkp.Keys;
+        public Dictionary<TKey2, HashSet<TKey1>>.KeyCollection Keys2 => rev.Keys;
+        ICollection<TKey1> IMultiMap<TKey1, TKey2>.Keys1 => Keys1;
+        ICollection<TKey2> IMultiMap<TKey1, TKey2>.Keys2 => Keys2;
         private bool Insert(TKey1 key1, TKey2 key2, bool add)
         {
             if (key1 == null)
@@ -126,15 +128,15 @@ namespace Berrysoft.Data
         public void Add(TKey1 key1, TKey2 key2) => Insert(key1, key2, true);
         public void Add(KeyPair<TKey1, TKey2> item) => Add(item.Key1, item.Key2);
         public bool TryAdd(TKey1 key1, TKey2 key2) => Insert(key1, key2, false);
-        public IEnumerable<TKey2> GetValuesFromKey1(TKey1 key) => lkp[key];
-        public IEnumerable<TKey1> GetValuesFromKey2(TKey2 key) => rev[key];
-        public bool TryGetValuesFromKey1(TKey1 key, out IEnumerable<TKey2> values)
+        public ICollection<TKey2> GetValuesFromKey1(TKey1 key) => lkp[key];
+        public ICollection<TKey1> GetValuesFromKey2(TKey2 key) => rev[key];
+        public bool TryGetValuesFromKey1(TKey1 key, out ICollection<TKey2> values)
         {
             bool result = lkp.TryGetValue(key, out var value);
             values = value;
             return result;
         }
-        public bool TryGetValuesFromKey2(TKey2 key, out IEnumerable<TKey1> values)
+        public bool TryGetValuesFromKey2(TKey2 key, out ICollection<TKey1> values)
         {
             bool result = rev.TryGetValue(key, out var value);
             values = value;
