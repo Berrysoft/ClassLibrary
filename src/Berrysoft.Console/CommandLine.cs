@@ -38,6 +38,9 @@ namespace Berrysoft.Console
             InitDictionary();
             InitArgs(args);
         }
+        public CommandLine(string args)
+            : this(args?.Split(' '))
+        { }
         private void InitArgs(string[] args)
         {
             Args = new Dictionary<string, string>();

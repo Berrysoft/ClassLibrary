@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Json;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
@@ -86,6 +85,7 @@ namespace Berrysoft.Tsinghua.Net
             string result = await GetAsync(string.Format(ChallengeUri, Username));
             int begin = result.IndexOf('{');
             int end = result.LastIndexOf('}');
+            //Substring() is 1:4 faster than Slice().
             return result.Substring(begin, end - begin + 1);
         }
         private Dictionary<string, string> loginDataDictionary;
@@ -177,7 +177,9 @@ namespace Berrysoft.Tsinghua.Net
         private static unsafe uint[] S(string a, bool b)
         {
             int c = a.Length;
-            int n = c % 4 == 0 ? c / 4 : c / 4 + 1;
+            int n = c / 4;
+            n += c % 4 != 0 ? 1 : 0;
+            //Array is 1:30 faster than stack array and Encoding.GetBytes().
             uint[] v;
             if (b)
             {
@@ -244,7 +246,9 @@ namespace Berrysoft.Tsinghua.Net
             {
                 byte* pb = (byte*)pa;
                 int n = d << 2;
-                char* aa = stackalloc char[n];
+                //When the return string needs subtracted, stack array is a little faster than array;
+                //otherwise, array is 1:1.2 faster than stack array.
+                char[] aa = new char[n];
                 for (int i = 0; i < n; i++)
                 {
                     aa[i] = (char)pb[i];
@@ -255,7 +259,7 @@ namespace Berrysoft.Tsinghua.Net
                 }
                 else
                 {
-                    return new string(aa, 0, n);
+                    return new string(aa);
                 }
             }
         }
@@ -310,7 +314,7 @@ namespace Berrysoft.Tsinghua.Net
         {
             if (str.Length == 0)
             {
-                return String.Empty;
+                return string.Empty;
             }
             uint[] v = S(str, true);
             uint[] k = S(key, false);
@@ -373,11 +377,15 @@ namespace Berrysoft.Tsinghua.Net
         private unsafe static string Base64Encode(string t)
         {
             string n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
-            StringBuilder u = new StringBuilder();
             int a = t.Length;
+            int len = a / 3 * 4;
+            len += a % 3 != 0 ? 4 : 0;
+            //Stack array is 1:2 faster than array, StringBuilder and Converter.ToBase64String().
+            char* u = stackalloc char[len];
             char r = '=';
             int h = 0;
             byte* p = (byte*)&h;
+            int ui = 0;
             for (int o = 0; o < a; o += 3)
             {
                 p[2] = (byte)t[o];
@@ -387,15 +395,15 @@ namespace Berrysoft.Tsinghua.Net
                 {
                     if (o * 8 + i * 6 > a * 8)
                     {
-                        u.Append(r);
+                        u[ui++] = r;
                     }
                     else
                     {
-                        u.Append(n[h >> 6 * (3 - i) & 0x3F]);
+                        u[ui++] = n[h >> 6 * (3 - i) & 0x3F];
                     }
                 }
             }
-            return u.ToString();
+            return new string(u, 0, len);
         }
     }
 }
