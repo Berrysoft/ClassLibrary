@@ -248,7 +248,8 @@ namespace Berrysoft.Tsinghua.Net
             }
             using (SHA1 sha1 = SHA1.Create())
             {
-                byte[] data = sha1.ComputeHash(Encoding.GetEncoding("ISO-8859-1").GetBytes(input));
+                const int ISO_8859_1 = 28591;
+                byte[] data = sha1.ComputeHash(Encoding.GetEncoding(ISO_8859_1).GetBytes(input));
                 return GetHexString(data);
             }
         }
