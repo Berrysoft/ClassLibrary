@@ -86,11 +86,7 @@ namespace Berrysoft.Tsinghua.Net
             string result = await GetAsync(string.Format(ChallengeUri, Username));
             int begin = result.IndexOf('{');
             int end = result.LastIndexOf('}');
-#if NETCOREAPP2_1
-            return result.AsSpan().Slice(begin, end - begin + 1).ToString();
-#else
             return result.Substring(begin, end - begin + 1);
-#endif
         }
         private Dictionary<string, string> loginDataDictionary;
         private JsonObject loginInfo;
