@@ -85,7 +85,7 @@ namespace Berrysoft.Tsinghua.Net
             string result = await GetAsync(string.Format(ChallengeUri, Username));
             int begin = result.IndexOf('{');
             int end = result.LastIndexOf('}');
-            //Substring() is 1:4 faster than Slice().
+            //Substring() is 4 times faster than Slice().
             return result.Substring(begin, end - begin + 1);
         }
         private Dictionary<string, string> loginDataDictionary;
@@ -179,7 +179,7 @@ namespace Berrysoft.Tsinghua.Net
             int c = a.Length;
             int n = c / 4;
             n += c % 4 != 0 ? 1 : 0;
-            //Array is 1:30 faster than stack array and Encoding.GetBytes().
+            //Array is 30 times faster than stack array and Encoding.GetBytes().
             uint[] v;
             if (b)
             {
@@ -247,7 +247,7 @@ namespace Berrysoft.Tsinghua.Net
                 byte* pb = (byte*)pa;
                 int n = d << 2;
                 //When the return string needs subtracted, stack array is a little faster than array;
-                //otherwise, array is 1:1.2 faster than stack array.
+                //otherwise, array is 1.2 times faster than stack array.
                 char[] aa = new char[n];
                 for (int i = 0; i < n; i++)
                 {
@@ -380,7 +380,7 @@ namespace Berrysoft.Tsinghua.Net
             int a = t.Length;
             int len = a / 3 * 4;
             len += a % 3 != 0 ? 4 : 0;
-            //Stack array is 1:2 faster than array, StringBuilder and Converter.ToBase64String().
+            //Stack array is 30 times faster than array, StringBuilder and Converter.ToBase64String().
             char* u = stackalloc char[len];
             char r = '=';
             int h = 0;
