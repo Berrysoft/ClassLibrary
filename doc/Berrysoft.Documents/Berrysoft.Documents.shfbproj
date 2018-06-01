@@ -27,12 +27,14 @@
       <Argument Key="maxVersionParts" Value="" xmlns="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\Debug\net472\Berrysoft.Tsinghua.Net.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\Debug\net472\Berrysoft.Tsinghua.Net.dll" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\Debug\net472\Berrysoft.Data.dll" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\Debug\net472\Berrysoft.Unsafe.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\Debug\net472\Berrysoft.Unsafe.dll" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\$(Configuration)\net472\Berrysoft.Tsinghua.Net.xml" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\$(Configuration)\net472\Berrysoft.Tsinghua.Net.dll" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\$(Configuration)\net472\Berrysoft.Data.xml" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\$(Configuration)\net472\Berrysoft.Data.dll" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\$(Configuration)\net472\Berrysoft.Unsafe.xml" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\$(Configuration)\net472\Berrysoft.Unsafe.dll" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Console\bin\$(Configuration)\net472\Berrysoft.Console.xml" />
+      <DocumentationSource sourceFile="..\..\src\Berrysoft.Console\bin\$(Configuration)\net472\Berrysoft.Console.dll" />
     </DocumentationSources>
     <HelpFileFormat>Markdown</HelpFileFormat>
     <SyntaxFilters>Standard</SyntaxFilters>

@@ -4,20 +4,45 @@ using System.Reflection;
 
 namespace Berrysoft.Console
 {
+    /// <summary>
+    /// Represents a command line option.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class OptionAttribute : Attribute
     {
+        /// <summary>
+        /// Initialize an instance of <see cref="OptionAttribute"/>.
+        /// </summary>
+        /// <param name="shortArg">Short name of the option.</param>
+        /// <param name="longArg">Long name of the option.</param>
         public OptionAttribute(char shortArg, string longArg)
             : this(new string(shortArg, 1), longArg)
         { }
+        /// <summary>
+        /// Initialize an instance of <see cref="OptionAttribute"/>.
+        /// </summary>
+        /// <param name="shortArg">Short name of the option.</param>
+        /// <param name="longArg">Long name of the option.</param>
         public OptionAttribute(string shortArg, string longArg)
         {
             ShortArg = shortArg;
             LongArg = longArg;
         }
+        /// <summary>
+        /// Short name of the option.
+        /// </summary>
         public string ShortArg { get; }
+        /// <summary>
+        /// Long name of the option.
+        /// </summary>
         public string LongArg { get; }
+        /// <summary>
+        /// Get or set whether the option is explicitly required.
+        /// </summary>
         public bool Required { get; set; }
+        /// <summary>
+        /// Get or set the explanation of the option.
+        /// </summary>
         public string HelpText { get; set; }
     }
     public abstract class CommandLine
@@ -33,7 +58,7 @@ namespace Berrysoft.Console
         {
             if (args == null)
             {
-                throw ExceptionsHelper.ArgumentNull(nameof(args));
+                throw ExceptionHelper.ArgumentNull(nameof(args));
             }
             InitDictionary();
             InitArgs(args);
@@ -48,7 +73,7 @@ namespace Berrysoft.Console
             {
                 if (!StartsWithHead(args[i]))
                 {
-                    throw ExceptionsHelper.ArgInvalid(args[i]);
+                    throw ExceptionHelper.ArgInvalid(args[i]);
                 }
                 string argValue;
                 if (i + 1 < args.Length)
@@ -65,12 +90,12 @@ namespace Berrysoft.Console
                 }
                 if (!validArgs.Contains(args[i]))
                 {
-                    throw ExceptionsHelper.ArgInvalid(args[i]);
+                    throw ExceptionHelper.ArgInvalid(args[i]);
                 }
 #if NETCOREAPP2_1
                 if (!Args.TryAdd(args[i], argValue))
                 {
-                    throw ExceptionsHelper.ArgInvalid(args[i]);
+                    throw ExceptionHelper.ArgInvalid(args[i]);
                 }
 #else
                 try
@@ -79,7 +104,7 @@ namespace Berrysoft.Console
                 }
                 catch (Exception ex)
                 {
-                    throw ExceptionsHelper.ArgInvalid(args[i], ex.Message, ex);
+                    throw ExceptionHelper.ArgInvalid(args[i], ex.Message, ex);
                 }
 #endif
                 if (argValue != null)
@@ -164,12 +189,12 @@ namespace Berrysoft.Console
                     }
                     else
                     {
-                        throw ExceptionsHelper.ArgRepeated(prop.Key.LongArg);
+                        throw ExceptionHelper.ArgRepeated(prop.Key.LongArg);
                     }
                 }
                 if (!help && !assigned && prop.Key.Required)
                 {
-                    throw ExceptionsHelper.ArgRequired(prop.Key.LongArg);
+                    throw ExceptionHelper.ArgRequired(prop.Key.LongArg);
                 }
                 if (propValue != null)
                 {

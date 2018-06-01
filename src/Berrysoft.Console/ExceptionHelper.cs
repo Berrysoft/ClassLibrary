@@ -2,28 +2,18 @@
 
 namespace Berrysoft.Console
 {
-    internal static class ExceptionsHelper
+    internal static class ExceptionHelper
     {
         public static Exception ArgumentNull(string paramName)
-        {
-            return new ArgumentNullException(paramName);
-        }
+            => new ArgumentNullException(paramName);
         public static Exception ArgInvalid(string argName)
-        {
-            return new ArgInvalidException(argName);
-        }
+            => new ArgInvalidException(argName);
         public static Exception ArgInvalid(string argName, string message, Exception innerException)
-        {
-            return new ArgInvalidException(argName, message, innerException);
-        }
+            => new ArgInvalidException(argName, message, innerException);
         public static Exception ArgRepeated(string argName)
-        {
-            return new ArgRepeatedException(argName);
-        }
+            => new ArgRepeatedException(argName);
         public static Exception ArgRequired(string argName)
-        {
-            return new ArgRequiredException(argName);
-        }
+            => new ArgRequiredException(argName);
     }
     public class ArgInvalidException : Exception
     {
