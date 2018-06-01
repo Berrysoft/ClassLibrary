@@ -16,6 +16,10 @@
     <Authors>Berrysoft</Authors>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Berrysoft.Console.xml</DocumentationFile>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="System.Json" Version="4.5.0" />
   </ItemGroup>

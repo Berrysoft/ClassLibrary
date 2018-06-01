@@ -96,7 +96,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>A dictionary contains the data.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
-        /// <code><![CDATA[
+        /// <code language="JavaScript"><![CDATA[
         /// jQuery.getJSON(url.replace("srun_portal", "get_challenge"), { "username": $data.username, "ip": $data.ip, "double_stack": "1" }, function(data) {
         ///     var token = "";
         ///                 if (data.res != "ok") {
@@ -160,7 +160,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>A <see cref="uint"/> array contains encoded string.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
-        /// <code><![CDATA[
+        /// <code language="JavaScript"><![CDATA[
         /// function s(a, b) {
         ///    var c = a.length,
         ///    v = [];
@@ -208,7 +208,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>Decoded string.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
-        /// <code><![CDATA[
+        /// <code language="JavaScript"><![CDATA[
         /// function l(a, b) {
         /// var d = a.length,
         ///     c = (d - 1) << 2;
@@ -271,7 +271,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>Encoded string.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
-        /// <code><![CDATA[
+        /// <code language="JavaScript"><![CDATA[
         /// xEncode: function(str, key) {
         ///     if (str == "") {
         ///         return "";
@@ -345,7 +345,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>Encoded string.</returns>
         /// <remarks>
         /// This is a function translated from javascript.
-        /// <code><![CDATA[
+        /// <code language="JavaScript"><![CDATA[
         /// Base64: function() {
         ///     var n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA",
         ///         r = "=",
