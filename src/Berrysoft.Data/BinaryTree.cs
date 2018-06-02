@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Berrysoft.Data
@@ -324,6 +325,25 @@ namespace Berrysoft.Data
         /// </summary>
         public BinaryNode<T> Parent => _parent;
         /// <summary>
+        /// The count of children.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                int count = 0;
+                if (_left != null)
+                {
+                    count++;
+                }
+                if (_right != null)
+                {
+                    count++;
+                }
+                return count;
+            }
+        }
+        /// <summary>
         /// Left child of the node.
         /// </summary>
         public BinaryNode<T> LeftChild
@@ -362,10 +382,25 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// Returns an enumerator that iterates through the <see cref="BinaryNode{T}"/>.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
-        public IEnumerable<BinaryNode<T>> AsEnumerable() => new BinaryNode<T>[] { _left, _right };
+        /// <returns>An <see cref="IEnumerable{TNode}"/> for the <see cref="BinaryNode{T}"/>.</returns>
+        public IEnumerator<BinaryNode<T>> GetEnumerator()
+        {
+            if (_left != null)
+            {
+                yield return _left;
+            }
+            if (_right != null)
+            {
+                yield return _right;
+            }
+        }
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="BinaryNode{T}"/>.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable"/> for the <see cref="BinaryNode{T}"/>.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         /// <summary>
         /// Convert <see cref="BinaryNode{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
