@@ -195,6 +195,34 @@ namespace Berrysoft.Data
                 }
             }
         }
+        public static IEnumerable<(TNode Node, IReadOnlyCollection<TNode> Path)> WithPath<TValue, TNode>(this IEnumerable<INodeBase<TValue, TNode>> nodes)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            return WithPathIterator(nodes ?? throw ExceptionHelper.ArgumentNull(nameof(nodes)));
+        }
+        private static IEnumerable<(TNode Node, IReadOnlyCollection<TNode> Path)> WithPathIterator<TValue, TNode>(IEnumerable<INodeBase<TValue, TNode>> nodes)
+            where TNode : INodeBase<TValue, TNode>
+        {
+            Stack<TNode> stack = new Stack<TNode>();
+            bool check = false;
+            foreach (TNode node in nodes)
+            {
+                if(check)
+                {
+                    while (!EqualityComparer<TNode>.Default.Equals(stack.Peek(), node.Parent))
+                    {
+                        stack.Pop();
+                    }
+                    check = false;
+                }
+                stack.Push(node);
+                yield return (node, stack);
+                if (node.Count==0)
+                {
+                    check = true;
+                }
+            }
+        }
     }
     /// <summary>
     /// Represents a tree with a root <see cref="Node{T}"/>.
