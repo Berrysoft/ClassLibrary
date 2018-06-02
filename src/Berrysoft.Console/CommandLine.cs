@@ -45,15 +45,38 @@ namespace Berrysoft.Console
         /// </summary>
         public string HelpText { get; set; }
     }
+    /// <summary>
+    /// Represents a <see langword="abstract"/> class to parse command line to properties.
+    /// </summary>
     public abstract class CommandLine
     {
         private Dictionary<OptionAttribute, PropertyInfo> properties;
         private HashSet<string> validArgs;
+        /// <summary>
+        /// Args of options and their values.
+        /// </summary>
         public Dictionary<string, string> Args { get; private set; }
+        /// <summary>
+        /// Head of short options.
+        /// </summary>
         public virtual string ShortHead => "-";
+        /// <summary>
+        /// Head of long options.
+        /// </summary>
         public virtual string LongHead => "--";
+        /// <summary>
+        /// Short form of help option.
+        /// </summary>
         public virtual string ShortHelpArg => "h";
+        /// <summary>
+        /// Long form of help option.
+        /// </summary>
         public virtual string LongHelpArg => "help";
+        /// <summary>
+        /// Initialize an instance of <see cref="CommandLine"/> class.
+        /// </summary>
+        /// <param name="args">Raw args.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="args"/> is <see langword="null"/>.</exception>
         public CommandLine(string[] args)
         {
             if (args == null)
@@ -63,6 +86,11 @@ namespace Berrysoft.Console
             InitDictionary();
             InitArgs(args);
         }
+        /// <summary>
+        /// Initialize an instance of <see cref="CommandLine"/> class.
+        /// </summary>
+        /// <param name="args">Raw args.</param>
+        /// <exception cref="ArgumentNullException">When <paramref name="args"/> is <see langword="null"/>.</exception>
         public CommandLine(string args)
             : this(args?.Split(' '))
         { }
