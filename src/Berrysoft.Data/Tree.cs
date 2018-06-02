@@ -195,11 +195,25 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get current node and current path when searching.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="nodes">Nodes of searching.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with node and path.</returns>
         public static IEnumerable<(TNode Node, IReadOnlyCollection<TNode> Path)> WithPath<TValue, TNode>(this IEnumerable<INodeBase<TValue, TNode>> nodes)
             where TNode : INodeBase<TValue, TNode>
         {
             return WithPathIterator(nodes ?? throw ExceptionHelper.ArgumentNull(nameof(nodes)));
         }
+        /// <summary>
+        /// Get current node and current path when searching.
+        /// </summary>
+        /// <typeparam name="TValue">The type of value the node contains.</typeparam>
+        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <param name="nodes">Nodes of searching.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with node and path.</returns>
         private static IEnumerable<(TNode Node, IReadOnlyCollection<TNode> Path)> WithPathIterator<TValue, TNode>(IEnumerable<INodeBase<TValue, TNode>> nodes)
             where TNode : INodeBase<TValue, TNode>
         {
