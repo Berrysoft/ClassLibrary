@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TValue">The type of value the node contains.</typeparam>
     /// <typeparam name="TNode">The type of node.</typeparam>
-    public interface INodeBase<TValue, TNode>
+    public interface INodeBase<TValue, TNode> : IEnumerable<TNode>
         where TNode : INodeBase<TValue, TNode>
     {
         /// <summary>
@@ -35,10 +36,9 @@ namespace Berrysoft.Data
         /// </summary>
         TNode Parent { get; }
         /// <summary>
-        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// The count of children.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
-        IEnumerable<TNode> AsEnumerable();
+        int Count { get; }
     }
     /// <summary>
     /// Exposes members of a node with many children.
@@ -48,10 +48,6 @@ namespace Berrysoft.Data
     public interface INode<TValue, TNode> : INodeBase<TValue, TNode>
         where TNode : INode<TValue, TNode>
     {
-        /// <summary>
-        /// The count of children.
-        /// </summary>
-        int Count { get; }
         /// <summary>
         /// Add a child.
         /// </summary>
@@ -97,7 +93,7 @@ namespace Berrysoft.Data
             int GetDepthInternal(TNode node, int depth)
             {
                 int result = depth;
-                foreach (TNode child in node.AsEnumerable())
+                foreach (TNode child in node)
                 {
                     int tempDepth = GetDepthInternal(child, depth + 1);
                     if (tempDepth > result)
@@ -152,7 +148,7 @@ namespace Berrysoft.Data
             {
                 TNode current = nodes.Pop();
                 yield return current;
-                foreach (var child in current.AsEnumerable().Reverse())
+                foreach (var child in current.Reverse())
                 {
                     nodes.Push(child);
                 }
@@ -193,7 +189,7 @@ namespace Berrysoft.Data
             {
                 TNode current = nodes.Dequeue();
                 yield return current;
-                foreach (var child in current.AsEnumerable())
+                foreach (var child in current)
                 {
                     nodes.Enqueue(child);
                 }
@@ -253,7 +249,7 @@ namespace Berrysoft.Data
             int GetDepthInternal(Node<T> node, int depth)
             {
                 int result = depth;
-                foreach (Node<T> child in node.AsEnumerable())
+                foreach (Node<T> child in node)
                 {
                     int tempDepth = GetDepthInternal(child, depth + 1);
                     if (tempDepth > result)
@@ -385,10 +381,15 @@ namespace Berrysoft.Data
             _children.Clear();
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{TNode}"/> of its children.
+        /// Returns an enumerator that iterates through the <see cref="Node{T}"/>.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> of its children.</returns>
-        public IEnumerable<Node<T>> AsEnumerable() => _children;
+        /// <returns>An <see cref="IEnumerable{TNode}"/> for the <see cref="Node{T}"/>.</returns>
+        public IEnumerator<Node<T>> GetEnumerator() => _children.GetEnumerator();
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Node{T}"/>.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable"/> for the <see cref="Node{T}"/>.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_children).GetEnumerator();
         /// <summary>
         /// Convert <see cref="Node{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
