@@ -6,7 +6,7 @@ using System.Reflection;
 
 namespace Berrysoft.Console
 {
-    public abstract class JsonSettings : SettingsBase<JsonValue, object>
+    public abstract class JsonSettings : SettingsBase
     {
         public JsonSettings()
             : base()
@@ -18,31 +18,23 @@ namespace Berrysoft.Console
             {
                 json = JsonValue.Load(reader);
             }
-            foreach (var prop in properties)
+            foreach (string name in Settings)
             {
-                SettingsAttribute attr = prop.Key;
-                PropertyInfo p = prop.Value;
-                object propValue = null;
-                if (json.ContainsKey(attr.Name))
+                if(json.ContainsKey(name))
                 {
-                    propValue = ChangeType(attr.Name, json[attr.Name], p.PropertyType);
-                }
-                if (propValue != null)
-                {
-                    p.SetValue(this, propValue);
+                    SetValue(name, json[name]);
                 }
             }
         }
         public override void Save(string fileName)
         {
             Dictionary<string, JsonValue> dic = new Dictionary<string, JsonValue>();
-            foreach (var prop in properties)
+            foreach (string name in Settings)
             {
-                SettingsAttribute attr = prop.Key;
-                PropertyInfo p = prop.Value;
-                object propValue = p.GetValue(this);
-                JsonValue value = ChangeBackType(attr.Name, propValue, p.PropertyType);
-                dic.Add(attr.Name, value);
+                if (GetValue(name) is JsonValue propValue)
+                {
+                    dic.Add(name, propValue);
+                }
             }
             JsonObject json = new JsonObject(dic);
             using (StreamWriter writer = new StreamWriter(fileName))
