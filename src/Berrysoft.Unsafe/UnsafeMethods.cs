@@ -60,6 +60,7 @@ namespace Berrysoft.Unsafe
             byte* ptr = stackalloc byte[size * SizeOf<T>()];
             action(new Pointer<T>(ptr));
         }
+#if NETCOREAPP2_1
         /// <summary>
         /// Get a <see cref="Span{T}"/> of a <see cref="Pointer{T}"/>.
         /// </summary>
@@ -78,6 +79,7 @@ namespace Berrysoft.Unsafe
         /// <returns>A <see cref="ReadOnlySpan{T}"/> of a <see cref="Pointer{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ReadOnlySpan<T> AsReadOnlySpan<T>(this Pointer<T> ptr, int size) => new ReadOnlySpan<T>(ptr.Ptr, size);
+#endif
         /// <summary>
         /// Initializes a block of memory at the given location with a given initial value.
         /// </summary>
