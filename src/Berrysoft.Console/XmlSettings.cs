@@ -8,8 +8,9 @@ using System.Xml.Linq;
 
 namespace Berrysoft.Console
 {
-    public abstract class XmlSettings : SettingsBase<object, object>
+    public abstract class XmlSettings : SettingsBase
     {
+        private XName rootName;
 #if NETCOREAPP2_1
         private readonly object syncLock = new object();
 #endif
@@ -29,23 +30,19 @@ namespace Berrysoft.Console
         {
             XDocument document = XDocument.Load(fileName);
             XElement settings = document.Element(rootName);
-            foreach (var prop in properties)
+            foreach (string name in Settings)
             {
-                SettingsAttribute attr = prop.Key;
-                PropertyInfo p = prop.Value;
+                bool mul = IsMultiple(name);
                 object propValue = null;
-                if (attr.AllowMultiple)
+                if (mul)
                 {
-                    propValue = ChangeType(attr.Name, settings.Elements(attr.Name)?.Select(e => e.Value)?.ToArray(), p.PropertyType);
+                    propValue = settings.Elements(name)?.Select(e => e.Value)?.ToArray();
                 }
                 else
                 {
-                    propValue = ChangeType(attr.Name, settings.Element(attr.Name)?.Value, p.PropertyType);
+                    propValue = settings.Element(name)?.Value;
                 }
-                if (propValue != null)
-                {
-                    p.SetValue(this, propValue);
-                }
+                SetValue(name, propValue);
             }
         }
 #if NETCOREAPP2_1
@@ -58,25 +55,21 @@ namespace Berrysoft.Console
                 document = await XDocument.LoadAsync(reader, LoadOptions.None, cancellationToken);
             }
             XElement settings = document.Element(rootName);
-            properties.AsParallel().WithCancellation(cancellationToken).ForAll(prop =>
+            Settings.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
             {
-                SettingsAttribute attr = prop.Key;
-                PropertyInfo p = prop.Value;
+                bool mul = IsMultiple(name);
                 object propValue = null;
-                if (attr.AllowMultiple)
+                if (mul)
                 {
-                    propValue = ChangeType(attr.Name, settings.Elements(attr.Name)?.Select(e => e.Value)?.ToArray(), p.PropertyType);
+                    propValue = settings.Elements(name)?.Select(e => e.Value)?.ToArray();
                 }
                 else
                 {
-                    propValue = ChangeType(attr.Name, settings.Element(attr.Name)?.Value, p.PropertyType);
+                    propValue = settings.Element(name)?.Value;
                 }
-                if (propValue != null)
+                lock (syncLock)
                 {
-                    lock (syncLock)
-                    {
-                        p.SetValue(this, propValue);
-                    }
+                    SetValue(name, propValue);
                 }
             });
         }
@@ -86,20 +79,18 @@ namespace Berrysoft.Console
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
             XElement settings = new XElement(rootName);
             document.Add(settings);
-            foreach (var prop in properties)
+            foreach (string name in Settings)
             {
-                SettingsAttribute attr = prop.Key;
-                PropertyInfo p = prop.Value;
-                object propValue = p.GetValue(this);
-                if (attr.AllowMultiple)
+                bool mul = IsMultiple(name);
+                object propValue = GetValue(name);
+                if (mul)
                 {
-                    string[] values = (string[])ChangeBackType(attr.Name, propValue, p.PropertyType);
-                    settings.Add(values.Select(v => new XElement(attr.Name, v)).ToArray());
+                    string[] values = (string[])propValue;
+                    settings.Add(values.Select(v => new XElement(name, v)).ToArray());
                 }
                 else
                 {
-                    object value = ChangeBackType(attr.Name, propValue, p.PropertyType);
-                    settings.Add(new XElement(attr.Name, value));
+                    settings.Add(new XElement(name, propValue));
                 }
             }
             document.Save(fileName);
@@ -111,25 +102,23 @@ namespace Berrysoft.Console
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
             XElement settings = new XElement(rootName);
             document.Add(settings);
-            properties.AsParallel().WithCancellation(cancellationToken).ForAll(prop =>
+            Settings.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
             {
-                SettingsAttribute attr = prop.Key;
-                PropertyInfo p = prop.Value;
-                object propValue = p.GetValue(this);
-                if (attr.AllowMultiple)
+                bool mul = IsMultiple(name);
+                object propValue = GetValue(name);
+                if (mul)
                 {
-                    string[] values = (string[])ChangeBackType(attr.Name, propValue, p.PropertyType);
+                    string[] values = (string[])propValue;
                     lock (syncLock)
                     {
-                        settings.Add(values.Select(v => new XElement(attr.Name, v)).ToArray());
+                        settings.Add(values.Select(v => new XElement(name, v)).ToArray());
                     }
                 }
                 else
                 {
-                    object value = ChangeBackType(attr.Name, propValue, p.PropertyType);
                     lock (syncLock)
                     {
-                        settings.Add(new XElement(attr.Name, value));
+                        settings.Add(new XElement(name, propValue));
                     }
                 }
             });

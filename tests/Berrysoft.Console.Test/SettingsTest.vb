@@ -1,4 +1,5 @@
-﻿Imports Microsoft.VisualStudio.TestTools.UnitTesting
+﻿Imports Berrysoft.Console
+Imports Microsoft.VisualStudio.TestTools.UnitTesting
 
 <TestClass()>
 Public Class SettingsTest
@@ -11,24 +12,6 @@ Public Class SettingsTest
 
         <Settings("bbb", AllowMultiple:=True)>
         Public Property B As String()
-
-        Protected Overrides Function ChangeType(name As String, value As Object, conversionType As Type) As Object
-            If name = "bbb" Then
-                Dim array As String() = value
-                Return array
-            Else
-                Return Convert.ChangeType(value, conversionType)
-            End If
-        End Function
-
-        Protected Overrides Function ChangeBackType(name As String, value As Object, conversionType As Type) As Object
-            If name = "bbb" Then
-                Dim array As String() = value
-                Return array
-            Else
-                Return value.ToString()
-            End If
-        End Function
     End Class
     Private Const FileName As String = "settings.xml"
     <TestMethod()>
