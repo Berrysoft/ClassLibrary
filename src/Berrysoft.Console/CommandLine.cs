@@ -44,18 +44,17 @@ namespace Berrysoft.Console
         /// Get or set the explanation of the option.
         /// </summary>
         public string HelpText { get; set; }
+        public Type ConverterType { get; set; }
     }
     /// <summary>
     /// Represents a <see langword="abstract"/> class to parse command line to properties.
     /// </summary>
-    public abstract class CommandLine
+    public abstract class CommandLine : Parser<OptionAttribute>
     {
-        private Dictionary<OptionAttribute, PropertyInfo> properties;
-        private HashSet<string> validArgs;
-        /// <summary>
-        /// Args of options and their values.
-        /// </summary>
-        public Dictionary<string, string> Args { get; private set; }
+        private Dictionary<string, string> validShortArgs = new Dictionary<string, string>();
+        private Dictionary<string, string> validLongArgs = new Dictionary<string, string>();
+        private Dictionary<string, string> args;
+        private HashSet<string> required = new HashSet<string>();
         /// <summary>
         /// Head of short options.
         /// </summary>
@@ -72,31 +71,32 @@ namespace Berrysoft.Console
         /// Long form of help option.
         /// </summary>
         public virtual string LongHelpArg => "help";
-        /// <summary>
-        /// Initialize an instance of <see cref="CommandLine"/> class.
-        /// </summary>
-        /// <param name="args">Raw args.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="args"/> is <see langword="null"/>.</exception>
-        public CommandLine(string[] args)
+        public CommandLine()
+            : base()
+        { }
+        private protected override (string Key, Setting<OptionAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
         {
-            if (args == null)
+            if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
             {
-                throw ExceptionHelper.ArgumentNull(nameof(args));
+                string sht = ShortHead + option.ShortArg;
+                string lng = LongHead + option.LongArg;
+                validShortArgs.Add(prop.Name, sht);
+                validLongArgs.Add(prop.Name, lng);
+                if (option.Required)
+                {
+                    required.Add(prop.Name);
+                }
+                return (prop.Name, new Setting<OptionAttribute>(prop, option.ConverterType));
             }
-            InitDictionary();
-            InitArgs(args);
+            return null;
         }
         /// <summary>
-        /// Initialize an instance of <see cref="CommandLine"/> class.
+        /// Initialize <see cref="args"/>.
         /// </summary>
         /// <param name="args">Raw args.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="args"/> is <see langword="null"/>.</exception>
-        public CommandLine(string args)
-            : this(args?.Split(' '))
-        { }
         private void InitArgs(string[] args)
         {
-            Args = new Dictionary<string, string>();
+            this.args = new Dictionary<string, string>();
             for (int i = 0; i < args.Length; i++)
             {
                 if (!StartsWithHead(args[i]))
@@ -116,19 +116,19 @@ namespace Berrysoft.Console
                 {
                     argValue = null;
                 }
-                if (!validArgs.Contains(args[i]))
+                if (!validShortArgs.ContainsValue(args[i]) && !validLongArgs.ContainsValue(args[i]))
                 {
                     throw ExceptionHelper.ArgInvalid(args[i]);
                 }
 #if NETCOREAPP2_1
-                if (!Args.TryAdd(args[i], argValue))
+                if (!this.args.TryAdd(args[i], argValue))
                 {
                     throw ExceptionHelper.ArgInvalid(args[i]);
                 }
 #else
                 try
                 {
-                    Args.Add(args[i], argValue);
+                    this.args.Add(args[i], argValue);
                 }
                 catch (Exception ex)
                 {
@@ -141,93 +141,81 @@ namespace Berrysoft.Console
                 }
             }
         }
+        /// <summary>
+        /// Determines whether an arg starts with a head.
+        /// </summary>
+        /// <param name="arg">The arg.</param>
+        /// <returns><see langword="true"/> if the arg starts with a head; otherwise, <see langword="false"/>.</returns>
         private bool StartsWithHead(string arg)
         {
             return arg.StartsWith(LongHead) || arg.StartsWith(ShortHead);
         }
-        private void InitDictionary()
-        {
-            properties = new Dictionary<OptionAttribute, PropertyInfo>();
-            validArgs = new HashSet<string>();
-            foreach (PropertyInfo prop in GetType().GetProperties())
-            {
-                if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
-                {
-                    properties.Add(option, prop);
-                    validArgs.Add(ShortHead + option.ShortArg);
-                    validArgs.Add(LongHead + option.LongArg);
-                }
-            }
-        }
         private bool ContainsHelp()
         {
-            return Args.ContainsKey(ShortHead + ShortHelpArg) || Args.ContainsKey(LongHead + LongHelpArg);
+            return args.ContainsKey(ShortHead + ShortHelpArg) || args.ContainsKey(LongHead + LongHelpArg);
         }
-        public void Parse()
+        public void Parse(string[] args)
         {
+            InitArgs(args ?? throw ExceptionHelper.ArgumentNull(nameof(args)));
             bool help = ContainsHelp();
-            if (help && Args.Count == 1)
+            if (help && this.args.Count == 1)
             {
                 PrintUsage();
                 return;
             }
-            foreach (var prop in properties)
+            foreach (string name in Names)
             {
-                string arg = ShortHead + prop.Key.ShortArg;
+                string arg = validShortArgs[name];
                 bool assigned = false;
                 object propValue = null;
-                PropertyInfo p = prop.Value;
-                Type type = p.PropertyType;
-                if (Args.TryGetValue(arg, out string value))
+                bool isbool = GetSetting(name).Property.PropertyType == typeof(bool);
+                if (this.args.TryGetValue(arg, out string value))
                 {
                     if (help)
                     {
-                        PrintUsage(prop.Key);
+                        PrintUsage(name);
                     }
                     else
                     {
-                        if (type == typeof(bool) && value == null)
+                        if (isbool)
                         {
                             propValue = true;
                         }
                         else
                         {
-                            propValue = ChangeType(arg, value, type);
+                            propValue = value;
                         }
                     }
                     assigned = true;
                 }
-                arg = LongHead + prop.Key.LongArg;
-                if (Args.TryGetValue(arg, out string value2))
+                arg = validLongArgs[name];
+                if (this.args.TryGetValue(arg, out value))
                 {
                     if (help && !assigned)
                     {
-                        PrintUsage(prop.Key);
+                        PrintUsage(name);
                     }
                     else if (!assigned)
                     {
-                        if (type == typeof(bool) && value2 == null)
+                        if (isbool)
                         {
                             propValue = true;
                         }
                         else
                         {
-                            propValue = ChangeType(arg, value2, type);
+                            propValue = value;
                         }
                     }
                     else
                     {
-                        throw ExceptionHelper.ArgRepeated(prop.Key.LongArg);
+                        throw ExceptionHelper.ArgRepeated(arg);
                     }
                 }
-                if (!help && !assigned && prop.Key.Required)
+                if (!help && !assigned && required.Contains(name))
                 {
-                    throw ExceptionHelper.ArgRequired(prop.Key.LongArg);
+                    throw ExceptionHelper.ArgRequired(arg);
                 }
-                if (propValue != null)
-                {
-                    p.SetValue(this, propValue);
-                }
+                SetValue(name, propValue);
             }
         }
         protected virtual object ChangeType(string argName, object value, Type conversionType)
@@ -236,13 +224,13 @@ namespace Berrysoft.Console
         }
         public void PrintUsage()
         {
-            foreach (OptionAttribute option in GetOptionAttributes())
+            foreach (string name in Names)
             {
-                PrintUsage(option);
+                PrintUsage(name);
             }
         }
+        private void PrintUsage(string name) => PrintUsage(GetSetting(name).Attribute);
         protected virtual void PrintUsage(OptionAttribute opt)
         { }
-        public IEnumerable<OptionAttribute> GetOptionAttributes() => properties.Keys;
     }
 }

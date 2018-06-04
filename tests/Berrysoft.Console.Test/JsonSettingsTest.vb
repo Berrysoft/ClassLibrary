@@ -10,7 +10,7 @@ Public Class JsonSettingsTest
         <Settings("aaa", ConverterType:=GetType(AConverter))>
         Public Property A As Integer
 
-        <Settings("bbb", AllowMultiple:=True, ConverterType:=GetType(BConverter))>
+        <Settings("bbb", ConverterType:=GetType(BConverter)), Multiple()>
         Public Property B As String()
 
         Class AConverter
