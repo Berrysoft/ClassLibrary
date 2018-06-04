@@ -8,122 +8,25 @@ namespace Berrysoft.Data
     /// <summary>
     /// Exposes members of a binary tree data structure.
     /// </summary>
-    /// <typeparam name="TValue">The type of value the node contains.</typeparam>
-    /// <typeparam name="TNode">The type of node.</typeparam>
-    public interface IBinaryNode<TValue, TNode> : INodeBase<TValue, TNode>
-        where TNode : IBinaryNode<TValue, TNode>
+    /// <typeparam name="T">The type of value the node contains.</typeparam>
+    public interface IBinaryTree<T> : ITreeBase<T>
     {
         /// <summary>
         /// Left child of the tree.
         /// </summary>
-        TNode LeftChild { get; set; }
+        IBinaryTree<T> LeftChild { get; set; }
         /// <summary>
         /// Right child of the tree.
         /// </summary>
-        TNode RightChild { get; set; }
+        IBinaryTree<T> RightChild { get; set; }
     }
     #endregion
-    /// <summary>
-    /// Represents a binary tree with a root <see cref="BinaryNode{T}"/>.
-    /// </summary>
-    /// <typeparam name="T">The type of value the node contains.</typeparam>
-    /// <example>
-    /// This is an example to instantiatea binary tree with its pre and in order.
-    /// <code language="C#"><![CDATA[
-    /// static BinaryTree<int> tree;
-    /// static BinaryNode<int> current;
-    /// static void Main(string[] args)
-    /// {
-    ///     tree = new BinaryTree<int>();
-    ///     Console.WriteLine("Please enter the values by pre order, splited by space:");
-    ///     int[] front = Console.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
-    ///     Console.WriteLine("Please enter the values by in order, splited by space:");
-    ///     int[] mid = Console.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
-    ///     if (front.Length != mid.Length)
-    ///     {
-    ///         Console.WriteLine("The length of the two arrays should be equal.");
-    ///         return;
-    ///     }
-    ///     tree.Root.LeftChild = null;
-    ///     tree.Root.RightChild = null;
-    ///     current = tree.Root;
-    ///     Create(front, mid);
-    ///     Console.WriteLine("The post order of this tree is:");
-    ///     Console.WriteLine(String.Join(" ", tree.AsPostOrderEnumerable().Select(node => node.ToString()).ToArray()));
-    /// }
-    /// static void Create(in Span<int> front, in Span<int> mid)
-    /// {
-    ///     int n = front.Length;
-    ///     BinaryNode<int> tr = current;
-    ///     tr.Value = front[0];
-    ///     int i;
-    ///     for (i = 0; i < n; i++)
-    ///     {
-    ///         if (mid[i] == front[0])
-    ///         {
-    ///             break;
-    ///         }
-    ///     }
-    ///     if (i > 0)
-    ///     {
-    ///         current = (tr.LeftChild = new BinaryNode<int>());
-    ///         Create(front.Slice(1, i), mid);
-    ///     }
-    ///     if (n - 1 - i > 0)
-    ///     {
-    ///         current = (tr.RightChild = new BinaryNode<int>());
-    ///         Create(front.Slice(i + 1, n - 1 - i), mid.Slice(i + 1, n - 1 - i));
-    ///     }
-    /// }
-    /// ]]></code>
-    /// </example>
-    public class BinaryTree<T> : ITree<T, BinaryNode<T>>
+    #region Enumerable
+    public static partial class Enumerable
     {
-        private BinaryNode<T> _root;
-        /// <summary>
-        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
-        /// </summary>
-        public BinaryTree()
+        private static int GetDepthBinary<T>(IBinaryTree<T> tree)
         {
-            _root = new BinaryNode<T>();
-        }
-        /// <summary>
-        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
-        /// </summary>
-        /// <param name="value">The value of root node.</param>
-        public BinaryTree(T value)
-        {
-            _root = new BinaryNode<T>(value);
-        }
-        /// <summary>
-        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
-        /// </summary>
-        /// <param name="root">Root node.</param>
-        /// <exception cref="ArgumentNullException">When <paramref name="root"/> is null.</exception>
-        /// <exception cref="ArgumentException">When <paramref name="root"/> has a parent.</exception>
-        public BinaryTree(BinaryNode<T> root)
-        {
-            if (root == null)
-            {
-                throw ExceptionHelper.ArgumentNull(nameof(root));
-            }
-            if (root.Parent != null)
-            {
-                throw ExceptionHelper.RootHasParent();
-            }
-            _root = root;
-        }
-        /// <summary>
-        /// The root node of the tree.
-        /// </summary>
-        public BinaryNode<T> Root => _root;
-        /// <summary>
-        /// Get depth of the tree.
-        /// </summary>
-        /// <returns>The depth of the tree.</returns>
-        public int GetDepth()
-        {
-            int GetDepthInternal(BinaryNode<T> root, int depth)
+            int GetDepthInternal(IBinaryTree<T> root, int depth)
             {
                 int result = depth;
                 int tempDepth;
@@ -145,29 +48,21 @@ namespace Berrysoft.Data
                 }
                 return result;
             }
-            return GetDepthInternal(_root, 1);
+            return GetDepthInternal(tree, 1);
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search.</returns>
-        public IEnumerable<BinaryNode<T>> AsDFSEnumerable() => AsPreOrderEnumerableIterator();
-        /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with pre order.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> with pre order.</returns>
-        public IEnumerable<BinaryNode<T>> AsPreOrderEnumerable() => AsPreOrderEnumerableIterator();
-        /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with pre order.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with pre order.</returns>
-        private IEnumerable<BinaryNode<T>> AsPreOrderEnumerableIterator()
+        public static IEnumerable<IBinaryTree<T>> AsPreOrderEnumerable<T>(this IBinaryTree<T> tree)
+            => AsPreOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        private static IEnumerable<IBinaryTree<T>> AsPreOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
-            Stack<BinaryNode<T>> nodes = new Stack<BinaryNode<T>>();
-            nodes.Push(_root);
+            Stack<IBinaryTree<T>> nodes = new Stack<IBinaryTree<T>>();
+            nodes.Push(tree);
             while (nodes.Count != 0)
             {
-                BinaryNode<T> current = nodes.Pop();
+                IBinaryTree<T> current = nodes.Pop();
                 yield return current;
                 if (current.RightChild != null)
                 {
@@ -183,15 +78,12 @@ namespace Berrysoft.Data
         /// Get an <see cref="IEnumerable{T}"/> with in order.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> with in order.</returns>
-        public IEnumerable<BinaryNode<T>> AsInOrderEnumerable() => AsInOrderEnumerableIterator();
-        /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with in order.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with in order.</returns>
-        private IEnumerable<BinaryNode<T>> AsInOrderEnumerableIterator()
+        public static IEnumerable<IBinaryTree<T>> AsInOrderEnumerable<T>(this IBinaryTree<T> tree)
+            => AsInOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        private static IEnumerable<IBinaryTree<T>> AsInOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
-            Stack<BinaryNode<T>> nodes = new Stack<BinaryNode<T>>();
-            BinaryNode<T> current = _root;
+            Stack<IBinaryTree<T>> nodes = new Stack<IBinaryTree<T>>();
+            IBinaryTree<T> current = tree;
             while (current != null || nodes.Count != 0)
             {
                 if (current != null)
@@ -201,7 +93,7 @@ namespace Berrysoft.Data
                 }
                 else
                 {
-                    BinaryNode<T> top = nodes.Pop();
+                    IBinaryTree<T> top = nodes.Pop();
                     yield return top;
                     current = top.RightChild;
                 }
@@ -211,19 +103,16 @@ namespace Berrysoft.Data
         /// Get an <see cref="IEnumerable{T}"/> with post order.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> with post order.</returns>
-        public IEnumerable<BinaryNode<T>> AsPostOrderEnumerable() => AsPostOrderEnumerableIterator();
-        /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with post order.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with post order.</returns>
-        private IEnumerable<BinaryNode<T>> AsPostOrderEnumerableIterator()
+        public static IEnumerable<IBinaryTree<T>> AsPostOrderEnumerable<T>(this IBinaryTree<T> tree)
+            => AsPostOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        private static IEnumerable<IBinaryTree<T>> AsPostOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
-            Stack<BinaryNode<T>> nodes = new Stack<BinaryNode<T>>();
-            nodes.Push(_root);
-            BinaryNode<T> pre = null;
+            Stack<IBinaryTree<T>> nodes = new Stack<IBinaryTree<T>>();
+            nodes.Push(tree);
+            IBinaryTree<T> pre = null;
             while (nodes.Count != 0)
             {
-                BinaryNode<T> current = nodes.Peek();
+                IBinaryTree<T> current = nodes.Peek();
                 if ((current.LeftChild == null && current.RightChild == null) || (pre != null && (pre == current.LeftChild || pre == current.RightChild)))
                 {
                     yield return current;
@@ -244,26 +133,22 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
+        /// Get an <see cref="IEnumerable{T}"/> with level order.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search.</returns>
-        public IEnumerable<BinaryNode<T>> AsBFSEnumerable() => AsLevelOrderEnumerableIterator();
+        /// <returns>An <see cref="IEnumerable{T}"/> with level order.</returns>
+        public static IEnumerable<IBinaryTree<T>> AsLevelOrderEnumerable<T>(this IBinaryTree<T> tree)
+            => AsLevelOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with level order.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> with level order.</returns>
-        public IEnumerable<BinaryNode<T>> AsLevelOrderEnumerable() => AsLevelOrderEnumerableIterator();
-        /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with level order.
-        /// </summary>
-        /// <returns>An <see cref="IEnumerable{T}"/> with level order.</returns>
-        private IEnumerable<BinaryNode<T>> AsLevelOrderEnumerableIterator()
+        private static IEnumerable<IBinaryTree<T>> AsLevelOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
-            Queue<BinaryNode<T>> nodes = new Queue<BinaryNode<T>>();
-            nodes.Enqueue(_root);
+            Queue<IBinaryTree<T>> nodes = new Queue<IBinaryTree<T>>();
+            nodes.Enqueue(tree);
             while (nodes.Count != 0)
             {
-                BinaryNode<T> current = nodes.Dequeue();
+                IBinaryTree<T> current = nodes.Dequeue();
                 yield return current;
                 if (current.LeftChild != null)
                 {
@@ -276,37 +161,90 @@ namespace Berrysoft.Data
             }
         }
     }
+    #endregion
     /// <summary>
     /// Represents a binary node of a <see cref="BinaryTree{T}"/>.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
-    public class BinaryNode<T> : IBinaryNode<T, BinaryNode<T>>
+    /// <example>
+    /// This is an example to instantiatea binary tree with its pre and in order.
+    /// <code language="C#"><![CDATA[
+    /// static BinaryTree<int> tree;
+    /// static BinaryTree<int> current;
+    /// static void Main(string[] args)
+    /// {
+    ///     tree = new BinaryTree<int>();
+    ///     Console.WriteLine("Please enter the values by pre order, splited by space:");
+    ///     int[] front = Console.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
+    ///     Console.WriteLine("Please enter the values by in order, splited by space:");
+    ///     int[] mid = Console.ReadLine().Split(' ').Select(str => int.Parse(str)).ToArray();
+    ///     if (front.Length != mid.Length)
+    ///     {
+    ///         Console.WriteLine("The length of the two arrays should be equal.");
+    ///         return;
+    ///     }
+    ///     tree.LeftChild = null;
+    ///     tree.RightChild = null;
+    ///     current = tree;
+    ///     Create(front, mid);
+    ///     Console.WriteLine("The post order of this tree is:");
+    ///     Console.WriteLine(String.Join(" ", tree.AsPostOrderEnumerable().Select(node => node.ToString()).ToArray()));
+    ///     Console.WriteLine("The level order of this tree is:");
+    ///     Console.WriteLine(string.Join(" ", tree.AsLevelOrderEnumerable().Select(node => node.ToString()).ToArray()));
+    /// }
+    /// static void Create(in Span<int> front, in Span<int> mid)
+    /// {
+    ///     int n = front.Length;
+    ///     BinaryNode<int> tr = current;
+    ///     tr.Value = front[0];
+    ///     int i;
+    ///     for (i = 0; i < n; i++)
+    ///     {
+    ///         if (mid[i] == front[0])
+    ///         {
+    ///             break;
+    ///         }
+    ///     }
+    ///     if (i > 0)
+    ///     {
+    ///         current = (tr.LeftChild = new BinaryTree<int>());
+    ///         Create(front.Slice(1, i), mid);
+    ///     }
+    ///     if (n - 1 - i > 0)
+    ///     {
+    ///         current = (tr.RightChild = new BinaryTree<int>());
+    ///         Create(front.Slice(i + 1, n - 1 - i), mid.Slice(i + 1, n - 1 - i));
+    ///     }
+    /// }
+    /// ]]></code>
+    /// </example>
+    public class BinaryTree<T> : IBinaryTree<T>
     {
         private T _value;
-        private BinaryNode<T> _parent;
-        private BinaryNode<T> _left;
-        private BinaryNode<T> _right;
+        private BinaryTree<T> _parent;
+        private BinaryTree<T> _left;
+        private BinaryTree<T> _right;
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryNode{T}"/>.
+        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
         /// </summary>
-        public BinaryNode()
+        public BinaryTree()
             : this(default)
         { }
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryNode{T}"/>.
+        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
         /// </summary>
         /// <param name="value">Value of the node.</param>
-        public BinaryNode(T value)
+        public BinaryTree(T value)
         {
             _value = value;
         }
         /// <summary>
-        /// Initialize an instance of <see cref="BinaryNode{T}"/>.
+        /// Initialize an instance of <see cref="BinaryTree{T}"/>.
         /// </summary>
         /// <param name="value">Value of the node.</param>
         /// <param name="left">Left child of the node.</param>
         /// <param name="right">Right child of the node.</param>
-        public BinaryNode(T value, BinaryNode<T> left, BinaryNode<T> right)
+        public BinaryTree(T value, BinaryTree<T> left, BinaryTree<T> right)
         {
             _value = value;
             _left = left;
@@ -323,7 +261,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Parent of the node, null when the node is root node of a tree.
         /// </summary>
-        public BinaryNode<T> Parent => _parent;
+        public BinaryTree<T> Parent => _parent;
         /// <summary>
         /// The count of children.
         /// </summary>
@@ -346,7 +284,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Left child of the node.
         /// </summary>
-        public BinaryNode<T> LeftChild
+        public BinaryTree<T> LeftChild
         {
             get => _left;
             set
@@ -365,7 +303,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Right child of the node.
         /// </summary>
-        public BinaryNode<T> RightChild
+        public BinaryTree<T> RightChild
         {
             get => _right;
             set
@@ -381,11 +319,23 @@ namespace Berrysoft.Data
                 _right = value;
             }
         }
+
+        IBinaryTree<T> IBinaryTree<T>.LeftChild
+        {
+            get => LeftChild;
+            set => LeftChild = (BinaryTree<T>)value;
+        }
+        IBinaryTree<T> IBinaryTree<T>.RightChild
+        {
+            get => RightChild;
+            set => RightChild = (BinaryTree<T>)value;
+        }
+        ITreeBase<T> ITreeBase<T>.Parent => Parent;
         /// <summary>
-        /// Returns an enumerator that iterates through the <see cref="BinaryNode{T}"/>.
+        /// Returns an enumerator that iterates through the <see cref="BinaryTree{T}"/>.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable{TNode}"/> for the <see cref="BinaryNode{T}"/>.</returns>
-        public IEnumerator<BinaryNode<T>> GetEnumerator()
+        /// <returns>An <see cref="IEnumerable{TNode}"/> for the <see cref="BinaryTree{T}"/>.</returns>
+        public IEnumerator<BinaryTree<T>> GetEnumerator()
         {
             if (_left != null)
             {
@@ -397,22 +347,23 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Returns an enumerator that iterates through the <see cref="BinaryNode{T}"/>.
+        /// Returns an enumerator that iterates through the <see cref="BinaryTree{T}"/>.
         /// </summary>
-        /// <returns>An <see cref="IEnumerable"/> for the <see cref="BinaryNode{T}"/>.</returns>
+        /// <returns>An <see cref="IEnumerable"/> for the <see cref="BinaryTree{T}"/>.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator<ITreeBase<T>> IEnumerable<ITreeBase<T>>.GetEnumerator() => GetEnumerator();
         /// <summary>
-        /// Convert <see cref="BinaryNode{T}"/> to <typeparamref name="T"/> explicitly.
+        /// Convert <see cref="BinaryTree{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
         /// <param name="node">Node to be converted.</param>
         /// <returns>Value of the node.</returns>
-        public static explicit operator T(BinaryNode<T> node) => node.Value;
+        public static explicit operator T(BinaryTree<T> node) => node.Value;
         /// <summary>
-        /// Convert <typeparamref name="T"/> to <see cref="BinaryNode{T}"/> implicitly.
+        /// Convert <typeparamref name="T"/> to <see cref="BinaryTree{T}"/> implicitly.
         /// </summary>
         /// <param name="value">Value to be converted.</param>
-        /// <returns>A new <see cref="BinaryNode{T}"/>.</returns>
-        public static implicit operator BinaryNode<T>(T value) => new BinaryNode<T>(value);
+        /// <returns>A new <see cref="BinaryTree{T}"/>.</returns>
+        public static implicit operator BinaryTree<T>(T value) => new BinaryTree<T>(value);
         /// <summary>
         /// Returns a string that represents the value.
         /// </summary>

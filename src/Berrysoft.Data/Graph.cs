@@ -268,30 +268,15 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Get a <see cref="Tree{T}"/> with order of depth-first-search.
-        /// </summary>
-        /// <typeparam name="T">The type of vertex.</typeparam>
-        /// <param name="graph">The graph to convert.</param>
-        /// <param name="root">The value of root node.</param>
-        /// <returns>A <see cref="Tree{T}"/> with order of depth-first-search.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
-        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
-        public static Tree<T> ToDFSTree<T>(this Graph<T> graph, T root)
-            => ToDFSTree<T, Tree<T>, Node<T>>(graph, root);
-        /// <summary>
         /// Get a tree with order of depth-first-search.
         /// </summary>
-        /// <typeparam name="TValue">The type of vertex.</typeparam>
-        /// <typeparam name="TTree">The type of tree.</typeparam>
-        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <typeparam name="T">The type of vertex.</typeparam>
         /// <param name="graph">The graph to convert.</param>
         /// <param name="root">The value of root node.</param>
         /// <returns>A tree with order of depth-first-search.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
-        public static TTree ToDFSTree<TValue, TTree, TNode>(this IGraph<TValue> graph, TValue root)
-            where TTree : ITree<TValue, TNode>, new()
-            where TNode : INode<TValue, TNode>, new()
+        public static ITree<T> ToDFSTree<T>(this IGraph<T> graph, T root)
         {
             if (graph == null)
             {
@@ -301,14 +286,13 @@ namespace Berrysoft.Data
             {
                 throw ExceptionHelper.KeyNotFound();
             }
-            TTree result = new TTree();
-            result.Root.Value = root;
-            Stack<TNode> nodes = new Stack<TNode>();
-            HashSet<TValue> visited = new HashSet<TValue>();
-            nodes.Push(result.Root);
+            Tree<T> result = new Tree<T>(root);
+            Stack<Tree<T>> nodes = new Stack<Tree<T>>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Push(result);
             while (nodes.Count != 0)
             {
-                TNode current;
+                Tree<T> current;
                 for (; ; )
                 {
                     if (nodes.Count == 0)
@@ -330,8 +314,7 @@ namespace Berrysoft.Data
                     {
                         if (!visited.Contains(child))
                         {
-                            TNode nc = new TNode();
-                            nc.Value = child;
+                            Tree<T> nc = new Tree<T>(child);
                             nodes.Push(nc);
                             current.Add(nc);
                         }
@@ -342,30 +325,15 @@ namespace Berrysoft.Data
             return result;
         }
         /// <summary>
-        /// Get a <see cref="Tree{T}"/> with order of breadth-first-search.
-        /// </summary>
-        /// <typeparam name="T">The type of vertex.</typeparam>
-        /// <param name="graph">The graph to convert.</param>
-        /// <param name="root">The value of root node.</param>
-        /// <returns>A <see cref="Tree{T}"/> with order of breadth-first-search.</returns>
-        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
-        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
-        public static Tree<T> ToBFSTree<T>(this Graph<T> graph, T root)
-            => ToBFSTree<T, Tree<T>, Node<T>>(graph, root);
-        /// <summary>
         /// Get a tree with order of breadth-first-search.
         /// </summary>
-        /// <typeparam name="TValue">The type of vertex.</typeparam>
-        /// <typeparam name="TTree">The type of tree.</typeparam>
-        /// <typeparam name="TNode">The type of node.</typeparam>
+        /// <typeparam name="T">The type of vertex.</typeparam>
         /// <param name="graph">The graph to convert.</param>
         /// <param name="root">The value of root node.</param>
         /// <returns>A tree with order of breadth-first-search.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
         /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
-        public static TTree ToBFSTree<TValue, TTree, TNode>(this IGraph<TValue> graph, TValue root)
-            where TTree : ITree<TValue, TNode>, new()
-            where TNode : INode<TValue, TNode>, new()
+        public static ITree<T> ToBFSTree<T>(this IGraph<T> graph, T root)
         {
             if (graph == null)
             {
@@ -375,14 +343,13 @@ namespace Berrysoft.Data
             {
                 throw ExceptionHelper.KeyNotFound();
             }
-            TTree result = new TTree();
-            result.Root.Value = root;
-            Queue<TNode> nodes = new Queue<TNode>();
-            HashSet<TValue> visited = new HashSet<TValue>();
-            nodes.Enqueue(result.Root);
+            Tree<T> result = new Tree<T>(root);
+            Queue<Tree<T>> nodes = new Queue<Tree<T>>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Enqueue(result);
             while (nodes.Count != 0)
             {
-                TNode current;
+                Tree<T> current;
                 for (; ; )
                 {
                     if (nodes.Count == 0)
@@ -404,8 +371,7 @@ namespace Berrysoft.Data
                     {
                         if (!visited.Contains(child))
                         {
-                            TNode nc = new TNode();
-                            nc.Value = child;
+                            Tree<T> nc = new Tree<T>(child);
                             nodes.Enqueue(nc);
                             current.Add(nc);
                         }

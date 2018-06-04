@@ -6,10 +6,10 @@ Public Class TreeTest
     <TestMethod()>
     Public Sub DepthTest()
         Dim tree As New Tree(Of Integer)(1)
-        Dim node2 As New Node(Of Integer)(2)
-        Dim node3 As New Node(Of Integer)(3)
-        Dim node4 As New Node(Of Integer)(4)
-        tree.Root.Add(node2)
+        Dim node2 As New Tree(Of Integer)(2)
+        Dim node3 As New Tree(Of Integer)(3)
+        Dim node4 As New Tree(Of Integer)(4)
+        tree.Add(node2)
         node2.Add(node3)
         node2.Add(node4)
         Assert.AreEqual(tree.GetDepth(), 3)
@@ -18,14 +18,14 @@ Public Class TreeTest
     <TestMethod()>
     Public Sub SearchTest()
         Dim tree As New Tree(Of Integer)(1)
-        Dim node2 As New Node(Of Integer)(2)
-        Dim node3 As New Node(Of Integer)(3)
-        Dim node4 As New Node(Of Integer)(4)
-        tree.Root.Add(node2)
+        Dim node2 As New Tree(Of Integer)(2)
+        Dim node3 As New Tree(Of Integer)(3)
+        Dim node4 As New Tree(Of Integer)(4)
+        tree.Add(node2)
         node2.Add(node3)
         node2.Add(node4)
-        Dim node5 As New Node(Of Integer)(5)
-        tree.Root.Add(node5)
+        Dim node5 As New Tree(Of Integer)(5)
+        tree.Add(node5)
         Dim exdfsArray = {1, 2, 3, 4, 5}
         Dim dfsArray = tree.AsDFSEnumerable().ToArray()
         For i = 0 To 4
@@ -36,13 +36,13 @@ Public Class TreeTest
     <TestMethod()>
     Public Sub PathTest()
         Dim tree As New BinaryTree(Of Integer)(1)
-        Dim node2 As New BinaryNode(Of Integer)(2)
-        Dim node3 As New BinaryNode(Of Integer)(3)
-        Dim node4 As New BinaryNode(Of Integer)(4)
-        Dim node5 As New BinaryNode(Of Integer)(5)
-        Dim node6 As New BinaryNode(Of Integer)(6)
-        tree.Root.LeftChild = node2
-        tree.Root.RightChild = node3
+        Dim node2 As New BinaryTree(Of Integer)(2)
+        Dim node3 As New BinaryTree(Of Integer)(3)
+        Dim node4 As New BinaryTree(Of Integer)(4)
+        Dim node5 As New BinaryTree(Of Integer)(5)
+        Dim node6 As New BinaryTree(Of Integer)(6)
+        tree.LeftChild = node2
+        tree.RightChild = node3
         node2.LeftChild = node4
         node2.RightChild = node4
         node3.RightChild = node6
