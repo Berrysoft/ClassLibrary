@@ -44,6 +44,9 @@ namespace Berrysoft.Console
         /// Get or set the explanation of the option.
         /// </summary>
         public string HelpText { get; set; }
+        /// <summary>
+        /// Get or set the type of converter.
+        /// </summary>
         public Type ConverterType { get; set; }
     }
     /// <summary>
@@ -69,6 +72,9 @@ namespace Berrysoft.Console
         /// Long form of help option.
         /// </summary>
         public virtual string LongHelpArg => "help";
+        /// <summary>
+        /// Initialize an instance of <see cref="CommandLine"/> class.
+        /// </summary>
         public CommandLine()
             : base()
         { }
@@ -141,6 +147,10 @@ namespace Berrysoft.Console
         {
             return arg.StartsWith(LongHead) || arg.StartsWith(ShortHead);
         }
+        /// <summary>
+        /// Parse args.
+        /// </summary>
+        /// <param name="args">The args.</param>
         public void Parse(string[] args)
         {
             var argdic = InitArgs(args ?? throw ExceptionHelper.ArgumentNull(nameof(args)));
@@ -206,9 +216,12 @@ namespace Berrysoft.Console
                 {
                     throw ExceptionHelper.ArgRequired(arg);
                 }
-                SetValue(name, propValue);
+                this[name] = propValue;
             }
         }
+        /// <summary>
+        /// Print help texts of all options.
+        /// </summary>
         public void PrintUsage()
         {
             foreach (string name in Names)
@@ -217,6 +230,10 @@ namespace Berrysoft.Console
             }
         }
         private void PrintUsage(string name) => PrintUsage(properties[name].Attribute);
+        /// <summary>
+        /// Print help text of a option.
+        /// </summary>
+        /// <param name="opt">The option.</param>
         protected virtual void PrintUsage(OptionAttribute opt)
         { }
     }

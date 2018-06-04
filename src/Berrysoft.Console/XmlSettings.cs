@@ -14,7 +14,7 @@ namespace Berrysoft.Console
     { }
     public abstract class XmlSettings : SettingsBase
     {
-        private XName rootName;
+        private readonly XName rootName;
         private HashSet<string> multipleNames = new HashSet<string>();
 #if NETCOREAPP2_1
         private readonly object syncLock = new object();
@@ -60,7 +60,7 @@ namespace Berrysoft.Console
                 {
                     propValue = settings.Element(name)?.Value;
                 }
-                SetValue(name, propValue);
+                this[name] = propValue;
             }
         }
 #if NETCOREAPP2_1
@@ -87,7 +87,7 @@ namespace Berrysoft.Console
                 }
                 lock (syncLock)
                 {
-                    SetValue(name, propValue);
+                    this[name] = propValue;
                 }
             });
         }
@@ -100,7 +100,7 @@ namespace Berrysoft.Console
             foreach (string name in Names)
             {
                 bool mul = IsMultiple(name);
-                object propValue = GetValue(name);
+                object propValue = this[name];
                 if (mul)
                 {
                     string[] values = (string[])propValue;
@@ -123,7 +123,7 @@ namespace Berrysoft.Console
             Names.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
             {
                 bool mul = IsMultiple(name);
-                object propValue = GetValue(name);
+                object propValue = this[name];
                 if (mul)
                 {
                     string[] values = (string[])propValue;
