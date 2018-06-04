@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace Berrysoft.Console
 {
@@ -40,14 +39,15 @@ namespace Berrysoft.Console
             return value.ToString();
         }
     }
-    internal class Setting<T>
+    public class SettingsPropertyInfo<T>
         where T : Attribute
     {
         public T Attribute { get; }
         public PropertyInfo Property { get; }
         public ISimpleConverter Converter { get; }
-        public Setting(PropertyInfo prop, Type converterType)
+        public SettingsPropertyInfo(T attr, PropertyInfo prop, Type converterType)
         {
+            this.Attribute = attr;
             this.Property = prop;
             if (converterType != null)
             {
@@ -62,10 +62,10 @@ namespace Berrysoft.Console
     public abstract class Parser<T>
         where T : Attribute
     {
-        private readonly Dictionary<string, Setting<T>> properties;
+        private protected readonly Dictionary<string, SettingsPropertyInfo<T>> properties;
         public Parser()
         {
-            properties = new Dictionary<string, Setting<T>>();
+            properties = new Dictionary<string, SettingsPropertyInfo<T>>();
             foreach (PropertyInfo prop in GetType().GetProperties())
             {
                 var pair = GetKeyValuePairFromPropertyInfo(prop);
@@ -75,12 +75,12 @@ namespace Berrysoft.Console
                 }
             }
         }
-        private protected abstract (string Key, Setting<T> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop);
+        protected abstract (string Key, SettingsPropertyInfo<T> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop);
         protected void SetValue(string name, object value)
         {
             if (value != null)
             {
-                if (properties.TryGetValue(name, out Setting<T> setting))
+                if (properties.TryGetValue(name, out SettingsPropertyInfo<T> setting))
                 {
                     ISimpleConverter converter = setting.Converter;
                     setting.Property.SetValue(this, converter.Convert(value));
@@ -89,14 +89,13 @@ namespace Berrysoft.Console
         }
         protected object GetValue(string name)
         {
-            if (properties.TryGetValue(name, out Setting<T> setting))
+            if (properties.TryGetValue(name, out SettingsPropertyInfo<T> setting))
             {
                 ISimpleConverter converter = setting.Converter;
                 return converter.ConvertBack(setting.Property.GetValue(this));
             }
             return null;
         }
-        private protected Setting<T> GetSetting(string name) => properties[name];
         public ICollection<string> Names => properties.Keys;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Berrysoft.Console
@@ -19,11 +18,11 @@ namespace Berrysoft.Console
         public SettingsBase()
             : base()
         { }
-        private protected override (string Key, Setting<SettingsAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
+        protected override (string Key, SettingsPropertyInfo<SettingsAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
         {
             if (Attribute.GetCustomAttribute(prop, typeof(SettingsAttribute)) is SettingsAttribute attr)
             {
-                return (attr.Name, new Setting<SettingsAttribute>(prop, attr.ConverterType));
+                return (attr.Name, new SettingsPropertyInfo<SettingsAttribute>(attr, prop, attr.ConverterType));
             }
             return null;
         }

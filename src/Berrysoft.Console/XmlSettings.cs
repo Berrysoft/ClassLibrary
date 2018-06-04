@@ -31,7 +31,7 @@ namespace Berrysoft.Console
                 rootName = "settings";
             }
         }
-        private protected override (string Key, Setting<SettingsAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
+        protected override (string Key, SettingsPropertyInfo<SettingsAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
         {
             var result = base.GetKeyValuePairFromPropertyInfo(prop);
             if (result != null)
