@@ -1,12 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project>
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.1;netstandard2.0;net472</TargetFrameworks>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <AssemblyVersion>1.0.112.0</AssemblyVersion>
-    <FileVersion>1.0.112.0</FileVersion>
-  </PropertyGroup>
+  <Import Project="..\..\target.props"/>
 
 </Project>
