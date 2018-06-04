@@ -18,7 +18,7 @@ namespace Berrysoft.Console
             {
                 json = JsonValue.Load(reader);
             }
-            foreach (string name in Settings)
+            foreach (string name in Names)
             {
                 if(json.ContainsKey(name))
                 {
@@ -29,7 +29,7 @@ namespace Berrysoft.Console
         public override void Save(string fileName)
         {
             Dictionary<string, JsonValue> dic = new Dictionary<string, JsonValue>();
-            foreach (string name in Settings)
+            foreach (string name in Names)
             {
                 if (GetValue(name) is JsonValue propValue)
                 {

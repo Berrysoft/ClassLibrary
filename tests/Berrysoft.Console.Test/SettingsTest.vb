@@ -10,7 +10,7 @@ Public Class SettingsTest
         <Settings("aaa")>
         Public Property A As Integer
 
-        <Settings("bbb", AllowMultiple:=True)>
+        <Settings("bbb"), Multiple()>
         Public Property B As String()
     End Class
     Private Const FileName As String = "settings.xml"

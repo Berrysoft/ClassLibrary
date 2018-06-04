@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,9 +9,13 @@ using System.Xml.Linq;
 
 namespace Berrysoft.Console
 {
+    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public sealed class MultipleAttribute : Attribute
+    { }
     public abstract class XmlSettings : SettingsBase
     {
         private XName rootName;
+        private HashSet<string> multipleNames = new HashSet<string>();
 #if NETCOREAPP2_1
         private readonly object syncLock = new object();
 #endif
@@ -26,11 +31,24 @@ namespace Berrysoft.Console
                 rootName = "settings";
             }
         }
+        private protected override (string Key, Setting<SettingsAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
+        {
+            var result = base.GetKeyValuePairFromPropertyInfo(prop);
+            if (result != null)
+            {
+                if (Attribute.GetCustomAttribute(prop, typeof(MultipleAttribute)) is MultipleAttribute)
+                {
+                    multipleNames.Add(result.Value.Key);
+                }
+            }
+            return result;
+        }
+        private bool IsMultiple(string name) => multipleNames.Contains(name);
         public override void Open(string fileName)
         {
             XDocument document = XDocument.Load(fileName);
             XElement settings = document.Element(rootName);
-            foreach (string name in Settings)
+            foreach (string name in Names)
             {
                 bool mul = IsMultiple(name);
                 object propValue = null;
@@ -55,7 +73,7 @@ namespace Berrysoft.Console
                 document = await XDocument.LoadAsync(reader, LoadOptions.None, cancellationToken);
             }
             XElement settings = document.Element(rootName);
-            Settings.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
+            Names.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
             {
                 bool mul = IsMultiple(name);
                 object propValue = null;
@@ -79,7 +97,7 @@ namespace Berrysoft.Console
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
             XElement settings = new XElement(rootName);
             document.Add(settings);
-            foreach (string name in Settings)
+            foreach (string name in Names)
             {
                 bool mul = IsMultiple(name);
                 object propValue = GetValue(name);
@@ -102,7 +120,7 @@ namespace Berrysoft.Console
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
             XElement settings = new XElement(rootName);
             document.Add(settings);
-            Settings.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
+            Names.AsParallel().WithCancellation(cancellationToken).ForAll(name =>
             {
                 bool mul = IsMultiple(name);
                 object propValue = GetValue(name);
