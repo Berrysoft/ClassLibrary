@@ -2,11 +2,8 @@
 
 Class TsinghuaNetCommand
     Inherits CommandLine
-    Public Sub New(args() As String)
-        MyBase.New(args)
-    End Sub
-    Public Sub New(args As String)
-        MyBase.New(args)
+    Public Sub New()
+        MyBase.New()
     End Sub
     <[Option]("i"c, "login", HelpText:="Option to login")>
     Public Property Login As Boolean

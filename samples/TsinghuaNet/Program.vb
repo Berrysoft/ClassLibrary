@@ -1,28 +1,21 @@
-Imports System.Globalization
 Imports Berrysoft.Console
 Imports Berrysoft.Tsinghua.Net
 
 Module Program
     Sub Main(args As String())
         Console.WriteLine("Tsinghua Net Cross Platform Client")
-        Dim command As TsinghuaNetCommand
-        Try
-            command = New TsinghuaNetCommand(args)
-        Catch ex As ArgInvalidException
-            Console.Error.WriteLine("Argument not valid: {0}", ex.ArgName)
-            Return
-        Catch ex As Exception
-            Console.Error.WriteLine("Exception occured: {0}", ex.Message)
-            Return
-        End Try
+        Dim command As New TsinghuaNetCommand()
         If args.Length = 0 Then
             command.PrintUsage()
             Return
         End If
         Try
-            command.Parse()
+            command.Parse(args)
         Catch ex As ArgRepeatedException
             Console.Error.WriteLine("Argument repeated: {0}", ex.ArgName)
+            Return
+        Catch ex As ArgInvalidException
+            Console.Error.WriteLine("Argument not valid: {0}", ex.ArgName)
             Return
         Catch ex As InvalidCastException
             Console.Error.WriteLine("Argument type invalid: {0}", ex.Message)
@@ -67,7 +60,7 @@ Module Program
             End If
             GetFlux(helper).Wait()
         End If
-        TryCast(helper, IDisposable)?.Dispose()
+        helper?.Dispose()
     End Sub
     Function CreateHelper(username As String, password As String, host As String) As IConnect
         Dim helper As IConnect
@@ -100,10 +93,10 @@ Module Program
     Async Function GetFlux(helper As IConnect) As Task
         Try
             Dim flux As FluxUser = Await helper.GetFluxAsync()
-            Console.WriteLine("Username: {0}
-Flux: {1}
-Login time: {2}
-Balance: {3}", flux.Username, FluxToString(flux.Flux), flux.OnlineTime, flux.Balance.ToString("C2", (New CultureInfo("zh-CN"))))
+            Console.WriteLine("Username: {0}", flux.Username)
+            Console.WriteLine("Flux: {0}", FluxToString(flux.Flux))
+            Console.WriteLine("Online time: {0}", flux.OnlineTime)
+            Console.WriteLine("Balance: гд{0}", flux.Balance.ToString("N2"))
         Catch ex As Exception
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
         End Try

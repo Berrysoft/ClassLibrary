@@ -9,7 +9,7 @@ namespace Berrysoft.Tsinghua.Net
     /// <summary>
     /// Exposes methods to login, logout and get flux from the login page.
     /// </summary>
-    public interface IConnect
+    public interface IConnect : IDisposable
     {
         /// <summary>
         /// Login to the network.
