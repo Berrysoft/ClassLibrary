@@ -8,7 +8,7 @@ namespace Berrysoft.Tsinghua.Net
     /// <summary>
     /// Exposes methods to login, logout and get flux from https://auth4.tsinghua.edu.cn/ or https://auth6.tsinghua.edu.cn/
     /// </summary>
-    public class AuthHelper : NetHelperBase, IConnect
+    public abstract class AuthHelper : NetHelperBase, IConnect
     {
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
         private const string FluxUriBase = "https://auth{0}.tsinghua.edu.cn/rad_user_info.php";
@@ -21,7 +21,7 @@ namespace Berrysoft.Tsinghua.Net
         /// Initializes a new instance of the <see cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="version">4 for auth4 and 6 for auth6</param>
-        private AuthHelper(int version)
+        internal AuthHelper(int version)
             : this(string.Empty, string.Empty, version)
         { }
         /// <summary>
@@ -30,7 +30,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         /// <param name="version">4 for auth4 and 6 for auth6</param>
-        private AuthHelper(string username, string password, int version)
+        internal AuthHelper(string username, string password, int version)
             : base(username, password)
         {
             LogUri = string.Format(LogUriBase, version);
@@ -41,26 +41,30 @@ namespace Berrysoft.Tsinghua.Net
         /// Initializes a new instance of the <see cref="AuthHelper"/> class.
         /// </summary>
         /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
-        public static AuthHelper CreateAuth4Helper() => new AuthHelper(4);
+        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth4Helper.", false)]
+        public static AuthHelper CreateAuth4Helper() => new Auth4Helper();
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
-        public static AuthHelper CreateAuth4Helper(string username, string password) => new AuthHelper(username, password, 4);
+        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth4Helper.", false)]
+        public static AuthHelper CreateAuth4Helper(string username, string password) => new Auth4Helper(username, password);
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthHelper"/> class.
         /// </summary>
         /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
-        public static AuthHelper CreateAuth6Helper() => new AuthHelper(6);
+        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth6Helper.", false)]
+        public static AuthHelper CreateAuth6Helper() => new Auth6Helper();
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthHelper"/> class.
         /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
-        public static AuthHelper CreateAuth6Helper(string username, string password) => new AuthHelper(username, password, 6);
+        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth6Helper.", false)]
+        public static AuthHelper CreateAuth6Helper(string username, string password) => new Auth6Helper(username, password);
         /// <summary>
         /// Login to the network.
         /// </summary>
@@ -405,5 +409,41 @@ namespace Berrysoft.Tsinghua.Net
             }
             return new string(u, 0, len);
         }
+    }
+    /// <summary>
+    /// Exposes methods to login, logout and get flux from https://auth4.tsinghua.edu.cn/.
+    /// </summary>
+    public class Auth4Helper : AuthHelper
+    {
+        /// <summary>
+        /// Initializes a new instance of <see cref="Auth4Helper"/> class.
+        /// </summary>
+        public Auth4Helper()
+            : base(4)
+        { }
+        /// <summary>
+        /// Initializes a new instance of <see cref="Auth4Helper"/> class.
+        /// </summary>
+        public Auth4Helper(string username, string password)
+            : base(username, password, 4)
+        { }
+    }
+    /// <summary>
+    /// Exposes methods to login, logout and get flux from https://auth6.tsinghua.edu.cn/.
+    /// </summary>
+    public class Auth6Helper:AuthHelper
+    {
+        /// <summary>
+        /// Initializes a new instance of <see cref="Auth6Helper"/> class.
+        /// </summary>
+        public Auth6Helper()
+            : base(6)
+        { }
+        /// <summary>
+        /// Initializes a new instance of <see cref="Auth6Helper"/> class.
+        /// </summary>
+        public Auth6Helper(string username, string password)
+            : base(username, password, 6)
+        { }
     }
 }
