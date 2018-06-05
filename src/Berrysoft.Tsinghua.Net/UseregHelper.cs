@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -56,10 +57,26 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Initializes a new instance of the <see cref="UseregHelper"/> class.
         /// </summary>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public UseregHelper(HttpClient client)
+            : base(client)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UseregHelper"/> class.
+        /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         public UseregHelper(string username, string password)
             : base(username, password)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UseregHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public UseregHelper(string username, string password, HttpClient client)
+            : base(username, password, client)
         { }
         /// <summary>
         /// Login to the website.

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Json;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
@@ -27,11 +28,29 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthHelper"/> class.
         /// </summary>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        /// <param name="version">4 for auth4 and 6 for auth6</param>
+        internal AuthHelper(HttpClient client, int version)
+            : this(string.Empty, string.Empty, client, version)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         /// <param name="version">4 for auth4 and 6 for auth6</param>
         internal AuthHelper(string username, string password, int version)
-            : base(username, password)
+            : this(username, password, null, version)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        /// <param name="version">4 for auth4 and 6 for auth6</param>
+        internal AuthHelper(string username, string password, HttpClient client, int version)
+            : base(username, password, client)
         {
             LogUri = string.Format(LogUriBase, version);
             FluxUri = string.Format(FluxUriBase, version);
@@ -422,10 +441,28 @@ namespace Berrysoft.Tsinghua.Net
             : base(4)
         { }
         /// <summary>
+        /// Initializes a new instance of the <see cref="Auth4Helper"/> class.
+        /// </summary>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public Auth4Helper(HttpClient client)
+            : base(client, 4)
+        { }
+        /// <summary>
         /// Initializes a new instance of <see cref="Auth4Helper"/> class.
         /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
         public Auth4Helper(string username, string password)
             : base(username, password, 4)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Auth4Helper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public Auth4Helper(string username, string password, HttpClient client)
+            : base(username, password, client, 4)
         { }
     }
     /// <summary>
@@ -440,10 +477,28 @@ namespace Berrysoft.Tsinghua.Net
             : base(6)
         { }
         /// <summary>
+        /// Initializes a new instance of the <see cref="Auth6Helper"/> class.
+        /// </summary>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public Auth6Helper(HttpClient client)
+            : base(client, 6)
+        { }
+        /// <summary>
         /// Initializes a new instance of <see cref="Auth6Helper"/> class.
         /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
         public Auth6Helper(string username, string password)
             : base(username, password, 6)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Auth6Helper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public Auth6Helper(string username, string password, HttpClient client)
+            : base(username, password, client, 6)
         { }
     }
 }

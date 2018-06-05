@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
@@ -21,10 +22,26 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Initializes a new instance of the <see cref="NetHelper"/> class.
         /// </summary>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public NetHelper(HttpClient client)
+            : base(client)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetHelper"/> class.
+        /// </summary>
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         public NetHelper(string username, string password)
             : base(username, password)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetHelper"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public NetHelper(string username, string password, HttpClient client)
+            : base(username, password, client)
         { }
         /// <summary>
         /// Login to the network.
