@@ -11,4 +11,10 @@
     <FileVersion>1.0.140.0</FileVersion>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Version>1.0.140-preview3</Version>
+    <Authors>Berrysoft</Authors>
+    <Company>Berrysoft</Company>
+  </PropertyGroup>
+
 </Project>
