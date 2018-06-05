@@ -264,6 +264,9 @@ namespace Berrysoft.Data
         /// The count of children.
         /// </summary>
         public int Count => _children.Count;
+        /// <summary>
+        /// Parent of the node, null when the node is root node of a tree.
+        /// </summary>
         ITreeBase<T> ITreeBase<T>.Parent => Parent;
         /// <summary>
         /// Add a child.

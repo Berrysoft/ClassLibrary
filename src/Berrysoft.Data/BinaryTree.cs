@@ -58,12 +58,16 @@ namespace Berrysoft.Data
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with pre order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with pre order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsPreOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsPreOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         /// <summary>
         /// Get an iterator with pre order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with pre order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsPreOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
@@ -86,12 +90,16 @@ namespace Berrysoft.Data
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with in order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with in order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsInOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsInOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         /// <summary>
         /// Get an iterator with in order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with in order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsInOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
@@ -115,12 +123,16 @@ namespace Berrysoft.Data
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with post order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with post order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsPostOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsPostOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         /// <summary>
         /// Get an iterator with post order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with post order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsPostOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
@@ -152,12 +164,16 @@ namespace Berrysoft.Data
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with level order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with level order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsLevelOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsLevelOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         /// <summary>
         /// Get an iterator with level order.
         /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">The tree.</param>
         /// <returns>An <see cref="IEnumerable{T}"/> with level order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsLevelOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
@@ -335,17 +351,25 @@ namespace Berrysoft.Data
                 _right = value;
             }
         }
-
+        /// <summary>
+        /// Left child of the node.
+        /// </summary>
         IBinaryTree<T> IBinaryTree<T>.LeftChild
         {
             get => LeftChild;
             set => LeftChild = (BinaryTree<T>)value;
         }
+        /// <summary>
+        /// Right child of the node.
+        /// </summary>
         IBinaryTree<T> IBinaryTree<T>.RightChild
         {
             get => RightChild;
             set => RightChild = (BinaryTree<T>)value;
         }
+        /// <summary>
+        /// Parent of the node, null when the node is root node of a tree.
+        /// </summary>
         ITreeBase<T> ITreeBase<T>.Parent => Parent;
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="BinaryTree{T}"/>.
