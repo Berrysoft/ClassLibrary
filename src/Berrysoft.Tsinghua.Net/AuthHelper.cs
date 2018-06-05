@@ -431,7 +431,7 @@ namespace Berrysoft.Tsinghua.Net
     /// <summary>
     /// Exposes methods to login, logout and get flux from https://auth6.tsinghua.edu.cn/.
     /// </summary>
-    public class Auth6Helper:AuthHelper
+    public class Auth6Helper : AuthHelper
     {
         /// <summary>
         /// Initializes a new instance of <see cref="Auth6Helper"/> class.

@@ -21,9 +21,14 @@ namespace Berrysoft.Data
         IBinaryTree<T> RightChild { get; set; }
     }
     #endregion
-    #region Enumerable
     public static partial class Enumerable
     {
+        /// <summary>
+        /// Get depth of the tree.
+        /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">A tree to calculte depth.</param>
+        /// <returns>The depth of the tree.</returns>
         private static int GetDepthBinary<T>(IBinaryTree<T> tree)
         {
             int GetDepthInternal(IBinaryTree<T> root, int depth)
@@ -56,6 +61,10 @@ namespace Berrysoft.Data
         /// <returns>An <see cref="IEnumerable{T}"/> with pre order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsPreOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsPreOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        /// <summary>
+        /// Get an iterator with pre order.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> with pre order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsPreOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
             Stack<IBinaryTree<T>> nodes = new Stack<IBinaryTree<T>>();
@@ -80,6 +89,10 @@ namespace Berrysoft.Data
         /// <returns>An <see cref="IEnumerable{T}"/> with in order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsInOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsInOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        /// <summary>
+        /// Get an iterator with in order.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> with in order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsInOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
             Stack<IBinaryTree<T>> nodes = new Stack<IBinaryTree<T>>();
@@ -105,6 +118,10 @@ namespace Berrysoft.Data
         /// <returns>An <see cref="IEnumerable{T}"/> with post order.</returns>
         public static IEnumerable<IBinaryTree<T>> AsPostOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsPostOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        /// <summary>
+        /// Get an iterator with post order.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{T}"/> with post order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsPostOrderEnumerableIterator<T>(IBinaryTree<T> tree)
         {
             Stack<IBinaryTree<T>> nodes = new Stack<IBinaryTree<T>>();
@@ -139,7 +156,7 @@ namespace Berrysoft.Data
         public static IEnumerable<IBinaryTree<T>> AsLevelOrderEnumerable<T>(this IBinaryTree<T> tree)
             => AsLevelOrderEnumerableIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         /// <summary>
-        /// Get an <see cref="IEnumerable{T}"/> with level order.
+        /// Get an iterator with level order.
         /// </summary>
         /// <returns>An <see cref="IEnumerable{T}"/> with level order.</returns>
         private static IEnumerable<IBinaryTree<T>> AsLevelOrderEnumerableIterator<T>(IBinaryTree<T> tree)
@@ -161,7 +178,6 @@ namespace Berrysoft.Data
             }
         }
     }
-    #endregion
     /// <summary>
     /// Represents a binary node of a <see cref="BinaryTree{T}"/>.
     /// </summary>
@@ -350,8 +366,12 @@ namespace Berrysoft.Data
         /// Returns an enumerator that iterates through the <see cref="BinaryTree{T}"/>.
         /// </summary>
         /// <returns>An <see cref="IEnumerable"/> for the <see cref="BinaryTree{T}"/>.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         IEnumerator<ITreeBase<T>> IEnumerable<ITreeBase<T>>.GetEnumerator() => GetEnumerator();
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="BinaryTree{T}"/>.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable"/> for the <see cref="BinaryTree{T}"/>.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         /// <summary>
         /// Convert <see cref="BinaryTree{T}"/> to <typeparamref name="T"/> explicitly.
         /// </summary>
