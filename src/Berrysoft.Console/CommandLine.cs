@@ -11,7 +11,7 @@ namespace Berrysoft.Console
     public sealed class OptionAttribute : Attribute
     {
         /// <summary>
-        /// Initialize an instance of <see cref="OptionAttribute"/>.
+        /// Initializes an instance of <see cref="OptionAttribute"/>.
         /// </summary>
         /// <param name="shortArg">Short name of the option.</param>
         /// <param name="longArg">Long name of the option.</param>
@@ -19,7 +19,7 @@ namespace Berrysoft.Console
             : this(new string(shortArg, 1), longArg)
         { }
         /// <summary>
-        /// Initialize an instance of <see cref="OptionAttribute"/>.
+        /// Initializes an instance of <see cref="OptionAttribute"/>.
         /// </summary>
         /// <param name="shortArg">Short name of the option.</param>
         /// <param name="longArg">Long name of the option.</param>
@@ -73,7 +73,7 @@ namespace Berrysoft.Console
         /// </summary>
         public virtual string LongHelpArg => "help";
         /// <summary>
-        /// Initialize an instance of <see cref="CommandLine"/> class.
+        /// Initializes an instance of <see cref="CommandLine"/> class.
         /// </summary>
         public CommandLine()
             : base()

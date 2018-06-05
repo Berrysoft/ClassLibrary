@@ -68,9 +68,9 @@ Module Program
             Case Nothing, "net"
                 helper = New NetHelper(username, password)
             Case "auth4"
-                helper = AuthHelper.CreateAuth4Helper(username, password)
+                helper = New Auth4Helper(username, password)
             Case "auth6"
-                helper = AuthHelper.CreateAuth6Helper(username, password)
+                helper = New Auth6Helper(username, password)
             Case Else
                 helper = Nothing
         End Select

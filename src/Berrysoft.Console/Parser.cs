@@ -72,7 +72,7 @@ namespace Berrysoft.Console
         /// </summary>
         public ISimpleConverter Converter { get; }
         /// <summary>
-        /// Initialize an instance of <see cref="SettingsPropertyInfo{T}"/> class.
+        /// Initializes an instance of <see cref="SettingsPropertyInfo{T}"/> class.
         /// </summary>
         /// <param name="attr">The settings attribute of the property.</param>
         /// <param name="prop">The <see cref="PropertyInfo"/> of the property.</param>
@@ -100,7 +100,7 @@ namespace Berrysoft.Console
     {
         private protected readonly Dictionary<string, SettingsPropertyInfo<T>> properties;
         /// <summary>
-        /// Initialize an instance of <see cref="Parser{T}"/> class.
+        /// Initializes an instance of <see cref="Parser{T}"/> class.
         /// </summary>
         public Parser()
         {
