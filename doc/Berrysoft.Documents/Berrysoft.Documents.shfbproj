@@ -56,6 +56,7 @@
       <NamespaceSummaryItem name="Berrysoft.Tsinghua.Net" isDocumented="True">A namespace contains classes to connect to Tsinghua campus network.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Berrysoft.Data" isDocumented="True">A namespace of some complex data structure.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Berrysoft.Unsafe" isDocumented="True">A namespace comtains unsafe or unmanaged structures and methods. All members support safe languages (like Visual Basic).</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Berrysoft.Console" isDocumented="True">A namespace comtains classes to parse settings files and write simple logs.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <NamingMethod>MemberName</NamingMethod>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>

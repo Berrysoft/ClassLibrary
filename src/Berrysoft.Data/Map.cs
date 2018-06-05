@@ -270,14 +270,20 @@ namespace Berrysoft.Data
         /// <value><see langword="false"/></value>
         public bool IsReadOnly => false;
         /// <summary>
-        /// Gets an <see cref="ICollection{TKey1}"/> containing the keys in the <see cref="Map{TKey1, TKey2}"/>.
+        /// Gets an <see cref="Dictionary{TKey1, TKey2}.KeyCollection"/> containing the keys in the <see cref="Map{TKey1, TKey2}"/>.
         /// </summary>
         public Dictionary<TKey1, TKey2>.KeyCollection Keys1 => dic.Keys;
+        /// <summary>
+        /// Gets an <see cref="ICollection{TKey1}"/> containing the keys in the <see cref="Map{TKey1, TKey2}"/>.
+        /// </summary>
         ICollection<TKey1> IMap<TKey1, TKey2>.Keys1 => Keys1;
+        /// <summary>
+        /// Gets an <see cref="Dictionary{TKey2, TKey1}.KeyCollection"/> containing the keys in the <see cref="Map{TKey1, TKey2}"/>.
+        /// </summary>
+        public Dictionary<TKey2, TKey1>.KeyCollection Keys2 => rev.Keys;
         /// <summary>
         /// Gets an <see cref="ICollection{TKey2}"/> containing the keys in the <see cref="Map{TKey1, TKey2}"/>.
         /// </summary>
-        public Dictionary<TKey2, TKey1>.KeyCollection Keys2 => rev.Keys;
         ICollection<TKey2> IMap<TKey1, TKey2>.Keys2 => Keys2;
         /// <summary>
         /// Adds the specified key1 and key2.
