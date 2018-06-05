@@ -274,6 +274,10 @@ namespace Berrysoft.Data
             SetParent(child);
             _children.Add(child);
         }
+        /// <summary>
+        /// Add a child.
+        /// </summary>
+        /// <param name="child">The child node to be added.</param>
         void ITree<T>.Add(ITree<T> child) => Add((Tree<T>)child);
         /// <summary>
         /// Add children.
@@ -294,6 +298,11 @@ namespace Berrysoft.Data
             SetParent(child);
             _children.Insert(index, child);
         }
+        /// <summary>
+        /// Insert a child.
+        /// </summary>
+        /// <param name="index">The zero-based index at which child should be inserted.</param>
+        /// <param name="child">The child to insert.</param>
         void ITree<T>.Insert(int index, ITree<T> child) => Insert(index, (Tree<T>)child);
         /// <summary>
         /// Determines whether a child is in the <see cref="ITree{T}"/>.
@@ -304,6 +313,11 @@ namespace Berrysoft.Data
         {
             return _children.Contains(child);
         }
+        /// <summary>
+        /// Determines whether a child is in the <see cref="ITree{T}"/>.
+        /// </summary>
+        /// <param name="child">The child to locate in the <see cref="ITree{T}"/>.</param>
+        /// <returns><see langword="true"/> if the child is found; otherwise, <see langword="false"/>.</returns>
         bool ITree<T>.Contains(ITree<T> child)
         {
             if (child is Tree<T> c)
@@ -326,6 +340,11 @@ namespace Berrysoft.Data
             }
             return false;
         }
+        /// <summary>
+        /// Remove a child.
+        /// </summary>
+        /// <param name="child">The child node to be removed.</param>
+        /// <returns><see langword="true"/> if the child is successfully removed; otherwise, <see langword="false"/>.</returns>
         bool ITree<T>.Remove(ITree<T> child)
         {
             if (child is Tree<T> c)
@@ -347,6 +366,10 @@ namespace Berrysoft.Data
         /// </summary>
         /// <returns>An <see cref="IEnumerable{TNode}"/> for the <see cref="Tree{T}"/>.</returns>
         public IEnumerator<Tree<T>> GetEnumerator() => _children.GetEnumerator();
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Tree{T}"/>.
+        /// </summary>
+        /// <returns>An <see cref="IEnumerable{TNode}"/> for the <see cref="Tree{T}"/>.</returns>
         IEnumerator<ITreeBase<T>> IEnumerable<ITreeBase<T>>.GetEnumerator() => GetEnumerator();
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Tree{T}"/>.

@@ -1,22 +1,15 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Console
 {
-    public interface ILog
-    {
-        void WriteLog(string message);
-        void WriteException(Exception exception);
-        void WriteEvent(string eventName);
-        void WriteDebug(string message);
-        Task WriteLogAsync(string message);
-        Task WriteExceptionAsync(Exception exception);
-        Task WriteEventAsync(string eventName);
-        Task WriteDebugAsync(string message);
-    }
-    public class Log : ILog, IDisposable
+    /// <summary>
+    /// Represents a writer of a simple log.
+    /// </summary>
+    public class Log : IDisposable
     {
         public Log(string fileName)
             : this(fileName, false)
