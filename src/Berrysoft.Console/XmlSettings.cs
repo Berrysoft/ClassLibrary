@@ -9,9 +9,15 @@ using System.Xml.Linq;
 
 namespace Berrysoft.Console
 {
-    [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    /// <summary>
+    /// Represents a piece of settings accepts multiple values.
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public sealed class MultipleAttribute : Attribute
     { }
+    /// <summary>
+    /// Represents a xml settings file parser.
+    /// </summary>
     public abstract class XmlSettings : SettingsBase
     {
         private readonly XName rootName;
@@ -19,6 +25,9 @@ namespace Berrysoft.Console
 #if NETCOREAPP2_1
         private readonly object syncLock = new object();
 #endif
+        /// <summary>
+        /// Initializes a new instance of <see cref="XmlSettings"/> class.
+        /// </summary>
         public XmlSettings()
             : base()
         {
@@ -31,6 +40,11 @@ namespace Berrysoft.Console
                 rootName = "settings";
             }
         }
+        /// <summary>
+        /// Get a <see cref="string"/> key and <see cref="SettingsPropertyInfo{T}"/> value of a <see cref="PropertyInfo"/>.
+        /// </summary>
+        /// <param name="prop">The property info.</param>
+        /// <returns>A key value pair.</returns>
         protected override (string Key, SettingsPropertyInfo<SettingsAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
         {
             var result = base.GetKeyValuePairFromPropertyInfo(prop);
@@ -44,6 +58,10 @@ namespace Berrysoft.Console
             return result;
         }
         private bool IsMultiple(string name) => multipleNames.Contains(name);
+        /// <summary>
+        /// Open an xml file and parse it.
+        /// </summary>
+        /// <param name="fileName">Path of the file.</param>
         public override void Open(string fileName)
         {
             XDocument document = XDocument.Load(fileName);
@@ -64,7 +82,18 @@ namespace Berrysoft.Console
             }
         }
 #if NETCOREAPP2_1
+        /// <summary>
+        /// Open an xml file and parse it asynchronously.
+        /// </summary>
+        /// <param name="fileName">Path of the file.</param>
+        /// <returns>A <see cref="Task"/> of the task.</returns>
         public Task OpenAsync(string fileName) => OpenAsync(fileName, CancellationToken.None);
+        /// <summary>
+        /// Open an xml file and parse it asynchronously.
+        /// </summary>
+        /// <param name="fileName">Path of the file.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns>A <see cref="Task"/> of the task.</returns>
         public async Task OpenAsync(string fileName, CancellationToken cancellationToken)
         {
             XDocument document = null;
@@ -92,6 +121,10 @@ namespace Berrysoft.Console
             });
         }
 #endif
+        /// <summary>
+        /// Save the settings to an xml file.
+        /// </summary>
+        /// <param name="fileName">Path of the file.</param>
         public override void Save(string fileName)
         {
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
@@ -114,7 +147,18 @@ namespace Berrysoft.Console
             document.Save(fileName);
         }
 #if NETCOREAPP2_1
+        /// <summary>
+        /// Save the settings to an xml file.
+        /// </summary>
+        /// <param name="fileName">Path of the file.</param>
+        /// <returns>A <see cref="Task"/> of the task.</returns>
         public Task SaveAsync(string fileName) => SaveAsync(fileName, CancellationToken.None);
+        /// <summary>
+        /// Save the settings to an xml file.
+        /// </summary>
+        /// <param name="fileName">Path of the file.</param>
+        /// <param name="cancellationToken">A cancellation token.</param>
+        /// <returns>A <see cref="Task"/> of the task.</returns>
         public async Task SaveAsync(string fileName, CancellationToken cancellationToken)
         {
             XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));

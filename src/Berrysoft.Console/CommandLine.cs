@@ -78,6 +78,11 @@ namespace Berrysoft.Console
         public CommandLine()
             : base()
         { }
+        /// <summary>
+        /// Get a <see cref="string"/> key and <see cref="SettingsPropertyInfo{T}"/> value of a <see cref="PropertyInfo"/>.
+        /// </summary>
+        /// <param name="prop">The property info.</param>
+        /// <returns>A key value pair.</returns>
         protected override (string Key, SettingsPropertyInfo<OptionAttribute> Value)? GetKeyValuePairFromPropertyInfo(PropertyInfo prop)
         {
             if (Attribute.GetCustomAttribute(prop, typeof(OptionAttribute)) is OptionAttribute option)
