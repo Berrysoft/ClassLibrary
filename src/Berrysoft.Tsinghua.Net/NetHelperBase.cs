@@ -124,7 +124,14 @@ namespace Berrysoft.Tsinghua.Net
         /// Initializes a new instance of the <see cref="NetHelperBase"/> class.
         /// </summary>
         public NetHelperBase()
-            : this(string.Empty, string.Empty)
+            : this(string.Empty, string.Empty, null)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetHelperBase"/> class.
+        /// </summary>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public NetHelperBase(HttpClient client)
+            : this(string.Empty, string.Empty, client)
         { }
         /// <summary>
         /// Initializes a new instance of the <see cref="NetHelperBase"/> class.
@@ -132,10 +139,19 @@ namespace Berrysoft.Tsinghua.Net
         /// <param name="username">The username to login.</param>
         /// <param name="password">The password to login.</param>
         public NetHelperBase(string username, string password)
+            : this(username, password, null)
+        { }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="NetHelperBase"/> class.
+        /// </summary>
+        /// <param name="username">The username to login.</param>
+        /// <param name="password">The password to login.</param>
+        /// <param name="client">A user-specified instance of <see cref="HttpClient"/>.</param>
+        public NetHelperBase(string username, string password, HttpClient client)
         {
             Username = username;
             Password = password;
-            client = new HttpClient();
+            this.client = client ?? new HttpClient();
         }
         /// <summary>
         /// Send a POST request to the specified Uri as an asynchronous operation.
