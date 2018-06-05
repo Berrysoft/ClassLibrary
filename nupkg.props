@@ -3,8 +3,6 @@
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.140-preview3</Version>
-    <Authors>Berrysoft</Authors>
   </PropertyGroup>
 
   <PropertyGroup>
