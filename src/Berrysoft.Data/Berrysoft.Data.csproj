@@ -3,8 +3,4 @@
   <Import Project="..\..\target.props"/>
   <Import Project="..\..\nupkg.props"/>
   
-  <PropertyGroup>
-    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Berrysoft.Data.xml</DocumentationFile>
-  </PropertyGroup>
-
 </Project>
