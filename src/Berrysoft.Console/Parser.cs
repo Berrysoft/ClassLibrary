@@ -31,6 +31,10 @@ namespace Berrysoft.Console
         }
         public object Convert(object value)
         {
+            if (value == null)
+            {
+                return null;
+            }
             return System.Convert.ChangeType(value, targetType);
         }
         public object ConvertBack(object value)
@@ -39,7 +43,7 @@ namespace Berrysoft.Console
             {
                 return array;
             }
-            return value.ToString();
+            return value?.ToString();
         }
         private static Dictionary<Type, ISimpleConverter> converters = new Dictionary<Type, ISimpleConverter>();
         public static ISimpleConverter Create(Type targetType)
