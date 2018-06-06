@@ -35,6 +35,7 @@ namespace Berrysoft.Unsafe
     /// ]]></code>
     /// </example>
     [DebuggerDisplay("{Ptr}")]
+    [DebuggerTypeProxy(typeof(PointerDebugView<>))]
     public readonly unsafe struct Pointer<T> : IEquatable<Pointer<T>>
     {
         private readonly void* _ptr;
