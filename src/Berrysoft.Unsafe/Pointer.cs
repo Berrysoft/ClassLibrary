@@ -8,7 +8,7 @@ namespace Berrysoft.Unsafe
     /// <summary>
     /// Represents a .NET CLR pointer.
     /// </summary>
-    /// <typeparam name="T">Type of the pointer pointed to.</typeparam>
+    /// <typeparam name="T">Type of the pointer targets to.</typeparam>
     /// <example>
     /// This example shows how to use pointer in Visual Basic.
     /// <code language="VB"><![CDATA[

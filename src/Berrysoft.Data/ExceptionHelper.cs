@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Berrysoft.Data
 {
-    static class ExceptionHelper
+    internal static class ExceptionHelper
     {
         public static Exception ArgumentNull(string paramName)
             => new ArgumentNullException(paramName);

@@ -95,6 +95,12 @@ namespace Berrysoft.Console
             }
             return null;
         }
+        /// <summary>
+        /// Initializes a new <see cref="Dictionary{TKey, TValue}"/> of the args array.
+        /// </summary>
+        /// <param name="args">The args array.</param>
+        /// <returns>An instance of <see cref="Dictionary{TKey, TValue}"/>.</returns>
+        /// <exception cref="ArgInvalidException"></exception>
         private Dictionary<string, string> InitArgs(string[] args)
         {
             var result = new Dictionary<string, string>();
@@ -234,6 +240,10 @@ namespace Berrysoft.Console
                 PrintUsage(name);
             }
         }
+        /// <summary>
+        /// Print help text of a option with its property name.
+        /// </summary>
+        /// <param name="name">The property name.</param>
         private void PrintUsage(string name) => PrintUsage(properties[name].Attribute);
         /// <summary>
         /// Print help text of a option.

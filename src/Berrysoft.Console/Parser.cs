@@ -22,13 +22,25 @@ namespace Berrysoft.Console
         /// <returns>A converted value.</returns>
         object ConvertBack(object value);
     }
+    /// <summary>
+    /// A simple implementation of <see cref="ISimpleConverter"/>.
+    /// </summary>
     internal class SimpleConverter : ISimpleConverter
     {
         private readonly Type targetType;
+        /// <summary>
+        /// Initializes a new instance of <see cref="SimpleConverter"/> class.
+        /// </summary>
+        /// <param name="targetType">Type of the target.</param>
         private SimpleConverter(Type targetType)
         {
             this.targetType = targetType;
         }
+        /// <summary>
+        /// Converts a value with <see cref="System.Convert.ChangeType(object, Type)"/>.
+        /// </summary>
+        /// <param name="value">Value to be converted.</param>
+        /// <returns>A converted value.</returns>
         public object Convert(object value)
         {
             if (value == null)
@@ -37,6 +49,11 @@ namespace Berrysoft.Console
             }
             return System.Convert.ChangeType(value, targetType);
         }
+        /// <summary>
+        /// Converts a value with <see cref="object.ToString()"/>.
+        /// </summary>
+        /// <param name="value">Value to be converted.</param>
+        /// <returns>Itself if <paramref name="value"/> is an array; otherwise, a converted value.</returns>
         public object ConvertBack(object value)
         {
             if (value is Array array)
@@ -46,6 +63,11 @@ namespace Berrysoft.Console
             return value?.ToString();
         }
         private static Dictionary<Type, ISimpleConverter> converters = new Dictionary<Type, ISimpleConverter>();
+        /// <summary>
+        /// Create a new instance of <see cref="SimpleConverter"/> class of a specified type.
+        /// </summary>
+        /// <param name="targetType">The specified type.</param>
+        /// <returns>An instance of <see cref="SimpleConverter"/> class.</returns>
         public static ISimpleConverter Create(Type targetType)
         {
             if (!converters.TryGetValue(targetType, out var converter))
