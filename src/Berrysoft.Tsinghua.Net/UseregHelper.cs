@@ -94,6 +94,9 @@ namespace Berrysoft.Tsinghua.Net
         /// <param name="ip">The IP address to be dropped.</param>
         /// <returns>The response of the website.</returns>
         public Task<string> LogoutAsync(IPAddress ip) => PostAsync(InfoUri, string.Format(DropData, ip.ToString()));
+
+        private static readonly Regex TableRegex = new Regex(@"<tr align=""center"">.+?</tr>", RegexOptions.Singleline);
+        private static readonly Regex ItemRegex = new Regex(@"(?<=\<td class=""maintd""\>)(.*?)(?=\</td\>)");
         /// <summary>
         /// Get all connections of this user.
         /// </summary>
@@ -103,9 +106,8 @@ namespace Berrysoft.Tsinghua.Net
             try
             {
                 string userhtml = await GetAsync(InfoUri);
-                var info = Regex.Matches(userhtml, @"<tr align=""center"">.+?</tr>", RegexOptions.Singleline);
-                return from Match r in info
-                       let details = Regex.Matches(r.Value, @"(?<=\<td class=""maintd""\>)(.*?)(?=\</td\>)")
+                return from Match r in TableRegex.Matches(userhtml)
+                       let details = ItemRegex.Matches(r.Value)
                        select new NetUser(
                            IPAddress.Parse(details[0].Value),
                            DateTime.ParseExact(details[1].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
@@ -116,6 +118,7 @@ namespace Berrysoft.Tsinghua.Net
                 return null;
             }
         }
+
         private Dictionary<string, string> loginDataDictionary;
         /// <summary>
         /// Get login data with username and password.

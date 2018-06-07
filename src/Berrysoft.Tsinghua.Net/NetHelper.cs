@@ -58,6 +58,7 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
+
         private Dictionary<string, string> loginDataDictionary;
         /// <summary>
         /// Get login data with username and password.

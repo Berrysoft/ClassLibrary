@@ -161,6 +161,11 @@ namespace Berrysoft.Console
         /// <summary>
         /// Parse args.
         /// </summary>
+        /// <param name="args">The args string.</param>
+        public void Parse(string args) => Parse(args?.Split(' '));
+        /// <summary>
+        /// Parse args.
+        /// </summary>
         /// <param name="args">The args.</param>
         public void Parse(string[] args)
         {

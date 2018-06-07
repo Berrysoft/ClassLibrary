@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Json;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
@@ -57,34 +57,6 @@ namespace Berrysoft.Tsinghua.Net
             ChallengeUri = string.Format(ChallengeUriBase, version);
         }
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
-        /// </summary>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
-        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth4Helper.", false)]
-        public static AuthHelper CreateAuth4Helper() => new Auth4Helper();
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
-        /// </summary>
-        /// <param name="username">The username to login.</param>
-        /// <param name="password">The password to login.</param>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 4.</returns>
-        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth4Helper.", false)]
-        public static AuthHelper CreateAuth4Helper(string username, string password) => new Auth4Helper(username, password);
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
-        /// </summary>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
-        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth6Helper.", false)]
-        public static AuthHelper CreateAuth6Helper() => new Auth6Helper();
-        /// <summary>
-        /// Initializes a new instance of the <see cref="AuthHelper"/> class.
-        /// </summary>
-        /// <param name="username">The username to login.</param>
-        /// <param name="password">The password to login.</param>
-        /// <returns>An instance of <see cref="AuthHelper"/> class with version 6.</returns>
-        [Obsolete("Please use Berrysoft.Tsinghua.Net.Auth6Helper.", false)]
-        public static AuthHelper CreateAuth6Helper(string username, string password) => new Auth6Helper(username, password);
-        /// <summary>
         /// Login to the network.
         /// </summary>
         /// <returns>The response of the website.</returns>
@@ -99,6 +71,8 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
+
+        private static readonly Regex ChallengeRegex = new Regex(@"""challenge"":""(.*?)""");
         /// <summary>
         /// Get "challenge" to encode the password.
         /// </summary>
@@ -106,13 +80,13 @@ namespace Berrysoft.Tsinghua.Net
         private async Task<string> GetChallengeAsync()
         {
             string result = await GetAsync(string.Format(ChallengeUri, Username));
-            int begin = result.IndexOf('{');
-            int end = result.LastIndexOf('}');
-            //Substring() is 4 times faster than Slice().
-            return result.Substring(begin, end - begin + 1);
+            Match match = ChallengeRegex.Match(result);
+            return match.Groups[1].Value;
         }
+
         private Dictionary<string, string> loginDataDictionary;
-        private JsonObject loginInfo;
+        private const string LoginInfoJson = "{{\"ip\": \"\", \"acid\": \"1\", \"enc_ver\": \"srun_bx1\", \"username\": \"{0}\", \"password\": \"{1}\"}}";
+        private const string ChkSumData = "{0}{1}{0}{2}{0}1{0}{0}200{0}1{0}{3}";
         /// <summary>
         /// Get login data with username, password and "challenge".
         /// </summary>
@@ -139,42 +113,27 @@ namespace Berrysoft.Tsinghua.Net
         /// </remarks>
         private async Task<Dictionary<string, string>> GetLoginDataAsync()
         {
-            const string n = "200";
-            const string type = "1";
-            const string acid = "1";
-            const string ip = "";
             const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
-            if (loginInfo == null)
-            {
-                loginInfo = new JsonObject()
-                {
-                    ["ip"] = ip,
-                    ["acid"] = acid,
-                    ["enc_ver"] = "srun_bx1"
-                };
-            }
-            loginInfo["username"] = Username;
-            loginInfo["password"] = Password;
-            string challenge = await GetChallengeAsync();
-            JsonValue result = JsonValue.Parse(challenge);
-            string token = result["challenge"];
+            string token = await GetChallengeAsync();
             if (loginDataDictionary == null)
             {
                 loginDataDictionary = new Dictionary<string, string>
                 {
                     ["action"] = "login",
-                    ["ac_id"] = acid,
+                    ["ac_id"] = "1",
                     ["double_stack"] = "1",
-                    ["n"] = n,
-                    ["type"] = type,
+                    ["n"] = "200",
+                    ["type"] = "1",
                     ["password"] = "{MD5}" + passwordMD5
                 };
             }
-            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(XEncode(loginInfo.ToString(), token));
+            string loginInfo = string.Format(LoginInfoJson, Username, Password);
+            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(XEncode(loginInfo, token));
             loginDataDictionary["username"] = Username;
-            loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(token + Username + token + passwordMD5 + token + acid + token + ip + token + n + token + type + token + loginDataDictionary["info"]);
+            loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(string.Format(ChkSumData, token, Username, passwordMD5, loginDataDictionary["info"]));
             return loginDataDictionary;
         }
+        #region Encode methods
         /// <summary>
         /// Encode a <see cref="string"/> to its UTF-8 form.
         /// </summary>
@@ -428,6 +387,7 @@ namespace Berrysoft.Tsinghua.Net
             }
             return new string(u, 0, len);
         }
+        #endregion
     }
     /// <summary>
     /// Exposes methods to login, logout and get flux from https://auth4.tsinghua.edu.cn/.
