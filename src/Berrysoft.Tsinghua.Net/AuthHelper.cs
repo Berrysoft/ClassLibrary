@@ -127,8 +127,7 @@ namespace Berrysoft.Tsinghua.Net
                     ["password"] = "{MD5}" + passwordMD5
                 };
             }
-            string loginInfo = string.Format(LoginInfoJson, Username, Password);
-            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(XEncode(loginInfo, token));
+            loginDataDictionary["info"] = "{SRBX1}" + Base64Encode(XEncode(string.Format(LoginInfoJson, Username, Password), token));
             loginDataDictionary["username"] = Username;
             loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(string.Format(ChkSumData, token, Username, passwordMD5, loginDataDictionary["info"]));
             return loginDataDictionary;
@@ -320,6 +319,8 @@ namespace Berrysoft.Tsinghua.Net
             }
             return L(v, false);
         }
+
+        private static readonly string Base64N = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
         /// <summary>
         /// Encode a string to base64 in a special way.
         /// </summary>
@@ -358,7 +359,6 @@ namespace Berrysoft.Tsinghua.Net
         /// </remarks>
         private unsafe static string Base64Encode(string t)
         {
-            string n = "LVoJPiCN2R8G90yg+hmFHuacZ1OWMnrsSTXkYpUq/3dlbfKwv6xztjI7DeBE45QA";
             int a = t.Length;
             int len = a / 3 * 4;
             len += a % 3 != 0 ? 4 : 0;
@@ -381,7 +381,7 @@ namespace Berrysoft.Tsinghua.Net
                     }
                     else
                     {
-                        u[ui++] = n[h >> 6 * (3 - i) & 0x3F];
+                        u[ui++] = Base64N[h >> 6 * (3 - i) & 0x3F];
                     }
                 }
             }
