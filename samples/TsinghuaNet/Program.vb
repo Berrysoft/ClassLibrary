@@ -48,7 +48,7 @@ Module Program
                 Console.Error.WriteLine("Invalid host.")
                 Return
             End If
-            Logout(helper).Wait()
+            Logout(helper, command.Username).Wait()
         End If
         If command.Flux Then
             If helper Is Nothing Then
@@ -83,9 +83,13 @@ Module Program
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
         End Try
     End Function
-    Async Function Logout(helper As IConnect) As Task
+    Async Function Logout(helper As IConnect, username As String) As Task
         Try
-            Console.WriteLine(Await helper.LogoutAsync())
+            If username Is Nothing Then
+                Console.WriteLine(Await helper.LogoutAsync())
+            Else
+                Console.WriteLine(Await helper.LogoutAsync(username))
+            End If
         Catch ex As Exception
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
         End Try

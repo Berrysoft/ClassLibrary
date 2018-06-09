@@ -13,6 +13,7 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogUri = "http://net.tsinghua.edu.cn/do_login.php";
         private const string FluxUri = "http://net.tsinghua.edu.cn/rad_user_info.php";
         private const string LogoutData = "action=logout";
+        private const string LogoutUserData = "action=logout&username={0}";
         /// <summary>
         /// Initializes a new instance of the <see cref="NetHelper"/> class.
         /// </summary>
@@ -53,6 +54,12 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         /// <returns>The response of the website.</returns>
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
+        /// <summary>
+        /// Logout from the network with the specified username.
+        /// </summary>
+        /// <param name="username">The specified username.</param>
+        /// <returns>The response of the website.</returns>
+        public Task<string> LogoutAsync(string username) => PostAsync(LogUri, string.Format(LogoutUserData, username));
         /// <summary>
         /// Get information of the user online.
         /// </summary>

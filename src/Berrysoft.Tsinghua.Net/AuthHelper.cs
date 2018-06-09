@@ -14,7 +14,8 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
         private const string FluxUriBase = "https://auth{0}.tsinghua.edu.cn/rad_user_info.php";
         private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge?username={{0}}&double_stack=1&ip&callback=callback";
-        private const string LogoutData = "action=logout&ac_id=1&ip=&double_stack=1";
+        private const string LogoutData = "action=logout";
+        private const string LogoutUserData = "action=logout&username={0}";
         private readonly string LogUri;
         private readonly string FluxUri;
         private readonly string ChallengeUri;
@@ -66,6 +67,14 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         /// <returns>The response of the website.</returns>
         public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
+        /// <summary>
+        /// Logout from the network with the specified username.
+        /// When a user logged in through <see cref="AuthHelper"/> and logged out through <see cref="NetHelper"/>,
+        /// he should call this method with his username explicitly, or he can't logout.
+        /// </summary>
+        /// <param name="username">The specified username.</param>
+        /// <returns>The response of the website.</returns>
+        public Task<string> LogoutAsync(string username) => PostAsync(LogUri, string.Format(LogoutUserData, username));
         /// <summary>
         /// Get information of the user online.
         /// </summary>

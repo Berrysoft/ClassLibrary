@@ -22,6 +22,12 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>The response of the website, may be a sentense or a html page.</returns>
         Task<string> LogoutAsync();
         /// <summary>
+        /// Logout from the network with the specified username.
+        /// </summary>
+        /// <param name="username">The specified username.</param>
+        /// <returns>The response of the website, may be a sentense or a html page.</returns>
+        Task<string> LogoutAsync(string username);
+        /// <summary>
         /// Get information of the user online.
         /// </summary>
         /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
