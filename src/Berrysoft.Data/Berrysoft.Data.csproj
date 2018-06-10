@@ -1,5 +1,9 @@
 ﻿<Project>
 
+  <PropertyGroup>
+    <Description>Some data structures, including tree, map, multi map, etc.</Description>
+  </PropertyGroup>
+  
   <Import Project="..\..\target.props"/>
   <Import Project="..\..\nupkg.props"/>
   

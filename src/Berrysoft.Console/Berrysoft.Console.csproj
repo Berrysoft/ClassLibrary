@@ -1,6 +1,10 @@
 ﻿<Project>
 
-  <Import Project="..\..\target.props"/>
-  <Import Project="..\..\nupkg.props"/>
+  <PropertyGroup>
+    <Description>Classes to parse settings files and write simple logs.</Description>
+  </PropertyGroup>
+
+  <Import Project="..\..\target.props" />
+  <Import Project="..\..\nupkg.props" />
 
 </Project>

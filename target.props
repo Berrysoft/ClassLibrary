@@ -7,14 +7,19 @@
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <AssemblyVersion>1.0.140.0</AssemblyVersion>
-    <FileVersion>1.0.140.0</FileVersion>
+    <AssemblyVersion>1.0.152.0</AssemblyVersion>
+    <FileVersion>1.0.152.0</FileVersion>
+    <OutputPath>..\..\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.0.140-preview3</Version>
+    <Version>1.0.152-rc1</Version>
     <Authors>Berrysoft</Authors>
-    <Company>Berrysoft</Company>
+    <Copyright>Copyright (c) 2018 Berrysoft</Copyright>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <RepositoryType>GitHub</RepositoryType>
+    <RepositoryUrl>https://github.com/Berrysoft/ClassLibrary</RepositoryUrl>
   </PropertyGroup>
 
 </Project>

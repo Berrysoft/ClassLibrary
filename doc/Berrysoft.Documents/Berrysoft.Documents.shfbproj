@@ -27,14 +27,14 @@
       <Argument Key="maxVersionParts" Value="" xmlns="" />
     </TransformComponentArguments>
     <DocumentationSources>
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\$(Configuration)\net472\Berrysoft.Tsinghua.Net.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Tsinghua.Net\bin\$(Configuration)\net472\Berrysoft.Tsinghua.Net.dll" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\$(Configuration)\net472\Berrysoft.Data.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Data\bin\$(Configuration)\net472\Berrysoft.Data.dll" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\$(Configuration)\net472\Berrysoft.Unsafe.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Unsafe\bin\$(Configuration)\net472\Berrysoft.Unsafe.dll" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Console\bin\$(Configuration)\net472\Berrysoft.Console.xml" />
-      <DocumentationSource sourceFile="..\..\src\Berrysoft.Console\bin\$(Configuration)\net472\Berrysoft.Console.dll" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Tsinghua.Net.xml" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Tsinghua.Net.dll" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Data.xml" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Data.dll" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Unsafe.xml" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Unsafe.dll" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Console.xml" />
+      <DocumentationSource sourceFile="..\..\bin\$(Configuration)\net472\Berrysoft.Console.dll" />
     </DocumentationSources>
     <HelpFileFormat>Markdown</HelpFileFormat>
     <SyntaxFilters>C#, Visual Basic, F#</SyntaxFilters>
@@ -55,8 +55,8 @@
     <NamespaceSummaries>
       <NamespaceSummaryItem name="Berrysoft.Tsinghua.Net" isDocumented="True">A namespace contains classes to connect to Tsinghua campus network.</NamespaceSummaryItem>
       <NamespaceSummaryItem name="Berrysoft.Data" isDocumented="True">A namespace of some complex data structure.</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Berrysoft.Unsafe" isDocumented="True">A namespace comtains unsafe or unmanaged structures and methods. All members support safe languages (like Visual Basic).</NamespaceSummaryItem>
-      <NamespaceSummaryItem name="Berrysoft.Console" isDocumented="True">A namespace comtains classes to parse settings files and write simple logs.</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Berrysoft.Unsafe" isDocumented="True">A namespace contains unsafe or unmanaged structures and methods. All members support safe languages (like Visual Basic).</NamespaceSummaryItem>
+      <NamespaceSummaryItem name="Berrysoft.Console" isDocumented="True">A namespace contains classes to parse settings files and write simple logs.</NamespaceSummaryItem>
     </NamespaceSummaries>
     <NamingMethod>MemberName</NamingMethod>
     <VisibleItems>Attributes, ExplicitInterfaceImplementations, InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected, NonBrowsable</VisibleItems>

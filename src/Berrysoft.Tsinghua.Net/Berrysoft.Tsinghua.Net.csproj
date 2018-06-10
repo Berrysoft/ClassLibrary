@@ -1,4 +1,8 @@
 ﻿<Project>
+  
+  <PropertyGroup>
+    <Description>Some classes to login Tsinghua campus network.</Description>
+  </PropertyGroup>
 
   <Import Project="..\..\target.props" />
   <Import Project="..\..\nupkg.props" />
