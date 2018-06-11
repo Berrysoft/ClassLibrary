@@ -7,21 +7,25 @@ namespace Berrysoft.Data
     {
         public static Exception ArgumentNull(string paramName)
             => new ArgumentNullException(paramName);
-        public static Exception RootHasParent()
-            => new ArgumentException("The root can't have a parent.");
         public static Exception PairExisted()
-            => new ArgumentException("The key pair is existed.");
+            => new PairExistedException();
         public static Exception KeyNotFound()
             => new KeyNotFoundException();
-        public static Exception KeyExisted(string keyMessage)
-            => new ArgumentException($"{keyMessage} is existed.");
-        public static Exception KeysExisted()
-            => new ArgumentException("Both keys are existed.");
         public static Exception ArgumentOutOfRange(string paramName)
             => new ArgumentOutOfRangeException(paramName);
-        public static Exception NotSupported()
-            => new NotSupportedException();
         public static Exception ArrayTooSmall()
             => new ArgumentException("The array is too small.");
+    }
+    /// <summary>
+    /// Represents errors that a key pair is existed.
+    /// </summary>
+    public class PairExistedException : ArgumentException
+    {
+        /// <summary>
+        /// Initializes a new instance of <see cref="PairExistedException"/> class.
+        /// </summary>
+        public PairExistedException()
+            : base("The key pair is existed.")
+        { }
     }
 }

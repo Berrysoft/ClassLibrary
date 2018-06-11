@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using static System.Runtime.CompilerServices.Unsafe;
 
@@ -8,6 +9,8 @@ namespace Berrysoft.Unsafe
     /// Represents a .NET CLR reference.
     /// </summary>
     /// <typeparam name="T">Type of the reference pointed to.</typeparam>
+    [DebuggerDisplay("{Value}")]
+    [DebuggerTypeProxy(typeof(PointerDebugView<>))]
     public readonly unsafe struct ByReference<T>
     {
         private readonly void* _ptr;

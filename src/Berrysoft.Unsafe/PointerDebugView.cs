@@ -26,6 +26,14 @@ namespace Berrysoft.Unsafe
             }
         }
         /// <summary>
+        /// Initializes a new instance of <see cref="PointerDebugView{T}"/> class. This method is called by the debugger.
+        /// </summary>
+        /// <param name="ptr">The reference.</param>
+        public PointerDebugView(ByReference<T> ptr)
+        {
+            target = ptr.Value;
+        }
+        /// <summary>
         /// Target of the pointer.
         /// </summary>
         [DebuggerBrowsable(DebuggerBrowsableState.Collapsed)]

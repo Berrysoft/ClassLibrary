@@ -56,7 +56,7 @@ Public Class MapTest
         Dim key1values() As String = keylook.GetValuesFromKey1(123).ToArray()
         Assert.AreEqual(key1values(0), "123")
         Assert.AreEqual(key1values(1), "abc")
-        Assert.ThrowsException(Of ArgumentException)(Sub() keylook.Add(123, "123"))
+        Assert.ThrowsException(Of PairExistedException)(Sub() keylook.Add(123, "123"))
     End Sub
 
     <TestMethod()>
