@@ -1,22 +1,22 @@
-Module Program
+ï»¿Module Program
     Private dictionary As New MultiMap(Of Char, String)
     Sub Main(args As String())
-        dictionary.Add("º£"c, "hai")
-        dictionary.Add("Ë®"c, "shui")
-        dictionary.Add("³¯"c, "chao")
-        dictionary.Add("³¯"c, "zhao")
-        dictionary.Add("Âä"c, "luo")
+        dictionary.Add("æµ·"c, "hai")
+        dictionary.Add("æ°´"c, "shui")
+        dictionary.Add("æœ"c, "chao")
+        dictionary.Add("æœ"c, "zhao")
+        dictionary.Add("è½"c, "luo")
 
-        dictionary.Add("¸¡"c, "fu")
-        dictionary.Add("ÔÆ"c, "yun")
-        dictionary.Add("³¤"c, "zhang")
-        dictionary.Add("³¤"c, "chang")
-        dictionary.Add("Ïû"c, "xiao")
+        dictionary.Add("æµ®"c, "fu")
+        dictionary.Add("äº‘"c, "yun")
+        dictionary.Add("é•¿"c, "zhang")
+        dictionary.Add("é•¿"c, "chang")
+        dictionary.Add("æ¶ˆ"c, "xiao")
 
-        dictionary.Add("³±"c, "chao")
-        dictionary.Add("³£"c, "chang")
+        dictionary.Add("æ½®"c, "chao")
+        dictionary.Add("å¸¸"c, "chang")
 
-        Dim str = "º£Ë®³¯³¯³¯³¯³¯³¯³¯Âä¸¡ÔÆ³¤³¤³¤³¤³¤³¤³¤Ïû".ToArray()
+        Dim str = "æµ·æ°´æœæœæœæœæœæœæœè½æµ®äº‘é•¿é•¿é•¿é•¿é•¿é•¿é•¿æ¶ˆ".ToArray()
         Console.WriteLine(str)
 
         For i As Integer = 0 To str.Length - 1
