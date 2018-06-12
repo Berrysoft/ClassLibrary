@@ -1,34 +1,38 @@
 ﻿Module Program
     Private dictionary As New MultiMap(Of Char, String)
     Sub Main(args As String())
-        dictionary.Add("海"c, "hai")
-        dictionary.Add("水"c, "shui")
-        dictionary.Add("朝"c, "chao")
-        dictionary.Add("朝"c, "zhao")
-        dictionary.Add("落"c, "luo")
+        dictionary.Add("海"c, "hǎi")
+        dictionary.Add("水"c, "shuǐ")
+        dictionary.Add("朝"c, "cháo")
+        dictionary.Add("朝"c, "zhāo")
+        dictionary.Add("落"c, "luò")
 
-        dictionary.Add("浮"c, "fu")
-        dictionary.Add("云"c, "yun")
-        dictionary.Add("长"c, "zhang")
-        dictionary.Add("长"c, "chang")
-        dictionary.Add("消"c, "xiao")
+        dictionary.Add("浮"c, "fú")
+        dictionary.Add("云"c, "yún")
+        dictionary.Add("长"c, "zhǎng")
+        dictionary.Add("长"c, "cháng")
+        dictionary.Add("消"c, "xiāo")
 
-        dictionary.Add("潮"c, "chao")
-        dictionary.Add("常"c, "chang")
+        dictionary.Add("潮"c, "cháo")
+        dictionary.Add("常"c, "cháng")
 
         'This is a famous Chinese couplet of Temple of Lady Meng Jiangnu in Shanhaiguan.
-        'The correct pronunciation of it is:
+        'The correct pronunciation is:
         'Hǎi  shuǐ  cháo   zhāo  zhāo  cháo   zhāo  cháo  zhāo  luò
         '海    水    朝  /  朝    朝    朝  /  朝    朝    朝    落
         'Fú   yún  zhǎng   cháng cháng zhǎng  cháng zhǎng cháng xiāo
         '浮    云    长  /  长    长    长  /  长    长    长    消
 
-        '朝 means "day" when pronounces zhāo and means "tide" when pronounces cháo. Now the latter meaning is usually written as 潮.
+        '朝 means "day" when pronounces zhāo and means "(rise) tide" when pronounces cháo. Now the latter meaning is usually written as 潮.
         '长 means "grow" when pronounces zhǎng and means "always" when pronounces cháng. Now the latter meaning is usually written as 常.
+
+        'The literal meaning is:
+        'The tides rise, everyday rise, everyday rise and set.
+        'The clouds grow, always grow, always grow and disappear.
 
         'This program means to replace the old multi-tone characters to their commonly used forms for easier understanding.
 
-        Dim str = "海水朝朝朝朝朝朝朝落浮云长长长长长长长消".ToArray()
+        Dim str As Char() = "海水朝朝朝朝朝朝朝落浮云长长长长长长长消"
         Console.WriteLine(str)
 
         For i As Integer = 0 To str.Length - 1
