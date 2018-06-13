@@ -193,9 +193,79 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an instance of <see cref="Graph{T}"/> class which is equivalent to the tree.
+        /// </summary>
+        /// <typeparam name="T">Type of the value.</typeparam>
+        /// <param name="tree">The specified tree.</param>
+        /// <returns>An instance of <see cref="Graph{T}"/>.</returns>
+        public static IGraph<T> ToGraph<T>(this IBinaryTree<T> tree)
+        {
+            if (tree == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(tree));
+            }
+            Graph<T> graph = new Graph<T>();
+            Queue<IBinaryTree<T>> nodes = new Queue<IBinaryTree<T>>();
+            nodes.Enqueue(tree);
+            graph.Add(tree.Value);
+            while (nodes.Count != 0)
+            {
+                IBinaryTree<T> current = nodes.Dequeue();
+                IBinaryTree<T> child = current.LeftChild;
+                if (child != null)
+                {
+                    nodes.Enqueue(child);
+                    graph.Add(child.Value);
+                    graph.AddEdge(current.Value, child.Value);
+                }
+                child = current.RightChild;
+                if (child != null)
+                {
+                    nodes.Enqueue(child);
+                    graph.Add(child.Value);
+                    graph.AddEdge(current.Value, child.Value);
+                }
+            }
+            return graph;
+        }
+        /// <summary>
+        /// Get an instance of <see cref="Graph{T}"/> which is equivalentto the tree. Each arc starts from the parent to the child.
+        /// </summary>
+        /// <typeparam name="T">Type of the value.</typeparam>
+        /// <param name="tree">The specified tree.</param>
+        /// <returns>An instance of <see cref="Graph{T}"/>.</returns>
+        public static IGraph<T> ToDirectedGraph<T>(this IBinaryTree<T> tree)
+        {
+            if (tree == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(tree));
+            }
+            Graph<T> graph = new Graph<T>();
+            Queue<IBinaryTree<T>> nodes = new Queue<IBinaryTree<T>>();
+            nodes.Enqueue(tree);
+            graph.Add(tree.Value);
+            while (nodes.Count != 0)
+            {
+                IBinaryTree<T> current = nodes.Dequeue();
+                IBinaryTree<T> child = current.LeftChild;
+                if (child != null)
+                {
+                    nodes.Enqueue(child);
+                    graph.AddAsHead(child.Value, current.Value);
+                }
+                child = current.RightChild;
+                if (child != null)
+                {
+                    nodes.Enqueue(child);
+                    graph.AddAsHead(child.Value, current.Value);
+                }
+            }
+            return graph;
+        }
     }
     /// <summary>
-    /// Represents a binary node of a <see cref="BinaryTree{T}"/>.
+    /// Represents a binary tree.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
     public class BinaryTree<T> : IBinaryTree<T>

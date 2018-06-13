@@ -44,7 +44,7 @@ Public Class TreeTest
         tree.LeftChild = node2
         tree.RightChild = node3
         node2.LeftChild = node4
-        node2.RightChild = node4
+        node2.RightChild = node5
         node3.RightChild = node6
         For Each np In tree.AsDFSEnumerable().WithPath()
             If np.Node.Value = 4 Then
@@ -56,6 +56,23 @@ Public Class TreeTest
                 Exit For
             End If
         Next
+    End Sub
+
+    <TestMethod()>
+    Public Sub ToGraphTest()
+        Dim tree As New BinaryTree(Of Integer)(1)
+        Dim node2 As New BinaryTree(Of Integer)(2)
+        Dim node3 As New BinaryTree(Of Integer)(3)
+        Dim node4 As New BinaryTree(Of Integer)(4)
+        Dim node5 As New BinaryTree(Of Integer)(5)
+        Dim node6 As New BinaryTree(Of Integer)(6)
+        tree.LeftChild = node2
+        tree.RightChild = node3
+        node2.LeftChild = node4
+        node2.RightChild = node5
+        node3.RightChild = node6
+        Dim graph = tree.ToGraph()
+        Assert.AreEqual(6, graph.Count)
     End Sub
 
 End Class

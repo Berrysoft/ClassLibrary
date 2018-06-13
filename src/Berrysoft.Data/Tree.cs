@@ -69,12 +69,12 @@ namespace Berrysoft.Data
         /// <param name="tree">A tree to calculte depth.</param>
         /// <returns>The depth of the tree.</returns>
         /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
-        public static int GetDepth<T>(this ITree<T> tree)
+        public static int GetDepth<T>(this ITreeBase<T> tree)
         {
-            int GetDepthInternal(ITree<T> node, int depth)
+            int GetDepthInternal(ITreeBase<T> node, int depth)
             {
                 int result = depth;
-                foreach (ITree<T> child in node)
+                foreach (ITreeBase<T> child in node)
                 {
                     int tempDepth = GetDepthInternal(child, depth + 1);
                     if (tempDepth > result)
@@ -188,7 +188,7 @@ namespace Berrysoft.Data
             bool check = false;
             foreach (ITreeBase<T> node in nodes)
             {
-                if(check)
+                if (check)
                 {
                     while (!EqualityComparer<ITreeBase<T>>.Default.Equals(stack.Peek(), node.Parent))
                     {
@@ -198,11 +198,66 @@ namespace Berrysoft.Data
                 }
                 stack.Push(node);
                 yield return (node, stack);
-                if (node.Count==0)
+                if (node.Count == 0)
                 {
                     check = true;
                 }
             }
+        }
+        /// <summary>
+        /// Get an instance of <see cref="Graph{T}"/> class which is equivalent to the tree.
+        /// </summary>
+        /// <typeparam name="T">Type of the value.</typeparam>
+        /// <param name="tree">The specified tree.</param>
+        /// <returns>An instance of <see cref="Graph{T}"/>.</returns>
+        public static IGraph<T> ToGraph<T>(this ITreeBase<T> tree)
+        {
+            if (tree == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(tree));
+            }
+            Graph<T> graph = new Graph<T>();
+            Queue<ITreeBase<T>> nodes = new Queue<ITreeBase<T>>();
+            nodes.Enqueue(tree);
+            graph.Add(tree.Value);
+            while (nodes.Count != 0)
+            {
+                ITreeBase<T> current = nodes.Dequeue();
+                foreach (var child in current)
+                {
+                    nodes.Enqueue(child);
+                    graph.Add(child.Value);
+                    graph.AddEdge(current.Value, child.Value);
+                }
+            }
+            return graph;
+        }
+        /// <summary>
+        /// Get an instance of <see cref="Graph{T}"/> which is equivalentto the tree. Each arc starts from the parent to the child.
+        /// </summary>
+        /// <typeparam name="T">Type of the value.</typeparam>
+        /// <param name="tree">The specified tree.</param>
+        /// <returns>An instance of <see cref="Graph{T}"/>.</returns>
+        public static IGraph<T> ToDirectedGraph<T>(this ITreeBase<T> tree)
+        {
+            if (tree == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(tree));
+            }
+            Graph<T> graph = new Graph<T>();
+            Queue<ITreeBase<T>> nodes = new Queue<ITreeBase<T>>();
+            nodes.Enqueue(tree);
+            graph.Add(tree.Value);
+            while (nodes.Count != 0)
+            {
+                ITreeBase<T> current = nodes.Dequeue();
+                foreach (var child in current)
+                {
+                    nodes.Enqueue(child);
+                    graph.AddAsHead(child.Value, current.Value);
+                }
+            }
+            return graph;
         }
     }
     /// <summary>
