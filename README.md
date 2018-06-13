@@ -18,7 +18,7 @@ I've been thinking of avoiding recalls which may cause [stack overflow](https://
 * [**Berrysoft.Documents**](https://github.com/Berrysoft/ClassLibrary/tree/master/doc/Berrysoft.Documents)
 A SHFB project to build my own document of these classes.
 ## Releases
-The latest release: [1.0.152-rc1](https://github.com/Berrysoft/ClassLibrary/releases/tag/v1.0-rc1)
+The latest release: [1.0.159](https://github.com/Berrysoft/ClassLibrary/releases/tag/v1.0)
 
 [Berrysoft.Data](https://www.nuget.org/packages/Berrysoft.Data) and [Berrysoft.Unsafe](https://www.nuget.org/packages/Berrysoft.Unsafe) now are available on [NuGet](https://www.nuget.org)!
 ## Contribute
