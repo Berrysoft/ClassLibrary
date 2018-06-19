@@ -129,6 +129,36 @@ namespace Berrysoft.Data
                 }
             }
         }
+        public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsDFSWithPath<T>(this ITreeBase<T> tree)
+        {
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case IBinaryTree<T> binaryTree:
+
+                default:
+                    return AsDFSWithPathIterator(tree);
+            }
+        }
+        private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsDFSWithPathIterator<T>(ITreeBase<T> tree)
+        {
+            Stack<(int Index, ITreeBase<T> Node)> nodes = new Stack<(int Index, ITreeBase<T> Node)>();
+            List<ITreeBase<T>> list = new List<ITreeBase<T>>();
+            nodes.Push((0, tree));
+            while (nodes.Count != 0)
+            {
+                var (index, current) = nodes.Pop();
+                if (index < list.Count)
+                {
+                    list.RemoveRange(index, list.Count - index);
+                }
+                list.Add(current);
+                yield return (current, list);
+                foreach (var child in current.Reverse())
+                {
+                    nodes.Push((index + 1, child));
+                }
+            }
+        }
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
         /// </summary>
@@ -166,12 +196,43 @@ namespace Berrysoft.Data
                 }
             }
         }
+        public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsBFSWithPath<T>(this ITreeBase<T> tree)
+        {
+            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
+            {
+                case IBinaryTree<T> binaryTree:
+
+                default:
+                    return AsBFSWithPathIterator(tree);
+            }
+        }
+        private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsBFSWithPathIterator<T>(ITreeBase<T> tree)
+        {
+            Queue<(int Index, ITreeBase<T> Node)> nodes = new Queue<(int Index, ITreeBase<T> Node)>();
+            List<ITreeBase<T>> list = new List<ITreeBase<T>>();
+            nodes.Enqueue((0, tree));
+            while (nodes.Count != 0)
+            {
+                var (index, current) = nodes.Dequeue();
+                if (index < list.Count)
+                {
+                    list.RemoveRange(index, list.Count - index);
+                }
+                list.Add(current);
+                yield return (current, list);
+                foreach (var child in current)
+                {
+                    nodes.Enqueue((index + 1, child));
+                }
+            }
+        }
         /// <summary>
         /// Get current node and current path when searching.
         /// </summary>
         /// <typeparam name="T">The type of value the node contains.</typeparam>
         /// <param name="nodes">Nodes of searching.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> with node and path.</returns>
+        /// <returns>An <see cref="IEnumerable{T}"/> with node and path. The path is in reverse order.</returns>
+        [Obsolete("Use specified WithPath function instead.")]
         public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> WithPath<T>(this IEnumerable<ITreeBase<T>> nodes)
         {
             return WithPathIterator(nodes ?? throw ExceptionHelper.ArgumentNull(nameof(nodes)));
@@ -181,7 +242,7 @@ namespace Berrysoft.Data
         /// </summary>
         /// <typeparam name="T">The type of value the node contains.</typeparam>
         /// <param name="nodes">Nodes of searching.</param>
-        /// <returns>An <see cref="IEnumerable{T}"/> with node and path.</returns>
+        /// <returns>An <see cref="IEnumerable{T}"/> with node and path. The path is in reverse order.</returns>
         private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> WithPathIterator<T>(IEnumerable<ITreeBase<T>> nodes)
         {
             Stack<ITreeBase<T>> stack = new Stack<ITreeBase<T>>();

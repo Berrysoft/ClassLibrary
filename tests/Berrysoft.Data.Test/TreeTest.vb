@@ -46,10 +46,10 @@ Public Class TreeTest
         node2.LeftChild = node4
         node2.RightChild = node5
         node3.RightChild = node6
-        For Each np In tree.AsDFSEnumerable().WithPath()
+        For Each np In tree.AsDFSWithPath()
             If np.Node.Value = 4 Then
                 Dim path = np.Path
-                Dim patharr = {4, 2, 1}
+                Dim patharr = {1, 2, 4}
                 For i = 0 To 2
                     Assert.AreEqual(patharr(i), path(i).Value)
                 Next
