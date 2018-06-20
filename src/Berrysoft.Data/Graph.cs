@@ -208,6 +208,57 @@ namespace Berrysoft.Data
                 }
             }
         }
+        public static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsDFSWithPath<T>(this IGraph<T> graph, T root)
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(root))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            return AsDFSWithPathIterator(graph, root);
+        }
+        private static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsDFSWithPathIterator<T>(this IGraph<T> graph, T root)
+        {
+            Stack<(int Index, T Value)> nodes = new Stack<(int Index, T Value)>();
+            HashSet<T> visited = new HashSet<T>();
+            List<T> list = new List<T>();
+            nodes.Push((0, root));
+            while (nodes.Count != 0)
+            {
+                T current;
+                int index;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        yield break;
+                    }
+                    (index, current) = nodes.Pop();
+                }
+                while (visited.Contains(current));
+                if (index < list.Count)
+                {
+                    list.RemoveRange(index, list.Count - index);
+                }
+                list.Add(current);
+                visited.Add(current);
+                yield return (current, list);
+                index++;
+                if (graph.TryGetHeads(current, out var heads))
+                {
+                    foreach (var child in heads.Reverse())
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Push((index, child));
+                        }
+                    }
+                }
+            }
+        }
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search.
         /// </summary>
@@ -262,6 +313,57 @@ namespace Berrysoft.Data
                         if (!visited.Contains(child))
                         {
                             nodes.Enqueue(child);
+                        }
+                    }
+                }
+            }
+        }
+        public static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsBFSWithPath<T>(this IGraph<T> graph, T root)
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(root))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            return AsBFSWithPathIterator(graph, root);
+        }
+        private static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsBFSWithPathIterator<T>(IGraph<T> graph, T root)
+        {
+            Queue<(int Index, T Value)> nodes = new Queue<(int Index, T Value)>();
+            HashSet<T> visited = new HashSet<T>();
+            List<T> list = new List<T>();
+            nodes.Enqueue((0, root));
+            while (nodes.Count != 0)
+            {
+                T current;
+                int index;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        yield break;
+                    }
+                    (index, current) = nodes.Dequeue();
+                }
+                while (visited.Contains(current));
+                if (index < list.Count)
+                {
+                    list.RemoveRange(index, list.Count - index);
+                }
+                list.Add(current);
+                visited.Add(current);
+                yield return (current, list);
+                index++;
+                if (graph.TryGetHeads(current, out var heads))
+                {
+                    foreach (var child in heads)
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Enqueue((index, child));
                         }
                     }
                 }

@@ -104,7 +104,7 @@ namespace Berrysoft.Data
             switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
             {
                 case IBinaryTree<T> binaryTree:
-                    return binaryTree.AsPreOrderEnumerable();
+                    return AsPreOrderEnumerableIterator(binaryTree);
                 default:
                     return AsDFSEnumerableIterator(tree);
             }
@@ -130,15 +130,7 @@ namespace Berrysoft.Data
             }
         }
         public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsDFSWithPath<T>(this ITreeBase<T> tree)
-        {
-            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
-            {
-                case IBinaryTree<T> binaryTree:
-
-                default:
-                    return AsDFSWithPathIterator(tree);
-            }
-        }
+            => AsDFSWithPathIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsDFSWithPathIterator<T>(ITreeBase<T> tree)
         {
             Stack<(int Index, ITreeBase<T> Node)> nodes = new Stack<(int Index, ITreeBase<T> Node)>();
@@ -153,9 +145,10 @@ namespace Berrysoft.Data
                 }
                 list.Add(current);
                 yield return (current, list);
+                index++;
                 foreach (var child in current.Reverse())
                 {
-                    nodes.Push((index + 1, child));
+                    nodes.Push((index, child));
                 }
             }
         }
@@ -171,7 +164,7 @@ namespace Berrysoft.Data
             switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
             {
                 case IBinaryTree<T> binaryTree:
-                    return binaryTree.AsLevelOrderEnumerable();
+                    return AsLevelOrderEnumerableIterator(binaryTree);
                 default:
                     return AsBFSEnumerableIterator(tree);
             }
@@ -197,15 +190,7 @@ namespace Berrysoft.Data
             }
         }
         public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsBFSWithPath<T>(this ITreeBase<T> tree)
-        {
-            switch (tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)))
-            {
-                case IBinaryTree<T> binaryTree:
-
-                default:
-                    return AsBFSWithPathIterator(tree);
-            }
-        }
+            => AsBFSWithPathIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
         private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsBFSWithPathIterator<T>(ITreeBase<T> tree)
         {
             Queue<(int Index, ITreeBase<T> Node)> nodes = new Queue<(int Index, ITreeBase<T> Node)>();
@@ -220,9 +205,10 @@ namespace Berrysoft.Data
                 }
                 list.Add(current);
                 yield return (current, list);
+                index++;
                 foreach (var child in current)
                 {
-                    nodes.Enqueue((index + 1, child));
+                    nodes.Enqueue((index, child));
                 }
             }
         }
