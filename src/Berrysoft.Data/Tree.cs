@@ -129,8 +129,21 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search with current path.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
         public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsDFSWithPath<T>(this ITreeBase<T> tree)
             => AsDFSWithPathIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        /// <summary>
+        /// Get an iterator with order of depth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search with current path.</returns>
         private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsDFSWithPathIterator<T>(ITreeBase<T> tree)
         {
             Stack<(int Index, ITreeBase<T> Node)> nodes = new Stack<(int Index, ITreeBase<T> Node)>();
@@ -189,8 +202,21 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search with current path.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="tree"/> is <see langword="null"/>.</exception>
         public static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsBFSWithPath<T>(this ITreeBase<T> tree)
             => AsBFSWithPathIterator(tree ?? throw ExceptionHelper.ArgumentNull(nameof(tree)));
+        /// <summary>
+        /// Get an iterator with order of breadth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of value the node contains.</typeparam>
+        /// <param name="tree">A tree to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search with current path.</returns>
         private static IEnumerable<(ITreeBase<T> Node, IReadOnlyCollection<ITreeBase<T>> Path)> AsBFSWithPathIterator<T>(ITreeBase<T> tree)
         {
             Queue<(int Index, ITreeBase<T> Node)> nodes = new Queue<(int Index, ITreeBase<T> Node)>();

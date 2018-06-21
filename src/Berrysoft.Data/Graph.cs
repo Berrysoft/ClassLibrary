@@ -208,6 +208,15 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search with current path.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsDFSWithPath<T>(this IGraph<T> graph, T root)
         {
             if (graph == null)
@@ -220,6 +229,13 @@ namespace Berrysoft.Data
             }
             return AsDFSWithPathIterator(graph, root);
         }
+        /// <summary>
+        /// Get an iterator with order of depth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of depth-first-search with current path.</returns>
         private static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsDFSWithPathIterator<T>(this IGraph<T> graph, T root)
         {
             Stack<(int Index, T Value)> nodes = new Stack<(int Index, T Value)>();
@@ -318,6 +334,15 @@ namespace Berrysoft.Data
                 }
             }
         }
+        /// <summary>
+        /// Get an <see cref="IEnumerable{T}"/> with order of breadth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search with current path.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="root"/> is not contained in the graph.</exception>
         public static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsBFSWithPath<T>(this IGraph<T> graph, T root)
         {
             if (graph == null)
@@ -330,6 +355,13 @@ namespace Berrysoft.Data
             }
             return AsBFSWithPathIterator(graph, root);
         }
+        /// <summary>
+        /// Get an iterator with order of breadth-first-search with current path.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="root">The first vertex to enumerate.</param>
+        /// <returns>An <see cref="IEnumerable{T}"/> with order of breadth-first-search with current path.</returns>
         private static IEnumerable<(T Vertex, IReadOnlyCollection<T> Path)> AsBFSWithPathIterator<T>(IGraph<T> graph, T root)
         {
             Queue<(int Index, T Value)> nodes = new Queue<(int Index, T Value)>();
