@@ -151,4 +151,20 @@ Public Class GraphTest
         Next
     End Sub
 
+    <TestMethod()>
+    Public Sub LoopTest()
+        Dim graph As New Graph(Of Integer)
+        graph.Add(1)
+        graph.Add(2)
+        graph.Add(4)
+        graph.Add(5)
+        graph.AddEdge(1, 2)
+        graph.AddEdge(2, 4)
+        graph.AddEdge(2, 5)
+        graph.AddAsHead(8, 4, 5)
+        graph.AddAsTail(8, 4, 5)
+        Assert.IsTrue(graph.IsInLoop(8))
+        Assert.IsFalse(graph.IsInLoop(1))
+    End Sub
+
 End Class

@@ -21,18 +21,6 @@ namespace Berrysoft.Data
         /// <param name="vertex">Value of the new vertex.</param>
         void Add(T vertex);
         /// <summary>
-        /// Add a vertex as head of specified vertexes.
-        /// </summary>
-        /// <param name="vertex">Value of the new vertex.</param>
-        /// <param name="tails">The specified vertexes.</param>
-        void AddAsHead(T vertex, params T[] tails);
-        /// <summary>
-        /// Add a vertex as tail of specified vertexes.
-        /// </summary>
-        /// <param name="vertex">Value of the new vertex.</param>
-        /// <param name="heads">The specified vertexes.</param>
-        void AddAsTail(T vertex, params T[] heads);
-        /// <summary>
         /// Determines whether an <see cref="IGraph{T}"/> object contains specified vertex.
         /// </summary>
         /// <param name="vertex">The specified vertex.</param>
@@ -55,25 +43,12 @@ namespace Berrysoft.Data
         /// <param name="head">The head of the arc.</param>
         void AddArc(T tail, T head);
         /// <summary>
-        /// Add an edge.
-        /// </summary>
-        /// <param name="head1">One head of the edge.</param>
-        /// <param name="head2">Another head of the edge.</param>
-        void AddEdge(T head1, T head2);
-        /// <summary>
         /// Determines whether an <see cref="IGraph{T}"/> object contains an arc of specified tail and head.
         /// </summary>
         /// <param name="tail">The tail of the arc.</param>
         /// <param name="head">The head of the arc.</param>
         /// <returns><see langword="true"/> if the <see cref="IGraph{T}"/> contains the arc; otherwise, <see langword="false"/>.</returns>
         bool ContainsArc(T tail, T head);
-        /// <summary>
-        /// Determines whether an <see cref="IGraph{T}"/> object contains an edge of specified heads.
-        /// </summary>
-        /// <param name="head1">One head of the edge.</param>
-        /// <param name="head2">Another head of the edge.</param>
-        /// <returns><see langword="true"/> if the <see cref="IGraph{T}"/> contains the edge; otherwise, <see langword="false"/>.</returns>
-        bool ContainsEdge(T head1, T head2);
         /// <summary>
         /// Remove an arc of specified tail and head.
         /// </summary>
@@ -82,21 +57,9 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if the arc is removed successfully; otherwise, <see langword="false"/>.</returns>
         bool RemoveArc(T tail, T head);
         /// <summary>
-        /// Remove an edge of specified heads.
-        /// </summary>
-        /// <param name="head1">One head of the edge.</param>
-        /// <param name="head2">Another head of the edge.</param>
-        /// <returns><see langword="true"/> if the edge is removed successfully; otherwise, <see langword="false"/>.</returns>
-        bool RemoveEdge(T head1, T head2);
-        /// <summary>
         /// Clear all arcs.
         /// </summary>
         void ClearArc();
-        /// <summary>
-        /// Clear all arcs of specified vertex.
-        /// </summary>
-        /// <param name="vertex">The specified vertex.</param>
-        void ClearArc(T vertex);
         /// <summary>
         /// Clear all arcs whose tail is the specified vertex.
         /// </summary>
@@ -149,6 +112,61 @@ namespace Berrysoft.Data
     #endregion
     public static partial class Enumerable
     {
+        /// <summary>
+        /// Determines whether a vertex is in a loop of an instance of <see cref="IGraph{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of vertex.</typeparam>
+        /// <param name="graph">The graph to enumerate.</param>
+        /// <param name="vertex">The specified vertex.</param>
+        /// <returns><see langword="true"/> if the <paramref name="vertex"/> is in a loop; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException">When <paramref name="graph"/> is <see langword="null"/>.</exception>
+        /// <exception cref="KeyNotFoundException">When <paramref name="vertex"/> is not contained in the graph.</exception>
+        public static bool IsInLoop<T>(this IGraph<T> graph, T vertex)
+        {
+            if (graph == null)
+            {
+                throw ExceptionHelper.ArgumentNull(nameof(graph));
+            }
+            if (!graph.Contains(vertex))
+            {
+                throw ExceptionHelper.KeyNotFound();
+            }
+            Stack<T> nodes = new Stack<T>();
+            HashSet<T> visited = new HashSet<T>();
+            nodes.Push(vertex);
+            T last = default;
+            while (nodes.Count != 0)
+            {
+                T current;
+                do
+                {
+                    if (nodes.Count == 0)
+                    {
+                        goto ret;
+                    }
+                    current = nodes.Pop();
+                }
+                while (visited.Contains(current));
+                visited.Add(current);
+                if (graph.TryGetHeads(current, out var heads))
+                {
+                    foreach (var child in heads)
+                    {
+                        if (!visited.Contains(child))
+                        {
+                            nodes.Push(child);
+                        }
+                        else if (EqualityComparer<T>.Default.Equals(vertex, child) && !EqualityComparer<T>.Default.Equals(last, child))
+                        {
+                            return true;
+                        }
+                    }
+                }
+                last = current;
+            }
+            ret:
+            return false;
+        }
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> with order of depth-first-search.
         /// </summary>
