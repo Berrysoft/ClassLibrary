@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using SysLinq = System.Linq;
 
 namespace Berrysoft.Data
 {
@@ -11,7 +12,7 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TKey">Type of the keys.</typeparam>
     /// <typeparam name="TElement">Type of the elements.</typeparam>
-    public interface ILookup<TKey, TElement> : System.Linq.ILookup<TKey, TElement>
+    public interface ILookup<TKey, TElement> : SysLinq.ILookup<TKey, TElement>
     {
         /// <summary>
         /// A collection of keys.
@@ -53,7 +54,7 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TKey">The type of the key of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
     /// <typeparam name="TElement">The type of the values in the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
-    internal interface IGrouping<TKey, TElement> : System.Linq.IGrouping<TKey, TElement>
+    internal interface IGrouping<TKey, TElement> : SysLinq.IGrouping<TKey, TElement>
     {
         /// <summary>
         /// Count of the elements.
@@ -237,29 +238,28 @@ namespace Berrysoft.Data
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        public IEnumerator<System.Linq.IGrouping<TKey, TElement>> GetEnumerator()
-        {
-            foreach (var item in dic)
-            {
-                yield return item.Value;
-            }
-        }
+        public IEnumerator<SysLinq.IGrouping<TKey, TElement>> GetEnumerator() => GetEnumeratorInternal();
         /// <summary>
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        IEnumerator<IGrouping<TKey, TElement>> IEnumerable<IGrouping<TKey, TElement>>.GetEnumerator()
+        IEnumerator<IGrouping<TKey, TElement>> IEnumerable<IGrouping<TKey, TElement>>.GetEnumerator() => GetEnumeratorInternal();
+        /// <summary>
+        /// Returns an enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>. This class cannot be inherited.
+        /// </summary>
+        /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorInternal();
+        /// <summary>
+        /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
+        /// </summary>
+        /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
+        private IEnumerator<Grouping> GetEnumeratorInternal()
         {
             foreach (var item in dic)
             {
                 yield return item.Value;
             }
         }
-        /// <summary>
-        /// Returns an enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>. This class cannot be inherited.
-        /// </summary>
-        /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         /// <summary>
         /// Represents a key and a sequence of elements.
         /// </summary>
