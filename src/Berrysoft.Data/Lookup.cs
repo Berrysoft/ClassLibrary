@@ -5,19 +5,62 @@ using System.Collections.ObjectModel;
 
 namespace Berrysoft.Data
 {
+    #region Interfaces
+    /// <summary>
+    /// Defines methods that map keys to values.
+    /// </summary>
+    /// <typeparam name="TKey">Type of the keys.</typeparam>
+    /// <typeparam name="TElement">Type of the elements.</typeparam>
     public interface ILookup<TKey, TElement> : System.Linq.ILookup<TKey, TElement>
     {
+        /// <summary>
+        /// A collection of keys.
+        /// </summary>
         ICollection<TKey> Keys { get; }
+        /// <summary>
+        /// Adds the specified key and element.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="element">The specified element.</param>
         void Add(TKey key, TElement element);
+        /// <summary>
+        /// Removes the specified key and its elements.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool Remove(TKey key);
+        /// <summary>
+        /// Removes the specified key and element.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="element">The specified element.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool Remove(TKey key, TElement element);
+        /// <summary>
+        /// Clear the <see cref="ILookup{TKey, TElement}"/>.
+        /// </summary>
         void Clear();
+        /// <summary>
+        /// Gets the <see cref="IEnumerable{T}"/> sequence of values by a specified key.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="elements">When this method returns, contains the elements associated with the specified key, if the key is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the <see cref="ILookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
         bool TryGetElements(TKey key, out IEnumerable<TElement> elements);
     }
+    /// <summary>
+    /// Represents a collection of objects that have a common key.
+    /// </summary>
+    /// <typeparam name="TKey">The type of the key of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
+    /// <typeparam name="TElement">The type of the values in the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
     internal interface IGrouping<TKey, TElement> : System.Linq.IGrouping<TKey, TElement>
     {
+        /// <summary>
+        /// Count of the elements.
+        /// </summary>
         int Count { get; }
     }
+    #endregion
     /// <summary>
     /// Represents a collection of keys each mapped to one or more values.
     /// </summary>
@@ -33,12 +76,59 @@ namespace Berrysoft.Data
         public Lookup()
             : this(0, null)
         { }
+        /// <summary>
+        /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
+        /// </summary>
+        /// <param name="capacity">The initial number of keys that the <see cref="ILookup{TKey, TElement}"/> can contain.</param>
         public Lookup(int capacity)
             : this(capacity, null)
         { }
+        /// <summary>
+        /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
+        /// </summary>
+        /// <param name="comparer">The comparer of the keys.</param>
+        public Lookup(IEqualityComparer<TKey> comparer)
+            : this(0, comparer)
+        { }
+        /// <summary>
+        /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
+        /// </summary>
+        /// <param name="capacity">The initial number of keys that the <see cref="ILookup{TKey, TElement}"/> can contain.</param>
+        /// <param name="comparer">The comparer of the keys.</param>
         public Lookup(int capacity, IEqualityComparer<TKey> comparer)
         {
             dic = new Dictionary<TKey, Grouping>(capacity, comparer);
+        }
+        /// <summary>
+        /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
+        /// </summary>
+        /// <param name="lookup">A lookup source.</param>
+        public Lookup(ILookup<TKey, TElement> lookup)
+            : this(lookup, null)
+        { }
+        /// <summary>
+        /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
+        /// </summary>
+        /// <param name="lookup">A lookup source.</param>
+        /// <param name="comparer">The comparer of the keys.</param>
+        public Lookup(ILookup<TKey, TElement> lookup, IEqualityComparer<TKey> comparer)
+        {
+            switch (lookup ?? throw ExceptionHelper.ArgumentNull(nameof(lookup)))
+            {
+                case Lookup<TKey, TElement> lkp:
+                    dic = new Dictionary<TKey, Grouping>(lkp.dic, comparer);
+                    break;
+                default:
+                    dic = new Dictionary<TKey, Grouping>(lookup.Count, comparer);
+                    foreach (var grouping in lookup)
+                    {
+                        foreach (var item in grouping)
+                        {
+                            Add(grouping.Key, item);
+                        }
+                    }
+                    break;
+            }
         }
         /// <summary>
         /// Gets the collection of values indexed by the specified key.
@@ -56,12 +146,25 @@ namespace Berrysoft.Data
                 return dic[key];
             }
         }
+        /// <summary>
+        /// Gets the collection of values indexed by the specified key.
+        /// </summary>
+        /// <param name="key">The key of the desired collection of values.</param>
+        /// <returns>The collection of values indexed by the specified key.</returns>
         IEnumerable<TElement> System.Linq.ILookup<TKey, TElement>.this[TKey key] => this[key];
         /// <summary>
         /// Gets the number of key/value collection pairs in the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         public int Count => dic.Count;
+        /// <summary>
+        /// A collection of keys.
+        /// </summary>
         public ICollection<TKey> Keys => dic.Keys;
+        /// <summary>
+        /// Adds the specified key and element.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="element">The specified element.</param>
         public void Add(TKey key,TElement element)
         {
             if(!dic.ContainsKey(key))
@@ -70,10 +173,21 @@ namespace Berrysoft.Data
             }
             dic[key].Add(element);
         }
+        /// <summary>
+        /// Removes the specified key and its elements.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         public bool Remove(TKey key)
         {
             return dic.Remove(key);
         }
+        /// <summary>
+        /// Removes the specified key and element.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="element">The specified element.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         public bool Remove(TKey key, TElement element)
         {
             if (dic.ContainsKey(key))
@@ -91,13 +205,28 @@ namespace Berrysoft.Data
         /// <param name="key">The key to find in the <see cref="Lookup{TKey, TElement}"/>.</param>
         /// <returns><see langword="true"/> if <paramref name="key"/> is in the <see cref="Lookup{TKey, TElement}"/>; otherwise, <see langword="false"/>.</returns>
         public bool Contains(TKey key) => dic.ContainsKey(key);
+        /// <summary>
+        /// Clear the <see cref="ILookup{TKey, TElement}"/>.
+        /// </summary>
         public void Clear() => dic.Clear();
+        /// <summary>
+        /// Gets the <see cref="ICollection{T}"/> sequence of values by a specified key.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="elements">When this method returns, contains the elements associated with the specified key, if the key is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the <see cref="ILookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
         public bool TryGetElements(TKey key, out ICollection<TElement> elements)
         {
             bool result = dic.TryGetValue(key, out var grouping);
             elements = grouping;
             return result;
         }
+        /// <summary>
+        /// Gets the <see cref="IEnumerable{T}"/> sequence of values by a specified key.
+        /// </summary>
+        /// <param name="key">The specified key.</param>
+        /// <param name="elements">When this method returns, contains the elements associated with the specified key, if the key is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
+        /// <returns><see langword="true"/> if the <see cref="ILookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
         bool ILookup<TKey,TElement>.TryGetElements(TKey key, out IEnumerable<TElement> elements)
         {
             bool result = dic.TryGetValue(key, out var grouping);
@@ -115,6 +244,10 @@ namespace Berrysoft.Data
                 yield return item.Value;
             }
         }
+        /// <summary>
+        /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
+        /// </summary>
+        /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
         IEnumerator<IGrouping<TKey, TElement>> IEnumerable<IGrouping<TKey, TElement>>.GetEnumerator()
         {
             foreach (var item in dic)
@@ -130,7 +263,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Represents a key and a sequence of elements.
         /// </summary>
-        private class Grouping : IGrouping<TKey, TElement>, ICollection<TElement>, IReadOnlyCollection<TElement>
+        private class Grouping : IGrouping<TKey, TElement>, ICollection<TElement>
         {
             private TKey key;
             private Collection<TElement> collection;
@@ -147,12 +280,40 @@ namespace Berrysoft.Data
             /// The key of the <see cref="Grouping"/>.
             /// </summary>
             public TKey Key => key;
+            /// <summary>
+            /// Count of the elements.
+            /// </summary>
             public int Count => collection.Count;
-            public bool IsReadOnly => true;
+            /// <summary>
+            /// The <see cref="Grouping"/> is not read-only.
+            /// </summary>
+            public bool IsReadOnly => false;
+            /// <summary>
+            /// Adds element to the grouping.
+            /// </summary>
+            /// <param name="item">The specified element.</param>
             public void Add(TElement item) => collection.Add(item);
+            /// <summary>
+            /// Clears the elements.
+            /// </summary>
             public void Clear() => collection.Clear();
+            /// <summary>
+            /// Removes the specified element.
+            /// </summary>
+            /// <param name="item">The specified element.</param>
+            /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
             public bool Remove(TElement item) => collection.Remove(item);
+            /// <summary>
+            /// Determines whether a specified key is in the <see cref="Grouping"/>.
+            /// </summary>
+            /// <param name="item">The element to find in the <see cref="Grouping"/>.</param>
+            /// <returns><see langword="true"/> if <paramref name="item"/> is in the <see cref="Grouping"/>; otherwise, <see langword="false"/>.</returns>
             public bool Contains(TElement item) => collection.Contains(item);
+            /// <summary>
+            /// Copies the entire <see cref="Collection{T}"/> to a compatible one-dimensional <see cref="Array"/>, starting at the specified index of the target array.
+            /// </summary>
+            /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied from <see cref="Collection{T}"/>. The <see cref="Array"/> must have zero-based indexing.</param>
+            /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
             public void CopyTo(TElement[] array, int arrayIndex)
             {
                 if (array == null)
