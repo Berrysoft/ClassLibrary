@@ -152,7 +152,7 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="key">The key of the desired collection of values.</param>
         /// <returns>The collection of values indexed by the specified key.</returns>
-        IEnumerable<TElement> System.Linq.ILookup<TKey, TElement>.this[TKey key] => this[key];
+        IEnumerable<TElement> SysLinq.ILookup<TKey, TElement>.this[TKey key] => this[key];
         /// <summary>
         /// Gets the number of key/value collection pairs in the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>

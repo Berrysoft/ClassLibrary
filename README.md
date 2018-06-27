@@ -5,7 +5,7 @@ Some helpful classes.
 * [**Berrysoft.Console**](https://github.com/Berrysoft/ClassLibrary/tree/master/src/Berrysoft.Console)
 Some classes about parsing command lines and XML settings files. A class to write simple log.
 * [**Berrysoft.Data**](https://github.com/Berrysoft/ClassLibrary/tree/master/src/Berrysoft.Data)
-Some complex data structure for convenience, e.g., BinaryTree&lt;T&gt;, Graph&lt;T&gt;, Map&lt;TKey1, TKey2&gt;, MultiMap&lt;TKey1, TKey2&gt;.
+Some complex data structure for convenience, e.g., BinaryTree&lt;T&gt;, Graph&lt;T&gt;, Lookup&lt;TKey, TElement&gt;, Map&lt;TKey1, TKey2&gt;.
 * [**Berrysoft.Unsafe**](https://github.com/Berrysoft/ClassLibrary/tree/master/src/Berrysoft.Unsafe)
 Some unsafe structs and methods, which make unsafe command available to "safe" languages like Visual Basic.
 * [**Berrysoft.Tsinghua.Net**](https://github.com/Berrysoft/ClassLibrary/tree/master/src/Berrysoft.Tsinghua.Net)
