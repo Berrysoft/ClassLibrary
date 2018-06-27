@@ -538,6 +538,7 @@ namespace Berrysoft.Data
     /// Represents a graph data structure.
     /// </summary>
     /// <typeparam name="T">The type of vertex.</typeparam>
+    [Serializable]
     public class Graph<T> : IGraph<T>
     {
         private HashSet<T> _vertexes;

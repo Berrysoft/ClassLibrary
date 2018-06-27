@@ -337,6 +337,7 @@ namespace Berrysoft.Data
     /// Represents a tree.
     /// </summary>
     /// <typeparam name="T">The type of value the node contains.</typeparam>
+    [Serializable]
     public class Tree<T> : ITree<T>
     {
         private T _value;

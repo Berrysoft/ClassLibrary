@@ -154,10 +154,11 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
+    [Serializable]
     public class MultiMap<TKey1, TKey2> : IMultiMap<TKey1, TKey2>
     {
-        private Dictionary<TKey1, HashSet<TKey2>> dic;
-        private Dictionary<TKey2, HashSet<TKey1>> rev;
+        private Lookup<TKey1, TKey2> dic;
+        private Lookup<TKey2, TKey1> rev;
         /// <summary>
         /// Initialize an instance of <see cref="MultiMap{TKey1, TKey2}"/>.
         /// </summary>
@@ -187,8 +188,8 @@ namespace Berrysoft.Data
         /// <param name="comparer2">Comparer of key2.</param>
         public MultiMap(int capacity, IEqualityComparer<TKey1> comparer1, IEqualityComparer<TKey2> comparer2)
         {
-            this.dic = new Dictionary<TKey1, HashSet<TKey2>>(capacity, comparer1);
-            this.rev = new Dictionary<TKey2, HashSet<TKey1>>(capacity, comparer2);
+            this.dic = new Lookup<TKey1, TKey2>(capacity, comparer1);
+            this.rev = new Lookup<TKey2, TKey1>(capacity, comparer2);
         }
         /// <summary>
         /// Initialize an instance of <see cref="MultiMap{TKey1, TKey2}"/>.
@@ -216,28 +217,20 @@ namespace Berrysoft.Data
         /// <summary>
         /// Count of elements.
         /// </summary>
-        public int Count => dic.Sum(pair => pair.Value.Count);
+        public int Count => dic.Sum<IGrouping<TKey1, TKey2>>(pair => pair.Count);
         /// <summary>
         /// Gets a value indicating whether the <see cref="MultiMap{TKey1, TKey2}"/> is read-only.
         /// </summary>
         /// <value><see langword="false"/></value>
         public bool IsReadOnly => false;
         /// <summary>
-        /// Gets an <see cref="Dictionary{TKey, TValue}.KeyCollection"/> containing the keys in the <see cref="MultiMap{TKey1, TKey2}"/>.
-        /// </summary>
-        public Dictionary<TKey1, HashSet<TKey2>>.KeyCollection Keys1 => dic.Keys;
-        /// <summary>
-        /// Gets an <see cref="Dictionary{TKey, TValue}.KeyCollection"/> containing the keys in the <see cref="MultiMap{TKey1, TKey2}"/>.
-        /// </summary>
-        public Dictionary<TKey2, HashSet<TKey1>>.KeyCollection Keys2 => rev.Keys;
-        /// <summary>
         /// Gets an <see cref="ICollection{TKey1}"/> containing the keys in the <see cref="MultiMap{TKey1, TKey2}"/>.
         /// </summary>
-        ICollection<TKey1> IMultiMap<TKey1, TKey2>.Keys1 => Keys1;
+        public ICollection<TKey1> Keys1 => dic.Keys;
         /// <summary>
         /// Gets an <see cref="ICollection{TKey2}"/> containing the keys in the <see cref="MultiMap{TKey1, TKey2}"/>.
         /// </summary>
-        ICollection<TKey2> IMultiMap<TKey1, TKey2>.Keys2 => Keys2;
+        public ICollection<TKey2> Keys2 => rev.Keys;
         /// <summary>
         /// Inserts an elenemt with specified key1 and key2.
         /// </summary>
@@ -271,9 +264,9 @@ namespace Berrysoft.Data
                     return false;
                 }
             }
-            if (dic.ContainsKey(key1))
+            if (dic.Contains(key1))
             {
-                if (!dic[key1].Add(key2))
+                if (dic[key1].Contains(key2))
                 {
                     if (add)
                     {
@@ -284,18 +277,22 @@ namespace Berrysoft.Data
                         return false;
                     }
                 }
+                else
+                {
+                    dic.Add(key1, key2);
+                }
             }
             else
             {
-                dic[key1] = new HashSet<TKey2>() { key2 };
+                dic.Add(key1, key2);
             }
-            if (rev.ContainsKey(key2))
+            if (rev.Contains(key2))
             {
                 rev[key2].Add(key1);
             }
             else
             {
-                rev[key2] = new HashSet<TKey1>() { key1 };
+                rev.Add(key2, key1);
             }
             return true;
         }
@@ -338,36 +335,26 @@ namespace Berrysoft.Data
         /// <param name="key">The key1 of the key2 to get.</param>
         /// <param name="values">When the method returns, contains an <see cref="ICollection{TKey2}"/> of key2, if the key1 is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
         /// <returns><see langword="true"/> if the <see cref="IMultiMap{TKey1, TKey2}"/> contains elements with the specified key1; otherwise, <see langword="false"/>.</returns>
-        public bool TryGetValuesFromKey1(TKey1 key, out ICollection<TKey2> values)
-        {
-            bool result = dic.TryGetValue(key, out var value);
-            values = value;
-            return result;
-        }
+        public bool TryGetValuesFromKey1(TKey1 key, out ICollection<TKey2> values) => dic.TryGetElements(key, out values);
         /// <summary>
         /// Get <see cref="ICollection{TKey1}"/> of key1 with the specified key2.
         /// </summary>
         /// <param name="key">The key2 of the key1 to get.</param>
         /// <param name="values">When the method returns, contains an <see cref="ICollection{TKey1}"/> of key1, if the key2 is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
         /// <returns><see langword="true"/> if the <see cref="IMultiMap{TKey1, TKey2}"/> contains elements with the specified key2; otherwise, <see langword="false"/>.</returns>
-        public bool TryGetValuesFromKey2(TKey2 key, out ICollection<TKey1> values)
-        {
-            bool result = rev.TryGetValue(key, out var value);
-            values = value;
-            return result;
-        }
+        public bool TryGetValuesFromKey2(TKey2 key, out ICollection<TKey1> values) => rev.TryGetElements(key, out values);
         /// <summary>
         /// Determines whether the <see cref="MultiMap{TKey1, TKey2}"/> contains the specified key1.
         /// </summary>
         /// <param name="key">The specified key1.</param>
         /// <returns><see langword="true"/> if it contains; otherwise, <see langword="false"/>.</returns>
-        public bool ContainsKey1(TKey1 key) => dic.ContainsKey(key);
+        public bool ContainsKey1(TKey1 key) => dic.Contains(key);
         /// <summary>
         /// Determines whether the <see cref="MultiMap{TKey1, TKey2}"/> contains the specified key2.
         /// </summary>
         /// <param name="key">The specified key2.</param>
         /// <returns><see langword="true"/> if it contains; otherwise, <see langword="false"/>.</returns>
-        public bool ContainsKey2(TKey2 key) => rev.ContainsKey(key);
+        public bool ContainsKey2(TKey2 key) => rev.Contains(key);
         /// <summary>
         /// Determines whether the <see cref="MultiMap{TKey1, TKey2}"/> contains the element with specified key1 and key2.
         /// </summary>
@@ -384,7 +371,7 @@ namespace Berrysoft.Data
             {
                 throw ExceptionHelper.ArgumentNull(nameof(key2));
             }
-            return dic.ContainsKey(key1) && dic[key1].Contains(key2);
+            return dic.Contains(key1) && dic[key1].Contains(key2);
         }
         /// <summary>
         /// Determines whether the <see cref="MultiMap{TKey1, TKey2}"/> contains the element with specified key1 and key2.
@@ -399,7 +386,7 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         public bool RemoveKey1(TKey1 key)
         {
-            HashSet<TKey2> values = dic[key];
+            ICollection<TKey2> values = dic[key];
             if (dic.Remove(key))
             {
                 foreach (TKey2 value in values)
@@ -424,7 +411,7 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         public bool RemoveKey2(TKey2 key)
         {
-            HashSet<TKey1> values = rev[key];
+            ICollection<TKey1> values = rev[key];
             if (rev.Remove(key))
             {
                 foreach (TKey1 value in values)
@@ -519,7 +506,7 @@ namespace Berrysoft.Data
         {
             foreach (var item in dic)
             {
-                foreach (var value in item.Value)
+                foreach (var value in item)
                 {
                     yield return new KeyPair<TKey1, TKey2>(item.Key, value);
                 }
@@ -534,11 +521,11 @@ namespace Berrysoft.Data
         /// Get <see cref="ILookup{TKey, TElement}"/> with key1 as key and key2 as value.
         /// </summary>
         /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
-        public ILookup<TKey1, TKey2> ToLookupFromKey1() => new Lookup<TKey1, TKey2>(dic);
+        public ILookup<TKey1, TKey2> ToLookupFromKey1() => dic;
         /// <summary>
         /// Get <see cref="ILookup{TKey, TElement}"/> with key2 as key and key1 as value.
         /// </summary>
         /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
-        public ILookup<TKey2, TKey1> ToLookupFromKey2() => new Lookup<TKey2, TKey1>(rev);
+        public ILookup<TKey2, TKey1> ToLookupFromKey2() => rev;
     }
 }

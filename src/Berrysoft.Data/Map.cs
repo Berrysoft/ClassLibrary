@@ -153,6 +153,7 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
+    [Serializable]
     public struct KeyPair<TKey1, TKey2>
     {
         private TKey1 key1;
@@ -201,6 +202,7 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
+    [Serializable]
     public class Map<TKey1, TKey2> : IMap<TKey1, TKey2>
     {
         private Dictionary<TKey1, TKey2> dic;

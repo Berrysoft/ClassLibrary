@@ -15,6 +15,8 @@ namespace Berrysoft.Data
             => new ArgumentOutOfRangeException(paramName);
         public static Exception ArrayTooSmall()
             => new ArgumentException("The array is too small.");
+        public static Exception NotSupported()
+            => new NotSupportedException();
     }
     /// <summary>
     /// Represents errors that a key pair is existed.
