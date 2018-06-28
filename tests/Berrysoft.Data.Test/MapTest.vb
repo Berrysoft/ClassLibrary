@@ -48,6 +48,21 @@ Public Class MapTest
     End Sub
 
     <TestMethod()>
+    Public Sub LookupAddTest()
+        Dim lkp As New Lookup(Of Integer, String)()
+        lkp.Add(123, "123")
+        lkp.Add(123, "abc")
+        lkp.Add(456, "456")
+        Dim i As Integer = 0
+        For Each item In lkp
+            If item.Key = 123 Then
+                i += 1
+            End If
+        Next
+        Assert.AreEqual(2, i)
+    End Sub
+
+    <TestMethod()>
     Public Sub MultiMapAddTest()
         Dim keylook As New MultiMap(Of Integer, String)()
         keylook.Add(123, "123")

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using SysLinq = System.Linq;
+using System.Linq;
 
 namespace Berrysoft.Data
 {
@@ -12,7 +12,7 @@ namespace Berrysoft.Data
     /// </summary>
     /// <typeparam name="TKey">Type of the keys.</typeparam>
     /// <typeparam name="TElement">Type of the elements.</typeparam>
-    public interface ILookup<TKey, TElement> : SysLinq.ILookup<TKey, TElement>
+    public interface IMutableLookup<TKey, TElement> : ILookup<TKey, TElement>
     {
         /// <summary>
         /// A collection of keys.
@@ -38,7 +38,7 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         bool Remove(TKey key, TElement element);
         /// <summary>
-        /// Clear the <see cref="ILookup{TKey, TElement}"/>.
+        /// Clear the <see cref="IMutableLookup{TKey, TElement}"/>.
         /// </summary>
         void Clear();
         /// <summary>
@@ -46,15 +46,15 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="key">The specified key.</param>
         /// <param name="elements">When this method returns, contains the elements associated with the specified key, if the key is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
-        /// <returns><see langword="true"/> if the <see cref="ILookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if the <see cref="IMutableLookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
         bool TryGetElements(TKey key, out IEnumerable<TElement> elements);
     }
     /// <summary>
     /// Represents a collection of objects that have a common key.
     /// </summary>
-    /// <typeparam name="TKey">The type of the key of the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
-    /// <typeparam name="TElement">The type of the values in the <see cref="IGrouping{TKey, TElement}"/>.</typeparam>
-    internal interface IGrouping<TKey, TElement> : SysLinq.IGrouping<TKey, TElement>
+    /// <typeparam name="TKey">The type of the key of the <see cref="ICountableGrouping{TKey, TElement}"/>.</typeparam>
+    /// <typeparam name="TElement">The type of the values in the <see cref="ICountableGrouping{TKey, TElement}"/>.</typeparam>
+    internal interface ICountableGrouping<TKey, TElement> : IGrouping<TKey, TElement>
     {
         /// <summary>
         /// Count of the elements.
@@ -68,7 +68,7 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey">The type of the keys in the <see cref="Lookup{TKey, TElement}"/>.</typeparam>
     /// <typeparam name="TElement">The type of the elements of each value in the <see cref="Lookup{TKey, TElement}"/>.</typeparam>
     [Serializable]
-    public class Lookup<TKey, TElement> : ILookup<TKey, TElement>, IEnumerable<IGrouping<TKey, TElement>>
+    public class Lookup<TKey, TElement> : IMutableLookup<TKey, TElement>, IEnumerable<KeyValuePair<TKey, TElement>>, IEnumerable<ICountableGrouping<TKey, TElement>>
     {
         private Dictionary<TKey, Grouping> dic;
         /// <summary>
@@ -80,7 +80,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
         /// </summary>
-        /// <param name="capacity">The initial number of keys that the <see cref="ILookup{TKey, TElement}"/> can contain.</param>
+        /// <param name="capacity">The initial number of keys that the <see cref="IMutableLookup{TKey, TElement}"/> can contain.</param>
         public Lookup(int capacity)
             : this(capacity, null)
         { }
@@ -94,7 +94,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
         /// </summary>
-        /// <param name="capacity">The initial number of keys that the <see cref="ILookup{TKey, TElement}"/> can contain.</param>
+        /// <param name="capacity">The initial number of keys that the <see cref="IMutableLookup{TKey, TElement}"/> can contain.</param>
         /// <param name="comparer">The comparer of the keys.</param>
         public Lookup(int capacity, IEqualityComparer<TKey> comparer)
         {
@@ -148,12 +148,6 @@ namespace Berrysoft.Data
             }
         }
         /// <summary>
-        /// Gets the collection of values indexed by the specified key.
-        /// </summary>
-        /// <param name="key">The key of the desired collection of values.</param>
-        /// <returns>The collection of values indexed by the specified key.</returns>
-        IEnumerable<TElement> SysLinq.ILookup<TKey, TElement>.this[TKey key] => this[key];
-        /// <summary>
         /// Gets the number of key/value collection pairs in the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         public int Count => dic.Count;
@@ -161,6 +155,10 @@ namespace Berrysoft.Data
         /// A collection of keys.
         /// </summary>
         public ICollection<TKey> Keys => dic.Keys;
+        /// <summary>
+        /// A collection of keys.
+        /// </summary>
+        IEnumerable<TElement> ILookup<TKey, TElement>.this[TKey key] => this[key];
         /// <summary>
         /// Adds the specified key and element.
         /// </summary>
@@ -172,7 +170,7 @@ namespace Berrysoft.Data
             {
                 dic[key] = new Grouping(key);
             }
-            dic[key].Add(element);
+            dic[key].AddElement(element);
         }
         /// <summary>
         /// Removes the specified key and its elements.
@@ -193,7 +191,7 @@ namespace Berrysoft.Data
         {
             if (dic.ContainsKey(key))
             {
-                return dic[key].Remove(element);
+                return dic[key].RemoveElement(element);
             }
             else
             {
@@ -207,15 +205,15 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if <paramref name="key"/> is in the <see cref="Lookup{TKey, TElement}"/>; otherwise, <see langword="false"/>.</returns>
         public bool Contains(TKey key) => dic.ContainsKey(key);
         /// <summary>
-        /// Clear the <see cref="ILookup{TKey, TElement}"/>.
+        /// Clear the <see cref="IMutableLookup{TKey, TElement}"/>.
         /// </summary>
         public void Clear() => dic.Clear();
         /// <summary>
-        /// Gets the <see cref="ICollection{T}"/> sequence of values by a specified key.
+        /// Gets the <see cref="IEnumerable{T}"/> sequence of values by a specified key.
         /// </summary>
         /// <param name="key">The specified key.</param>
         /// <param name="elements">When this method returns, contains the elements associated with the specified key, if the key is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
-        /// <returns><see langword="true"/> if the <see cref="ILookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
+        /// <returns><see langword="true"/> if the <see cref="IMutableLookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
         public bool TryGetElements(TKey key, out ICollection<TElement> elements)
         {
             bool result = dic.TryGetValue(key, out var grouping);
@@ -227,8 +225,8 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="key">The specified key.</param>
         /// <param name="elements">When this method returns, contains the elements associated with the specified key, if the key is found; otherwise, <see langword="null"/>. This parameter is passed uninitialized.</param>
-        /// <returns><see langword="true"/> if the <see cref="ILookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
-        bool ILookup<TKey,TElement>.TryGetElements(TKey key, out IEnumerable<TElement> elements)
+        /// <returns><see langword="true"/> if the <see cref="IMutableLookup{TKey, TElement}"/> contains elements with the specified key; otherwise, <see langword="false"/>.</returns>
+        public bool TryGetElements(TKey key, out IEnumerable<TElement> elements)
         {
             bool result = dic.TryGetValue(key, out var grouping);
             elements = grouping;
@@ -238,12 +236,26 @@ namespace Berrysoft.Data
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        public IEnumerator<SysLinq.IGrouping<TKey, TElement>> GetEnumerator() => GetEnumeratorInternal();
+        public IEnumerator<KeyValuePair<TKey, TElement>> GetEnumerator()
+        {
+            foreach(var grouping in dic)
+            {
+                foreach(var item in grouping.Value)
+                {
+                    yield return new KeyValuePair<TKey, TElement>(grouping.Key, item);
+                }
+            }
+        }
         /// <summary>
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
         IEnumerator<IGrouping<TKey, TElement>> IEnumerable<IGrouping<TKey, TElement>>.GetEnumerator() => GetEnumeratorInternal();
+        /// <summary>
+        /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
+        /// </summary>
+        /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
+        IEnumerator<ICountableGrouping<TKey, TElement>> IEnumerable<ICountableGrouping<TKey, TElement>>.GetEnumerator() => GetEnumeratorInternal();
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>. This class cannot be inherited.
         /// </summary>
@@ -263,10 +275,10 @@ namespace Berrysoft.Data
         /// <summary>
         /// Represents a key and a sequence of elements.
         /// </summary>
-        private class Grouping : IGrouping<TKey, TElement>, ICollection<TElement>
+        private class Grouping : ICountableGrouping<TKey, TElement>, ICollection<TElement>
         {
-            private TKey key;
-            private Collection<TElement> collection;
+            private readonly TKey key;
+            private readonly Collection<TElement> collection;
             /// <summary>
             /// Initialize a new instance of <see cref="Grouping"/> class.
             /// </summary>
@@ -287,22 +299,40 @@ namespace Berrysoft.Data
             /// <summary>
             /// The <see cref="Grouping"/> is not read-only.
             /// </summary>
-            public bool IsReadOnly => false;
+            public bool IsReadOnly => true;
             /// <summary>
             /// Adds element to the grouping.
             /// </summary>
             /// <param name="item">The specified element.</param>
-            public void Add(TElement item) => collection.Add(item);
+            internal void AddElement(TElement item) => collection.Add(item);
+            /// <summary>
+            /// This function is not supported.
+            /// </summary>
+            /// <param name="item">The specified element.</param>
+            /// <exception cref="NotSupportedException"/>
+            public void Add(TElement item) => throw ExceptionHelper.NotSupported();
             /// <summary>
             /// Clears the elements.
             /// </summary>
-            public void Clear() => collection.Clear();
+            internal void ClearElements() => collection.Clear();
+            /// <summary>
+            /// This function is not supported.
+            /// </summary>
+            /// <exception cref="NotSupportedException"/>
+            public void Clear() => throw ExceptionHelper.NotSupported();
             /// <summary>
             /// Removes the specified element.
             /// </summary>
             /// <param name="item">The specified element.</param>
             /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
-            public bool Remove(TElement item) => collection.Remove(item);
+            internal bool RemoveElement(TElement item) => collection.Remove(item);
+            /// <summary>
+            /// This function is not supported.
+            /// </summary>
+            /// <param name="item">The specified element.</param>
+            /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
+            /// <exception cref="NotSupportedException"/>
+            public bool Remove(TElement item) => throw ExceptionHelper.NotSupported();
             /// <summary>
             /// Determines whether a specified key is in the <see cref="Grouping"/>.
             /// </summary>

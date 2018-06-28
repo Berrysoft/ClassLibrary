@@ -71,9 +71,9 @@ namespace Berrysoft.Data
         /// <param name="head">The specified vertex.</param>
         void ClearTails(T head);
         /// <summary>
-        /// Get a <see cref="ILookup{TKey, TElement}"/> contains all heads and their arcs.
+        /// Get a <see cref="IMutableLookup{TKey, TElement}"/> contains all heads and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="IMutableLookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetHeads();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
@@ -82,9 +82,9 @@ namespace Berrysoft.Data
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         ICollection<T> GetHeads(T tail);
         /// <summary>
-        /// Get a <see cref="ILookup{TKey, TElement}"/> contains all tails and their arcs.
+        /// Get a <see cref="IMutableLookup{TKey, TElement}"/> contains all tails and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="IMutableLookup{TKey, TElement}"/>.</returns>
         ILookup<T, T> GetTails();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.
@@ -789,9 +789,9 @@ namespace Berrysoft.Data
         /// <param name="head">The specified vertex.</param>
         public void ClearTails(T head) => _arcs.RemoveKey2(head);
         /// <summary>
-        /// Get an <see cref="ILookup{TKey, TElement}"/> contains all heads and their arcs.
+        /// Get an <see cref="IMutableLookup{TKey, TElement}"/> contains all heads and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="IMutableLookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetHeads() => _arcs.ToLookupFromKey1();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all heads of a specified tail.
@@ -800,9 +800,9 @@ namespace Berrysoft.Data
         /// <returns>An instance of <see cref="IEnumerable{T}"/>.</returns>
         public ICollection<T> GetHeads(T tail) => _arcs.GetValuesFromKey1(tail);
         /// <summary>
-        /// Get an <see cref="ILookup{TKey, TElement}"/> contains all tails and their arcs.
+        /// Get an <see cref="IMutableLookup{TKey, TElement}"/> contains all tails and their arcs.
         /// </summary>
-        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="IMutableLookup{TKey, TElement}"/>.</returns>
         public ILookup<T, T> GetTails() => _arcs.ToLookupFromKey2();
         /// <summary>
         /// Get an <see cref="IEnumerable{T}"/> of all tails of a specified head.

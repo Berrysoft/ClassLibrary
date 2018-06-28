@@ -217,7 +217,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Count of elements.
         /// </summary>
-        public int Count => dic.Sum<IGrouping<TKey1, TKey2>>(pair => pair.Count);
+        public int Count => dic.Sum<ICountableGrouping<TKey1, TKey2>>(pair => pair.Count);
         /// <summary>
         /// Gets a value indicating whether the <see cref="MultiMap{TKey1, TKey2}"/> is read-only.
         /// </summary>
@@ -288,7 +288,7 @@ namespace Berrysoft.Data
             }
             if (rev.Contains(key2))
             {
-                rev[key2].Add(key1);
+                rev.Add(key2, key1);
             }
             else
             {
@@ -391,7 +391,7 @@ namespace Berrysoft.Data
             {
                 foreach (TKey2 value in values)
                 {
-                    rev[value].Remove(key);
+                    rev.Remove(value, key);
                     if (rev[value].Count == 0)
                     {
                         rev.Remove(value);
@@ -416,7 +416,7 @@ namespace Berrysoft.Data
             {
                 foreach (TKey1 value in values)
                 {
-                    dic[value].Remove(key);
+                    dic.Remove(value, key);
                     if (dic[value].Count == 0)
                     {
                         dic.Remove(value);
@@ -437,7 +437,7 @@ namespace Berrysoft.Data
         /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
         public bool Remove(TKey1 key1, TKey2 key2)
         {
-            if (dic[key1].Remove(key2) && rev[key2].Remove(key1))
+            if (dic.Remove(key1, key2) && rev.Remove(key2, key1))
             {
                 if (dic[key1].Count == 0)
                 {
@@ -504,7 +504,7 @@ namespace Berrysoft.Data
         /// <returns>An enumerator for the <see cref="MultiMap{TKey1, TKey2}"/>.</returns>
         public IEnumerator<KeyPair<TKey1, TKey2>> GetEnumerator()
         {
-            foreach (var item in dic)
+            foreach (var item in (IMutableLookup<TKey1, TKey2>)dic)
             {
                 foreach (var value in item)
                 {
@@ -518,14 +518,14 @@ namespace Berrysoft.Data
         /// <returns>An enumerator for the <see cref="MultiMap{TKey1, TKey2}"/>.</returns>
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
         /// <summary>
-        /// Get <see cref="ILookup{TKey, TElement}"/> with key1 as key and key2 as value.
+        /// Get <see cref="IMutableLookup{TKey, TElement}"/> with key1 as key and key2 as value.
         /// </summary>
-        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="IMutableLookup{TKey, TElement}"/>.</returns>
         public ILookup<TKey1, TKey2> ToLookupFromKey1() => dic;
         /// <summary>
-        /// Get <see cref="ILookup{TKey, TElement}"/> with key2 as key and key1 as value.
+        /// Get <see cref="IMutableLookup{TKey, TElement}"/> with key2 as key and key1 as value.
         /// </summary>
-        /// <returns>An instance of <see cref="ILookup{TKey, TElement}"/>.</returns>
+        /// <returns>An instance of <see cref="IMutableLookup{TKey, TElement}"/>.</returns>
         public ILookup<TKey2, TKey1> ToLookupFromKey2() => rev;
     }
 }

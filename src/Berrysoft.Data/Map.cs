@@ -154,10 +154,10 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
     [Serializable]
-    public struct KeyPair<TKey1, TKey2>
+    public readonly struct KeyPair<TKey1, TKey2>
     {
-        private TKey1 key1;
-        private TKey2 key2;
+        private readonly TKey1 key1;
+        private readonly TKey2 key2;
         /// <summary>
         /// First key of the pair.
         /// </summary>
