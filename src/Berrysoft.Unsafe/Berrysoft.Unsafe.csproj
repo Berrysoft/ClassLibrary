@@ -4,15 +4,15 @@
     <Description>Some unsafe structs and methods for safe languages.</Description>
   </PropertyGroup>
 
-  <Import Project="..\..\target.props"/>
-  <Import Project="..\..\nupkg.props"/>
+  <Import Project="..\..\target.props" />
+  <Import Project="..\..\nupkg.props" />
 
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
   </ItemGroup>
 
 </Project>
