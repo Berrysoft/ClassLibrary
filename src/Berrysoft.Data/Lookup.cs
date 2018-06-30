@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 
 namespace Berrysoft.Data
@@ -68,9 +69,11 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey">The type of the keys in the <see cref="Lookup{TKey, TElement}"/>.</typeparam>
     /// <typeparam name="TElement">The type of the elements of each value in the <see cref="Lookup{TKey, TElement}"/>.</typeparam>
     [Serializable]
-    public class Lookup<TKey, TElement> : IMutableLookup<TKey, TElement>, IEnumerable<KeyValuePair<TKey, TElement>>, IEnumerable<ICountableGrouping<TKey, TElement>>
+    [DebuggerTypeProxy(typeof(LookupDebugView<,>))]
+    [DebuggerDisplay("Count = {Count}")]
+    public class Lookup<TKey, TElement> : IMutableLookup<TKey, TElement>, IEnumerable<KeyValuePair<TKey, TElement>>, IEnumerable<Lookup<TKey, TElement>.Grouping>
     {
-        private Dictionary<TKey, Grouping> dic;
+        private readonly Dictionary<TKey, Grouping> dic;
         /// <summary>
         /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
         /// </summary>
@@ -255,7 +258,7 @@ namespace Berrysoft.Data
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        IEnumerator<ICountableGrouping<TKey, TElement>> IEnumerable<ICountableGrouping<TKey, TElement>>.GetEnumerator() => GetEnumeratorInternal();
+        IEnumerator<Grouping> IEnumerable<Grouping>.GetEnumerator() => GetEnumeratorInternal();
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>. This class cannot be inherited.
         /// </summary>
@@ -265,7 +268,7 @@ namespace Berrysoft.Data
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        private IEnumerator<Grouping> GetEnumeratorInternal()
+        internal IEnumerator<Grouping> GetEnumeratorInternal()
         {
             foreach (var item in dic)
             {
@@ -275,7 +278,7 @@ namespace Berrysoft.Data
         /// <summary>
         /// Represents a key and a sequence of elements.
         /// </summary>
-        private class Grouping : ICountableGrouping<TKey, TElement>, ICollection<TElement>
+        internal class Grouping : ICountableGrouping<TKey, TElement>, ICollection<TElement>
         {
             private readonly TKey key;
             private readonly Collection<TElement> collection;

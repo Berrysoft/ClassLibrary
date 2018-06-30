@@ -40,6 +40,8 @@ namespace Berrysoft.Unsafe
         /// <returns>An instance of <see cref="Unsafe.ByReference{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ByReference<T> ByReference<T>(ref T value) => new ByReference<T>(ref value);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ByReference<T> AsReference<T>(in T value) => new ByReference<T>(ref AsRef(in value));
         /// <summary>
         /// Get the target reference of <see cref="Pointer{T}"/>.
         /// </summary>

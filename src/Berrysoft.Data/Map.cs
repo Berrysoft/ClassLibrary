@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace Berrysoft.Data
@@ -203,10 +204,12 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
     [Serializable]
+    [DebuggerTypeProxy(typeof(MapDebugView<,>))]
+    [DebuggerDisplay("Count = {Count}")]
     public class Map<TKey1, TKey2> : IMap<TKey1, TKey2>
     {
-        private Dictionary<TKey1, TKey2> dic;
-        private Dictionary<TKey2, TKey1> rev;
+        private readonly Dictionary<TKey1, TKey2> dic;
+        private readonly Dictionary<TKey2, TKey1> rev;
         /// <summary>
         /// Initialize a new instance of <see cref="Map{TKey1, TKey2}"/>.
         /// </summary>
