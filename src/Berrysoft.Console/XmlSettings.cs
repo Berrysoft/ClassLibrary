@@ -72,11 +72,19 @@ namespace Berrysoft.Console
                 object propValue = null;
                 if (mul)
                 {
-                    propValue = settings.Elements(name)?.Select(e => e.Value)?.ToArray();
+                    var elements = settings.Elements(name);
+                    if (elements != null)
+                    {
+                        propValue = elements.Select(e => e.Value).ToArray();
+                    }
                 }
                 else
                 {
-                    propValue = settings.Element(name)?.Value;
+                    var element = settings.Element(name);
+                    if (element != null)
+                    {
+                        propValue = element.Value;
+                    }
                 }
                 this[name] = propValue;
             }
@@ -108,11 +116,19 @@ namespace Berrysoft.Console
                 object propValue = null;
                 if (mul)
                 {
-                    propValue = settings.Elements(name)?.Select(e => e.Value)?.ToArray();
+                    var elements = settings.Elements(name);
+                    if (elements != null)
+                    {
+                        propValue = elements.Select(e => e.Value).ToArray();
+                    }
                 }
                 else
                 {
-                    propValue = settings.Element(name)?.Value;
+                    var element = settings.Element(name);
+                    if (element != null)
+                    {
+                        propValue = element.Value;
+                    }
                 }
                 lock (syncLock)
                 {
@@ -121,13 +137,14 @@ namespace Berrysoft.Console
             });
         }
 #endif
+        private static readonly XDeclaration DefaultXmlDeclaration = new XDeclaration("1.0", "utf-8", null);
         /// <summary>
         /// Save the settings to an xml file.
         /// </summary>
         /// <param name="fileName">Path of the file.</param>
         public override void Save(string fileName)
         {
-            XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
+            XDocument document = new XDocument(DefaultXmlDeclaration);
             XElement settings = new XElement(rootName);
             document.Add(settings);
             foreach (string name in Names)
@@ -161,7 +178,7 @@ namespace Berrysoft.Console
         /// <returns>A <see cref="Task"/> of the task.</returns>
         public async Task SaveAsync(string fileName, CancellationToken cancellationToken)
         {
-            XDocument document = new XDocument(new XDeclaration("1.0", "utf-8", null));
+            XDocument document = new XDocument(DefaultXmlDeclaration);
             XElement settings = new XElement(rootName);
             document.Add(settings);
             Names.AsParallel().WithCancellation(cancellationToken).ForAll(name =>

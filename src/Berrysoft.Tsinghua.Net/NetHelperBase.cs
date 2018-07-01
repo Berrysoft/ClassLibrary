@@ -220,7 +220,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Releases the unmanaged resources used by the <see cref="HttpClient"/> and optionally disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">true to release both managed and unmanaged resources; false to releases only unmanaged resources.</param>
+        /// <param name="disposing"><see langword="true"/> to release both managed and unmanaged resources; <see langword="false"/> to releases only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!disposedValue)
