@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
 namespace Berrysoft.Data
 {
-    internal sealed class MapDebugView<K, V>
+    internal sealed class IMapDebugView<K, V>
     {
-        private readonly Map<K, V> map;
-        public MapDebugView(Map<K, V> map)
+        private readonly IMap<K, V> map;
+        public IMapDebugView(IMap<K, V> map)
         {
             this.map = map ?? throw ExceptionHelper.ArgumentNull(nameof(map));
         }
@@ -23,20 +22,31 @@ namespace Berrysoft.Data
             }
         }
     }
-    internal sealed class LookupDebugView<K, V>
+    internal sealed class IMutableLookupDebugView<K, V>
     {
-        private readonly Lookup<K, V> lookup;
-        public LookupDebugView(Lookup<K, V> lookup)
+        private readonly IMutableLookup<K, V> lookup;
+        public IMutableLookupDebugView(IMutableLookup<K, V> lookup)
         {
             this.lookup = lookup ?? throw ExceptionHelper.ArgumentNull(nameof(lookup));
         }
         [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        public Lookup<K, V>.Grouping[] Items => ((IEnumerable<Lookup<K, V>.Grouping>)lookup).ToArray();
+        public IGrouping<K, V>[] Items => lookup.ToArray();
     }
-    internal sealed class MultiMapDebugView<K, V>
+    internal sealed class ICountableGroupingDebugView<K,V>
     {
-        private readonly MultiMap<K, V> multiMap;
-        public MultiMapDebugView(MultiMap<K, V> multiMap)
+        private readonly ICountableGrouping<K, V> grouping;
+        public ICountableGroupingDebugView(ICountableGrouping<K,V> grouping)
+        {
+            this.grouping = grouping ?? throw ExceptionHelper.ArgumentNull(nameof(grouping));
+        }
+        public K Key => grouping.Key;
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+        public V[] Items => grouping.ToArray();
+    }
+    internal sealed class IMultiMapDebugView<K, V>
+    {
+        private readonly IMultiMap<K, V> multiMap;
+        public IMultiMapDebugView(IMultiMap<K, V> multiMap)
         {
             this.multiMap = multiMap ?? throw ExceptionHelper.ArgumentNull(nameof(multiMap));
         }

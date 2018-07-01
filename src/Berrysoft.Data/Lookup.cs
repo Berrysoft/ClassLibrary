@@ -69,11 +69,11 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey">The type of the keys in the <see cref="Lookup{TKey, TElement}"/>.</typeparam>
     /// <typeparam name="TElement">The type of the elements of each value in the <see cref="Lookup{TKey, TElement}"/>.</typeparam>
     [Serializable]
-    [DebuggerTypeProxy(typeof(LookupDebugView<,>))]
+    [DebuggerTypeProxy(typeof(IMutableLookupDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
-    public class Lookup<TKey, TElement> : IMutableLookup<TKey, TElement>, IEnumerable<KeyValuePair<TKey, TElement>>, IEnumerable<Lookup<TKey, TElement>.Grouping>
+    public class Lookup<TKey, TElement> : IMutableLookup<TKey, TElement>, IEnumerable<KeyValuePair<TKey, TElement>>, IEnumerable<Grouping<TKey, TElement>>
     {
-        private readonly Dictionary<TKey, Grouping> dic;
+        private readonly Dictionary<TKey, Grouping<TKey, TElement>> dic;
         /// <summary>
         /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
         /// </summary>
@@ -101,7 +101,7 @@ namespace Berrysoft.Data
         /// <param name="comparer">The comparer of the keys.</param>
         public Lookup(int capacity, IEqualityComparer<TKey> comparer)
         {
-            dic = new Dictionary<TKey, Grouping>(capacity, comparer);
+            dic = new Dictionary<TKey, Grouping<TKey, TElement>>(capacity, comparer);
         }
         /// <summary>
         /// Initialize a new instance of <see cref="Lookup{TKey, TElement}"/> class.
@@ -120,10 +120,10 @@ namespace Berrysoft.Data
             switch (lookup ?? throw ExceptionHelper.ArgumentNull(nameof(lookup)))
             {
                 case Lookup<TKey, TElement> lkp:
-                    dic = new Dictionary<TKey, Grouping>(lkp.dic, comparer);
+                    dic = new Dictionary<TKey, Grouping<TKey, TElement>>(lkp.dic, comparer);
                     break;
                 default:
-                    dic = new Dictionary<TKey, Grouping>(lookup.Count, comparer);
+                    dic = new Dictionary<TKey, Grouping<TKey, TElement>>(lookup.Count, comparer);
                     foreach (var grouping in lookup)
                     {
                         foreach (var item in grouping)
@@ -145,7 +145,7 @@ namespace Berrysoft.Data
             {
                 if (!dic.ContainsKey(key))
                 {
-                    dic[key] = new Grouping(key);
+                    dic[key] = new Grouping<TKey, TElement>(key);
                 }
                 return dic[key];
             }
@@ -167,11 +167,11 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="key">The specified key.</param>
         /// <param name="element">The specified element.</param>
-        public void Add(TKey key,TElement element)
+        public void Add(TKey key, TElement element)
         {
-            if(!dic.ContainsKey(key))
+            if (!dic.ContainsKey(key))
             {
-                dic[key] = new Grouping(key);
+                dic[key] = new Grouping<TKey, TElement>(key);
             }
             dic[key].AddElement(element);
         }
@@ -241,9 +241,9 @@ namespace Berrysoft.Data
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
         public IEnumerator<KeyValuePair<TKey, TElement>> GetEnumerator()
         {
-            foreach(var grouping in dic)
+            foreach (var grouping in dic)
             {
-                foreach(var item in grouping.Value)
+                foreach (var item in grouping.Value)
                 {
                     yield return new KeyValuePair<TKey, TElement>(grouping.Key, item);
                 }
@@ -258,7 +258,7 @@ namespace Berrysoft.Data
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        IEnumerator<Grouping> IEnumerable<Grouping>.GetEnumerator() => GetEnumeratorInternal();
+        IEnumerator<Grouping<TKey,TElement>> IEnumerable<Grouping<TKey, TElement>>.GetEnumerator() => GetEnumeratorInternal();
         /// <summary>
         /// Returns an enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>. This class cannot be inherited.
         /// </summary>
@@ -268,107 +268,110 @@ namespace Berrysoft.Data
         /// Returns a generic enumerator that iterates through the <see cref="Lookup{TKey, TElement}"/>.
         /// </summary>
         /// <returns>An enumerator for the <see cref="Lookup{TKey, TElement}"/>.</returns>
-        internal IEnumerator<Grouping> GetEnumeratorInternal()
+        internal IEnumerator<Grouping<TKey, TElement>> GetEnumeratorInternal()
         {
             foreach (var item in dic)
             {
                 yield return item.Value;
             }
         }
+    }
+    /// <summary>
+    /// Represents a key and a sequence of elements.
+    /// </summary>
+    [Serializable]
+    [DebuggerTypeProxy(typeof(ICountableGroupingDebugView<,>))]
+    [DebuggerDisplay("Count = {Count}")]
+    internal class Grouping<TKey, TElement> : ICountableGrouping<TKey, TElement>, ICollection<TElement>
+    {
+        private readonly TKey key;
+        private readonly Collection<TElement> collection;
         /// <summary>
-        /// Represents a key and a sequence of elements.
+        /// Initialize a new instance of <see cref="Grouping{TKey, TElement}"/> class.
         /// </summary>
-        internal class Grouping : ICountableGrouping<TKey, TElement>, ICollection<TElement>
+        /// <param name="key"></param>
+        public Grouping(TKey key)
         {
-            private readonly TKey key;
-            private readonly Collection<TElement> collection;
-            /// <summary>
-            /// Initialize a new instance of <see cref="Grouping"/> class.
-            /// </summary>
-            /// <param name="key"></param>
-            public Grouping(TKey key)
-            {
-                this.key = key;
-                this.collection = new Collection<TElement>();
-            }
-            /// <summary>
-            /// The key of the <see cref="Grouping"/>.
-            /// </summary>
-            public TKey Key => key;
-            /// <summary>
-            /// Count of the elements.
-            /// </summary>
-            public int Count => collection.Count;
-            /// <summary>
-            /// The <see cref="Grouping"/> is not read-only.
-            /// </summary>
-            public bool IsReadOnly => true;
-            /// <summary>
-            /// Adds element to the grouping.
-            /// </summary>
-            /// <param name="item">The specified element.</param>
-            internal void AddElement(TElement item) => collection.Add(item);
-            /// <summary>
-            /// This function is not supported.
-            /// </summary>
-            /// <param name="item">The specified element.</param>
-            /// <exception cref="NotSupportedException"/>
-            public void Add(TElement item) => throw ExceptionHelper.NotSupported();
-            /// <summary>
-            /// Clears the elements.
-            /// </summary>
-            internal void ClearElements() => collection.Clear();
-            /// <summary>
-            /// This function is not supported.
-            /// </summary>
-            /// <exception cref="NotSupportedException"/>
-            public void Clear() => throw ExceptionHelper.NotSupported();
-            /// <summary>
-            /// Removes the specified element.
-            /// </summary>
-            /// <param name="item">The specified element.</param>
-            /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
-            internal bool RemoveElement(TElement item) => collection.Remove(item);
-            /// <summary>
-            /// This function is not supported.
-            /// </summary>
-            /// <param name="item">The specified element.</param>
-            /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
-            /// <exception cref="NotSupportedException"/>
-            public bool Remove(TElement item) => throw ExceptionHelper.NotSupported();
-            /// <summary>
-            /// Determines whether a specified key is in the <see cref="Grouping"/>.
-            /// </summary>
-            /// <param name="item">The element to find in the <see cref="Grouping"/>.</param>
-            /// <returns><see langword="true"/> if <paramref name="item"/> is in the <see cref="Grouping"/>; otherwise, <see langword="false"/>.</returns>
-            public bool Contains(TElement item) => collection.Contains(item);
-            /// <summary>
-            /// Copies the entire <see cref="Collection{T}"/> to a compatible one-dimensional <see cref="Array"/>, starting at the specified index of the target array.
-            /// </summary>
-            /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied from <see cref="Collection{T}"/>. The <see cref="Array"/> must have zero-based indexing.</param>
-            /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
-            public void CopyTo(TElement[] array, int arrayIndex)
-            {
-                if (array == null)
-                    throw ExceptionHelper.ArgumentNull(nameof(array));
-                if (arrayIndex < 0)
-                    throw ExceptionHelper.ArgumentOutOfRange(nameof(arrayIndex));
-                if (arrayIndex > array.Length)
-                    throw ExceptionHelper.ArgumentOutOfRange(nameof(arrayIndex));
-                if (array.Length - arrayIndex < collection.Count)
-                    throw ExceptionHelper.ArrayTooSmall();
-                collection.CopyTo(array, arrayIndex);
-            }
-            /// <summary>
-            /// Returns a generic enumerator that iterates through the <see cref="Grouping"/>.
-            /// </summary>
-            /// <returns>An enumerator for the <see cref="Grouping"/>.</returns>
-            public IEnumerator<TElement> GetEnumerator() => collection.GetEnumerator();
-            /// <summary>
-            /// Returns a generic enumerator that iterates through the <see cref="Grouping"/>.
-            /// </summary>
-            /// <returns>An enumerator for the <see cref="Grouping"/>.</returns>
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+            this.key = key;
+            this.collection = new Collection<TElement>();
         }
+        /// <summary>
+        /// The key of the <see cref="Grouping{TKey, TElement}"/>.
+        /// </summary>
+        public TKey Key => key;
+        /// <summary>
+        /// Count of the elements.
+        /// </summary>
+        public int Count => collection.Count;
+        /// <summary>
+        /// The <see cref="Grouping{TKey, TElement}"/> is not read-only.
+        /// </summary>
+        public bool IsReadOnly => true;
+        /// <summary>
+        /// Adds element to the grouping.
+        /// </summary>
+        /// <param name="item">The specified element.</param>
+        internal void AddElement(TElement item) => collection.Add(item);
+        /// <summary>
+        /// This function is not supported.
+        /// </summary>
+        /// <param name="item">The specified element.</param>
+        /// <exception cref="NotSupportedException"/>
+        public void Add(TElement item) => throw ExceptionHelper.NotSupported();
+        /// <summary>
+        /// Clears the elements.
+        /// </summary>
+        internal void ClearElements() => collection.Clear();
+        /// <summary>
+        /// This function is not supported.
+        /// </summary>
+        /// <exception cref="NotSupportedException"/>
+        public void Clear() => throw ExceptionHelper.NotSupported();
+        /// <summary>
+        /// Removes the specified element.
+        /// </summary>
+        /// <param name="item">The specified element.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
+        internal bool RemoveElement(TElement item) => collection.Remove(item);
+        /// <summary>
+        /// This function is not supported.
+        /// </summary>
+        /// <param name="item">The specified element.</param>
+        /// <returns><see langword="true"/> if removes successfully; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="NotSupportedException"/>
+        public bool Remove(TElement item) => throw ExceptionHelper.NotSupported();
+        /// <summary>
+        /// Determines whether a specified key is in the <see cref="Grouping{TKey, TElement}"/>.
+        /// </summary>
+        /// <param name="item">The element to find in the <see cref="Grouping{TKey, TElement}"/>.</param>
+        /// <returns><see langword="true"/> if <paramref name="item"/> is in the <see cref="Grouping{TKey, TElement}"/>; otherwise, <see langword="false"/>.</returns>
+        public bool Contains(TElement item) => collection.Contains(item);
+        /// <summary>
+        /// Copies the entire <see cref="Collection{T}"/> to a compatible one-dimensional <see cref="Array"/>, starting at the specified index of the target array.
+        /// </summary>
+        /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the elements copied from <see cref="Collection{T}"/>. The <see cref="Array"/> must have zero-based indexing.</param>
+        /// <param name="arrayIndex">The zero-based index in array at which copying begins.</param>
+        public void CopyTo(TElement[] array, int arrayIndex)
+        {
+            if (array == null)
+                throw ExceptionHelper.ArgumentNull(nameof(array));
+            if (arrayIndex < 0)
+                throw ExceptionHelper.ArgumentOutOfRange(nameof(arrayIndex));
+            if (arrayIndex > array.Length)
+                throw ExceptionHelper.ArgumentOutOfRange(nameof(arrayIndex));
+            if (array.Length - arrayIndex < collection.Count)
+                throw ExceptionHelper.ArrayTooSmall();
+            collection.CopyTo(array, arrayIndex);
+        }
+        /// <summary>
+        /// Returns a generic enumerator that iterates through the <see cref="Grouping{TKey, TElement}"/>.
+        /// </summary>
+        /// <returns>An enumerator for the <see cref="Grouping{TKey, TElement}"/>.</returns>
+        public IEnumerator<TElement> GetEnumerator() => collection.GetEnumerator();
+        /// <summary>
+        /// Returns a generic enumerator that iterates through the <see cref="Grouping{TKey, TElement}"/>.
+        /// </summary>
+        /// <returns>An enumerator for the <see cref="Grouping{TKey, TElement}"/>.</returns>
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

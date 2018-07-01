@@ -33,6 +33,19 @@ namespace Berrysoft.Unsafe
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Pointer<T> PointerOf<T>(T[] array) => new Pointer<T>(ref array[0]);
         /// <summary>
+        /// Get a <see cref="Pointer{T}"/> of a <see cref="string"/>.
+        /// </summary>
+        /// <param name="str">The string.</param>
+        /// <returns>An instance of <see cref="Pointer{T}"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Pointer<char> PointerOf(string str)
+        {
+            fixed (char* p = str)
+            {
+                return new Pointer<char>(p);
+            }
+        }
+        /// <summary>
         /// Get a <see cref="Unsafe.ByReference{T}"/> with a <typeparamref name="T"/> reference.
         /// </summary>
         /// <typeparam name="T">Type of the pointer pointed to.</typeparam>
@@ -40,8 +53,14 @@ namespace Berrysoft.Unsafe
         /// <returns>An instance of <see cref="Unsafe.ByReference{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ByReference<T> ByReference<T>(ref T value) => new ByReference<T>(ref value);
+        /// <summary>
+        /// Get a <see cref="Unsafe.ByReference{T}"/> with a readonly <typeparamref name="T"/> reference.
+        /// </summary>
+        /// <typeparam name="T">Type of the pointer pointed to.</typeparam>
+        /// <param name="value">The reference.</param>
+        /// <returns>An instance of <see cref="Unsafe.ByReference{T}"/>.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ByReference<T> AsReference<T>(in T value) => new ByReference<T>(ref AsRef(in value));
+        public static ByReference<T> GetRef<T>(in T value) => new ByReference<T>(ref AsRef(in value));
         /// <summary>
         /// Get the target reference of <see cref="Pointer{T}"/>.
         /// </summary>

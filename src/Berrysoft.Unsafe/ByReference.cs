@@ -32,20 +32,4 @@ namespace Berrysoft.Unsafe
             get => ref AsRef<T>(_ptr);
         }
     }
-    [DebuggerDisplay("{Value}")]
-    [DebuggerTypeProxy(typeof(PointerDebugView<>))]
-    public readonly unsafe struct ReadOnlyRefrence<T>
-    {
-        private readonly void* _ptr;
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public ReadOnlyRefrence(in T value)
-        {
-            _ptr = AsPointer(ref AsRef(in value));
-        }
-        public ref readonly T Value
-        {
-            [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            get => ref AsRef<T>(_ptr);
-        }
-    }
 }

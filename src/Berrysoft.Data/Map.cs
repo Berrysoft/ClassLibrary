@@ -204,7 +204,7 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
     [Serializable]
-    [DebuggerTypeProxy(typeof(MapDebugView<,>))]
+    [DebuggerTypeProxy(typeof(IMapDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
     public class Map<TKey1, TKey2> : IMap<TKey1, TKey2>
     {

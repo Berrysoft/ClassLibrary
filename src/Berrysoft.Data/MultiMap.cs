@@ -156,7 +156,7 @@ namespace Berrysoft.Data
     /// <typeparam name="TKey1">Type of key1.</typeparam>
     /// <typeparam name="TKey2">Type of key2.</typeparam>
     [Serializable]
-    [DebuggerTypeProxy(typeof(MultiMapDebugView<,>))]
+    [DebuggerTypeProxy(typeof(IMultiMapDebugView<,>))]
     [DebuggerDisplay("Count = {Count}")]
     public class MultiMap<TKey1, TKey2> : IMultiMap<TKey1, TKey2>
     {

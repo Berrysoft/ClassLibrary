@@ -33,10 +33,6 @@ namespace Berrysoft.Unsafe
         {
             target = ptr.Value;
         }
-        public PointerDebugView(ReadOnlyRefrence<T> ptr)
-        {
-            target = ptr.Value;
-        }
         /// <summary>
         /// Target of the pointer.
         /// </summary>
