@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Berrysoft.Html
@@ -7,8 +6,14 @@ namespace Berrysoft.Html
     public class HtmlDocument : HtmlObject
     {
         public HtmlDocument()
+            : this(Encoding.UTF8)
+        { }
+
+        public HtmlDocument(Encoding encoding)
+            :base(encoding)
         {
-            root = new HtmlRootNode();
+            head = new HtmlNode("head");
+            body = new HtmlNode("body");
         }
 
         private HtmlDeclaration decl;
@@ -18,12 +23,15 @@ namespace Berrysoft.Html
             set => decl = value;
         }
 
-        private HtmlRootNode root;
-        public HtmlNode RootNode => root;
+        private HtmlNode head;
+        public HtmlNode Head => head;
+
+        private HtmlNode body;
+        public HtmlNode Body => body;
 
         public override string ToString()
         {
-            return decl.ToString() + root.ToString();
+            return $"{decl?.ToString() ?? HtmlDeclaration.Default.ToString()}<html>{head.ToString()}{body.ToString()}</html>";
         }
     }
 }

@@ -9,13 +9,25 @@ namespace Berrysoft.Html
         private string name;
         public string Name => name;
 
-        private HtmlPrimitive attrvalue;
-        public HtmlPrimitive Value => attrvalue;
+        private string attrvalue;
+        public string Value => attrvalue;
 
-        public HtmlAttribute(string name, HtmlPrimitive attrvalue)
+        public HtmlAttribute(string name, string attrvalue)
         {
             this.name = name;
             this.attrvalue = attrvalue;
+        }
+
+        public override string ToString()
+        {
+            if (attrvalue.Contains('\"'))
+            {
+                return $"{name}=\'{attrvalue}\'";
+            }
+            else
+            {
+                return $"{name}=\"{attrvalue}\"";
+            }
         }
     }
 }
