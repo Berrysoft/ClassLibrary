@@ -1,0 +1,10 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <Description>Some classes to read and write html files.</Description>
+  </PropertyGroup>
+
+  <Import Project="..\..\target.props" />
+  <Import Project="..\..\nupkg.props" />
+  
+</Project>

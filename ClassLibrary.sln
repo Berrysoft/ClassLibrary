@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Unsafe", "src\Ber
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Workflow", "src\Berrysoft.Workflow\Berrysoft.Workflow.csproj", "{F4B881CA-2B93-477F-ADDD-57FAC62AA06F}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Berrysoft.Html", "src\Berrysoft.Html\Berrysoft.Html.csproj", "{EDB68F21-9EFA-4DA5-9DC5-1AEF31C65133}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{2EF14B4B-CEB3-43B4-93E1-82F6FA9ECBDF}"
 EndProject
 Project("{778DAE3C-4631-46EA-AA77-85C1314464D9}") = "Berrysoft.Data.Test", "tests\Berrysoft.Data.Test\Berrysoft.Data.Test.vbproj", "{093EF355-E852-4CDC-8662-D44D5BB409D9}"
@@ -65,6 +67,10 @@ Global
 		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89EF525F-07A7-494E-AA9A-0DBF4CDA2EA2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDB68F21-9EFA-4DA5-9DC5-1AEF31C65133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDB68F21-9EFA-4DA5-9DC5-1AEF31C65133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDB68F21-9EFA-4DA5-9DC5-1AEF31C65133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDB68F21-9EFA-4DA5-9DC5-1AEF31C65133}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
