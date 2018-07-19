@@ -12,7 +12,15 @@ namespace Berrysoft.Html
             : this(name, Encoding.UTF8, elements)
         { }
 
+        public HtmlNode(string name, IEnumerable<HtmlObject> elements)
+            : this(name, Encoding.UTF8, elements)
+        { }
+
         public HtmlNode(string name, Encoding encoding, params HtmlObject[] elements)
+            : this(name, encoding, (IEnumerable<HtmlObject>)elements)
+        { }
+
+        public HtmlNode(string name, Encoding encoding, IEnumerable<HtmlObject> elements)
             : base(encoding)
         {
             this.name = name;

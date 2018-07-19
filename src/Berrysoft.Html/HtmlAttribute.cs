@@ -20,7 +20,11 @@ namespace Berrysoft.Html
 
         public override string ToString()
         {
+#if NETCOREAPP2_1
             if (attrvalue.Contains('\"'))
+#else
+            if (attrvalue.Contains("\""))
+#endif
             {
                 return $"{name}=\'{attrvalue}\'";
             }

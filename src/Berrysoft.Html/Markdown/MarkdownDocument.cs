@@ -12,105 +12,171 @@ namespace Berrysoft.Html.Markdown
             using (StreamReader reader = new StreamReader(path))
             {
                 HtmlDocument document = new HtmlDocument();
-                document.Head.AddElement(new HtmlNode("title", path));
-                HtmlNode body = document.Body;
-                bool in_code = false;
-                bool in_ul = false;
-                bool in_p = false;
-                StringBuilder builder = new StringBuilder();
-                List<HtmlObject> lis = new List<HtmlObject>();
-
-                void deal_with_in_p()
+                IEnumerable<MarkdownElement> elements = ParseLines(ReadLines(reader));
+                foreach (var e in elements)
                 {
-                    if (in_p)
-                    {
-                        in_p = false;
-                        body.AddElement(new HtmlNode("p", builder.ToString()));
-                    }
-                }
-                void deal_with_in_ul()
-                {
-                    if (in_ul)
-                    {
-                        in_ul = false;
-                        body.AddElement(new HtmlNode("ul", lis.ToArray()));
-                    }
-                }
-
-                while (!reader.EndOfStream)
-                {
-                    string line = reader.ReadLine();
-                    if (!in_code)
-                    {
-                        line = line.TrimStart();
-                        if (line.Length == 0)
-                        {
-                            deal_with_in_p();
-                            deal_with_in_ul();
-                        }
-                        else if (line.Length > 4 && line.StartsWith("### "))
-                        {
-                            deal_with_in_p();
-                            deal_with_in_ul();
-                            body.AddElement(new HtmlNode("h3", line.Substring(4)));
-                        }
-                        else if (line.Length > 3 && line.StartsWith("## "))
-                        {
-                            deal_with_in_p();
-                            deal_with_in_ul();
-                            body.AddElement(new HtmlNode("h2", line.Substring(3)));
-                        }
-                        else if (line.Length > 2 && line.StartsWith("# "))
-                        {
-                            deal_with_in_p();
-                            deal_with_in_ul();
-                            body.AddElement(new HtmlNode("h1", line.Substring(2)));
-                        }
-                        else if (line.Length > 2 && line.StartsWith("```"))
-                        {
-                            deal_with_in_p();
-                            deal_with_in_ul();
-                            if (in_code)
-                            {
-                                in_code = false;
-                                builder.Clear();
-                            }
-                            else
-                            {
-                                in_code = true;
-                                body.AddElement(new HtmlNode("pre", new HtmlNode("code", builder.ToString())));
-                            }
-                        }
-                        else if (line.Length > 1 && line.StartsWith("* "))
-                        {
-                            deal_with_in_p();
-                            if(!in_ul)
-                            {
-                                in_ul = true;
-                                lis.Clear();
-                            }
-                            lis.Add(line.Substring(2));
-                        }
-                        else
-                        {
-                            if(in_code)
-                            {
-                                builder.AppendLine(line);
-                            }
-                            else
-                            {
-                                if(!in_p)
-                                {
-                                    in_p = true;
-                                    builder.Clear();
-                                }
-                                builder.Append(line);
-                                builder.Append(' ');
-                            }
-                        }
-                    }
+                    document.Body.AddElement(e.GetHtmlObject());
                 }
                 return document;
+            }
+        }
+
+        private static IEnumerable<string> ReadLines(StreamReader reader)
+        {
+            while (!reader.EndOfStream)
+            {
+                yield return reader.ReadLine();
+            }
+        }
+
+        private enum BlockType
+        {
+            None,
+            Paragraph,
+            List,
+            Code
+        }
+
+        private static IEnumerable<MarkdownElement> ParseLines(IEnumerable<string> lines)
+        {
+            List<string> temp = new List<string>();
+            BlockType type = BlockType.None;
+            MarkdownElement te;
+
+            MarkdownElement DealWithOldType()
+            {
+                MarkdownElement result = null;
+                switch (type)
+                {
+                    case BlockType.Paragraph:
+                        result = new MarkdownParagraph(temp);
+                        temp.Clear();
+                        break;
+                    case BlockType.List:
+                        result = new MarkdownList(temp);
+                        temp.Clear();
+                        break;
+                    case BlockType.Code:
+                        result = new MarkdownCode(temp);
+                        temp.Clear();
+                        break;
+                    default:
+                        result = null;
+                        break;
+                }
+                return result;
+            }
+
+            foreach (string line in lines)
+            {
+                if (type == BlockType.Code)
+                {
+                    if (line.StartsWith("```"))
+                    {
+                        if ((te = DealWithOldType()) != null)
+                        {
+                            yield return te;
+                        }
+                        type = BlockType.None;
+                    }
+                    else
+                    {
+                        temp.Add(line);
+                    }
+                }
+                else
+                {
+#if NETCOREAPP2_1
+                    if (line.StartsWith('#'))
+#else
+                    if (line.StartsWith("#"))
+#endif
+                    {
+                        if ((te = DealWithOldType()) != null)
+                        {
+                            yield return te;
+                        }
+                        type = BlockType.None;
+                        int head = 1;
+                        for (int i = 1; i < line.Length; i++)
+                        {
+                            if (line[i] != '#')
+                            {
+                                head = i;
+                                break;
+                            }
+                        }
+                        if (head == line.Length - 1)
+                        {
+                            continue;
+                        }
+                        int back = line.Length;
+#if NETCOREAPP2_1
+                        if (line.EndsWith('#'))
+#else
+                        if (line.EndsWith("#"))
+#endif
+                        {
+                            for (int i = line.Length - 1; i >= 0; i--)
+                            {
+                                if (line[i] != '#')
+                                {
+                                    back = i + 1;
+                                    break;
+                                }
+                            }
+                            if (back < head)
+                            {
+                                back = line.Length;
+                            }
+                        }
+                        if (back == head)
+                        {
+                            continue;
+                        }
+                        yield return new MarkdownHead(line.Substring(head, back - head).Trim(), head);
+                    }
+#if NETCOREAPP2_1
+                    else if (line.StartsWith('*'))
+#else
+                    else if (line.StartsWith("*"))
+#endif
+                    {
+                        if (type != BlockType.List)
+                        {
+                            if ((te = DealWithOldType()) != null)
+                            {
+                                yield return te;
+                            }
+                            type = BlockType.List;
+                        }
+                        temp.Add(line.Substring(1).Trim());
+                    }
+                    else if (line.StartsWith("```"))
+                    {
+                        if ((te = DealWithOldType()) != null)
+                        {
+                            yield return te;
+                            type = BlockType.Code;
+                        }
+                    }
+                    else
+                    {
+                        if (type == BlockType.None)
+                        {
+                            if ((te = DealWithOldType()) != null)
+                            {
+                                yield return te;
+                            }
+                            type = BlockType.Paragraph;
+                        }
+                        temp.Add(line.Trim());
+                    }
+                }
+            }
+            if ((te = DealWithOldType()) != null)
+            {
+                yield return te;
             }
         }
     }
