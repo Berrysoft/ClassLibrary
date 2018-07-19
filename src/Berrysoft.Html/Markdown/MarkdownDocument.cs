@@ -9,15 +9,94 @@ namespace Berrysoft.Html.Markdown
     {
         public static HtmlDocument LoadAsHtml(string path)
         {
+            List<string> lines = new List<string>();
             using (StreamReader reader = new StreamReader(path))
             {
-                HtmlDocument document = new HtmlDocument();
-                IEnumerable<MarkdownElement> elements = ParseLines(ReadLines(reader));
-                foreach (var e in elements)
+                //HtmlDocument document = new HtmlDocument();
+                //IEnumerable<MarkdownElement> elements = ParseLines(ReadLines(reader));
+                //foreach (var e in elements)
+                //{
+                //    document.Body.AddElement(e.GetHtmlObject());
+                //}
+                //return document;
+                lines.AddRange(ReadLines(reader));
+            }
+            List<MarkdownToken> tokens = new List<MarkdownToken>(GetTokens(lines));
+
+        }
+
+        private static IEnumerable<MarkdownToken> GetTokens(List<string> lines)
+        {
+            MarkdownTokenType blockType = MarkdownTokenType.None;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                string line = lines[i];
+                if (blockType == MarkdownTokenType.Code)
                 {
-                    document.Body.AddElement(e.GetHtmlObject());
+
                 }
-                return document;
+                else
+                {
+                    line = line.Trim();
+                    if (line[0] == '#')
+                    {
+                        yield return new MarkdownToken() { Line = i, Index = -1, Type = MarkdownTokenType.None };
+                        int j = 0;
+                        for (; j < line.Length; j++)
+                        {
+                            if (line[j] != '#')
+                                break;
+                        }
+                        yield return new MarkdownToken() { Line = i, Index = j - 1, Type = MarkdownTokenType.Head };
+                        int k = line.Length - 1;
+                        for (; k >= 0; k--)
+                        {
+                            if (line[k] != '#')
+                                break;
+                        }
+                        foreach (var token in GetTextTokens(line.Substring(j, k - j + 1)))
+                        {
+                            var t = token;
+                            t.Line = i;
+                            t.Index += j;
+                            yield return t;
+                        }
+                        yield return new MarkdownToken() { Line = i, Index = line.Length - 1, Type = MarkdownTokenType.Head };
+                    }
+                    else if (line.StartsWith("* "))
+                    {
+                        blockType = MarkdownTokenType.List;
+                        yield return new MarkdownToken() { Line = i, Index = -1, Type = MarkdownTokenType.List };
+                        yield return new MarkdownToken() { Line = i, Index = 1, Type = MarkdownTokenType.ListItem };
+                        foreach (var token in GetTextTokens(line.Substring(2)))
+                        {
+                            var t = token;
+                            t.Line = i;
+                            t.Index += 2;
+                            yield return t;
+                        }
+                    }
+                    else if (line.StartsWith("```"))
+                    {
+                        blockType = MarkdownTokenType.CodeBlock;
+                        yield return new MarkdownToken() { Line = i, Index = -1, Type = MarkdownTokenType.CodeBlock };
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<MarkdownToken> GetTextTokens(string text)
+        {
+            for (int i = 0; i < text.Length; i++)
+            {
+                if (text[i] == '`')
+                {
+                    if (i > 1)
+                    {
+                        yield return new MarkdownToken() { Index = i - 1, Type = MarkdownTokenType.Text };
+                    }
+                    yield return new MarkdownToken() { Index = i, Type = MarkdownTokenType.Code };
+                }
             }
         }
 
