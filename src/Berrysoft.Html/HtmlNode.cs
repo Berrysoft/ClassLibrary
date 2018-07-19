@@ -8,15 +8,20 @@ namespace Berrysoft.Html
 {
     public class HtmlNode : HtmlObject
     {
-        public HtmlNode(string name)
-            : this(name, Encoding.UTF8)
+        public HtmlNode(string name, params HtmlObject[] elements)
+            : this(name, Encoding.UTF8, elements)
         { }
 
-        public HtmlNode(string name, Encoding encoding)
+        public HtmlNode(string name, Encoding encoding, params HtmlObject[] elements)
             : base(encoding)
         {
             this.name = name;
             this.attrs = new Collection<HtmlAttribute>();
+            this.objs = new Collection<HtmlObject>();
+            foreach (HtmlObject e in elements)
+            {
+                objs.Add(e);
+            }
         }
 
         private string name;
