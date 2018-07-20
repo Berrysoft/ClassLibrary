@@ -10,7 +10,7 @@ namespace Berrysoft.Html
         { }
 
         public HtmlDocument(Encoding encoding)
-            :base(encoding)
+            : base(encoding)
         {
             head = new HtmlNode("head");
             body = new HtmlNode("body");
@@ -31,7 +31,7 @@ namespace Berrysoft.Html
 
         public override string ToString()
         {
-            return $"{decl?.ToString() ?? HtmlDeclaration.Default.ToString()}<html>{head.ToString()}{body.ToString()}</html>";
+            return $"{(decl ?? HtmlDeclaration.Default).ToString()}<html>{head.ToString()}{body.ToString()}</html>";
         }
     }
 }

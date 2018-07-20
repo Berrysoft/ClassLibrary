@@ -3,9 +3,9 @@ Imports Berrysoft.Html.Markdown
 
 Module Program
     Sub Main(args As String())
-        Dim document = MarkdownDocument.LoadAsHtml("test.md")
+        Dim document = MarkdownDocument.Load("test.md")
         Using writer As New StreamWriter("test.html")
-            writer.Write(document.ToString())
+            writer.Write(document.ToHtmlDocument().ToString())
         End Using
     End Sub
 End Module

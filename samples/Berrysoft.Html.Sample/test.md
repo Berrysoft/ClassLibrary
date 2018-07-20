@@ -6,7 +6,9 @@ Here is a list:
 * Item 2
 * Item 3
 ## Another Title
-This is a inline code: `Console.WriteLine();`
+This is an inline code: `Console.WriteLine();`
+And here is a **strong** text,
+here is an *italic* text.
 
 This is a code block:
 ``` vb.net
@@ -14,8 +16,6 @@ Dim f = Function(c)
             Return c.ToString()
         End Function
 ```
-### Title
+### Title - 3
 Another paragraph.
 And no linebreak.
-## H2
-PPP

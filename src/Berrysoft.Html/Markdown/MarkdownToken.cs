@@ -8,7 +8,9 @@ namespace Berrysoft.Html.Markdown
         Head,
         Text,
         Code,
-        ListItem,
+        Strong,
+        Italic,
+        ListItem
     }
 
     struct MarkdownToken
@@ -29,6 +31,7 @@ namespace Berrysoft.Html.Markdown
     struct MarkdownLineToken
     {
         public int Line;
+        public string Value;
         public MarkdownLineTokenType Type;
         public MarkdownToken[] Tokens;
     }
