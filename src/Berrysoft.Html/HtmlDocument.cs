@@ -48,7 +48,11 @@ namespace Berrysoft.Html
             switch (obj)
             {
                 case HtmlNode node:
-                    writer.Write("<{0}>", node.Name);
+#if NETCOREAPP2_1
+                    writer.Write("<{0} {1}>", node.Name, string.Join(' ', node.Attributes()));
+#else
+                    writer.Write("<{0} {1}>", node.Name, string.Join(" ", node.Attributes()));
+#endif
                     foreach (HtmlObject e in node.Elements())
                     {
                         WriteToStream(writer, e);
@@ -78,7 +82,11 @@ namespace Berrysoft.Html
             switch (obj)
             {
                 case HtmlNode node:
-                    await writer.WriteAsync($"<{node.Name}>");
+#if NETCOREAPP2_1
+                    await writer.WriteAsync($"<{node.Name} {string.Join(' ', node.Attributes())}>");
+#else
+                    await writer.WriteAsync($"<{node.Name} {string.Join(" ", node.Attributes())}>");
+#endif
                     foreach (HtmlObject e in node.Elements())
                     {
                         await WriteToStreamAsync(writer, e);

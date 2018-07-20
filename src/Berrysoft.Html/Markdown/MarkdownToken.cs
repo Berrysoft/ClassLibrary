@@ -10,6 +10,8 @@ namespace Berrysoft.Html.Markdown
         Code,
         Strong,
         Italic,
+        Picture,
+        Hyperlink,
         ListItem
     }
 

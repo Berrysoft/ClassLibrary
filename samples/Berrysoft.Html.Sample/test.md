@@ -19,3 +19,9 @@ Dim f = Function(c)
 ### Title - 3
 Another paragraph.
 And no linebreak.
+## Title...
+This is a picture:
+
+![ABC](tulip.jpg)
+
+This is a hyperlink: [HyperLink](http://github.com/)

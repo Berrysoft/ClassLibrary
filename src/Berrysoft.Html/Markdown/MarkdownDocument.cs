@@ -73,7 +73,7 @@ namespace Berrysoft.Html.Markdown
                         temp.Clear();
                         lineToken = MarkdownLineTokenType.None;
                     }
-                    if (token.Tokens.Length > 0)
+                    if (!CodeBlockRegex.IsMatch(token.Value))
                     {
                         temp.Add(token.Value);
                         temp.Add(Environment.NewLine);
@@ -182,6 +182,19 @@ namespace Berrysoft.Html.Markdown
                     case MarkdownTokenType.Italic:
                         yield return new HtmlNode("i", line.Slice(startIndex, token.Index - startIndex + 1).ToString());
                         break;
+                    case MarkdownTokenType.Picture:
+                        var match = PictureRegex.Match(line.ToString(), startIndex);
+                        var node = new HtmlNode("img");
+                        node.AddAttribute(new HtmlAttribute("src", match.Groups[2].Value));
+                        node.AddAttribute(new HtmlAttribute("alt", match.Groups[1].Value));
+                        yield return node;
+                        break;
+                    case MarkdownTokenType.Hyperlink:
+                        match = HyperlinkRegex.Match(line.ToString(), startIndex > 0 ? startIndex - 1 : startIndex);
+                        node = new HtmlNode("a", match.Groups[2].Value);
+                        node.AddAttribute(new HtmlAttribute("href", match.Groups[3].Value));
+                        yield return node;
+                        break;
                     case MarkdownTokenType.Text:
                         yield return line.Slice(startIndex, token.Index - startIndex + 1).ToString();
                         break;
@@ -205,6 +218,19 @@ namespace Berrysoft.Html.Markdown
                         break;
                     case MarkdownTokenType.Italic:
                         yield return new HtmlNode("i", line.Substring(startIndex, token.Index - startIndex + 1));
+                        break;
+                    case MarkdownTokenType.Picture:
+                        var match = PictureRegex.Match(line, startIndex);
+                        var node = new HtmlNode("img");
+                        node.AddAttribute(new HtmlAttribute("src", match.Groups[2].Value));
+                        node.AddAttribute(new HtmlAttribute("alt", match.Groups[1].Value));
+                        yield return node;
+                        break;
+                    case MarkdownTokenType.Hyperlink:
+                        match = HyperlinkRegex.Match(line, startIndex > 0 ? startIndex - 1 : startIndex);
+                        node = new HtmlNode("a", match.Groups[2].Value);
+                        node.AddAttribute(new HtmlAttribute("href", match.Groups[3].Value));
+                        yield return node;
                         break;
                     case MarkdownTokenType.Text:
                         yield return line.Substring(startIndex, token.Index - startIndex + 1);
@@ -263,6 +289,8 @@ namespace Berrysoft.Html.Markdown
         private static readonly Regex InlineCodeRegex = new Regex(@"([\`])([^`]+)([\`])");
         private static readonly Regex StrongRegex = new Regex(@"(\*\*)([^\*]+)(\*\*)");
         private static readonly Regex ItalicRegex = new Regex(@"[^\*](\*)([^\*\`]+)(\*)");
+        private static readonly Regex HyperlinkRegex = new Regex(@"([^\!]|^)\[(.*)\]\((.*)\)");
+        private static readonly Regex PictureRegex = new Regex(@"\!\[(.*)\]\((.*)\)");
         private static IEnumerable<MarkdownToken> GetTextTokens(string text)
         {
             List<MarkdownToken> result = new List<MarkdownToken>();
@@ -299,10 +327,28 @@ namespace Berrysoft.Html.Markdown
                 result.Add(new MarkdownToken() { Index = match.Groups[3].Index - 1, Type = MarkdownTokenType.Italic });
                 result.Add(new MarkdownToken() { Index = match.Groups[3].Index, Type = MarkdownTokenType.None });
             }
+            matches = PictureRegex.Matches(text);
+            foreach (Match match in matches)
+            {
+                if (match.Index > 1)
+                {
+                    result.Add(new MarkdownToken() { Index = match.Index - 1, Type = MarkdownTokenType.Text });
+                }
+                result.Add(new MarkdownToken() { Index = match.Index + match.Length - 1, Type = MarkdownTokenType.Picture });
+            }
+            matches = HyperlinkRegex.Matches(text);
+            foreach (Match match in matches)
+            {
+                if (match.Groups[2].Index > 2)
+                {
+                    result.Add(new MarkdownToken() { Index = match.Groups[2].Index - 2, Type = MarkdownTokenType.Text });
+                }
+                result.Add(new MarkdownToken() { Index = match.Index + match.Length - 1, Type = MarkdownTokenType.Hyperlink });
+            }
 #if NETCOREAPP2_1
-            if (!(text.EndsWith('*') || text.EndsWith('`')))
+            if (!(text.EndsWith('*') || text.EndsWith('`') || text.EndsWith(')')))
 #else
-            if (!(text.EndsWith("*") || text.EndsWith("`")))
+            if (!(text.EndsWith("*") || text.EndsWith("`") || text.EndsWith(")")))
 #endif
             {
                 result.Add(new MarkdownToken() { Index = text.Length - 1, Type = MarkdownTokenType.Text });
