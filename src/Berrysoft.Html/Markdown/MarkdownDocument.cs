@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace Berrysoft.Html.Markdown
 {
@@ -24,6 +25,24 @@ namespace Berrysoft.Html.Markdown
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
+                    MarkdownLineToken token = GetToken(line);
+                    token.Line = index;
+                    document.tokens.Add(token);
+                    index++;
+                }
+            }
+            return document;
+        }
+
+        public static async Task<MarkdownDocument> LoadAsync(string path)
+        {
+            MarkdownDocument document = new MarkdownDocument();
+            using (StreamReader reader = new StreamReader(path))
+            {
+                int index = 0;
+                while (!reader.EndOfStream)
+                {
+                    string line = await reader.ReadLineAsync();
                     MarkdownLineToken token = GetToken(line);
                     token.Line = index;
                     document.tokens.Add(token);
