@@ -7,17 +7,29 @@ namespace Berrysoft.Html.Markdown
         None,
         Head,
         Text,
-        Paragraph,
         Code,
-        CodeBlock,
         ListItem,
-        List
     }
 
     struct MarkdownToken
     {
-        public int Line;
         public int Index;
         public MarkdownTokenType Type;
+    }
+
+    enum MarkdownLineTokenType
+    {
+        None,
+        Head,
+        Paragraph,
+        CodeBlock,
+        List
+    }
+
+    struct MarkdownLineToken
+    {
+        public int Line;
+        public MarkdownLineTokenType Type;
+        public MarkdownToken[] Tokens;
     }
 }
