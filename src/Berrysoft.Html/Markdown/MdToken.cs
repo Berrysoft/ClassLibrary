@@ -2,7 +2,7 @@
 
 namespace Berrysoft.Html.Markdown
 {
-    enum MarkdownTokenType
+    enum MdTokenType
     {
         None,
         Head,
@@ -15,13 +15,13 @@ namespace Berrysoft.Html.Markdown
         ListItem
     }
 
-    struct MarkdownToken
+    struct MdToken
     {
         public int Index;
-        public MarkdownTokenType Type;
+        public MdTokenType Type;
     }
 
-    enum MarkdownLineTokenType
+    enum MdLineTokenType
     {
         Head,
         Paragraph,
@@ -32,11 +32,11 @@ namespace Berrysoft.Html.Markdown
         CodeEnd
     }
 
-    struct MarkdownLineToken
+    struct MdLineToken
     {
         public int Line;
         public string Value;
-        public MarkdownLineTokenType Type;
-        public MarkdownToken[] Tokens;
+        public MdLineTokenType Type;
+        public MdToken[] Tokens;
     }
 }

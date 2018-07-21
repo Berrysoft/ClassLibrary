@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Html.Markdown
 {
-    public class MarkdownDocument
+    public class MdDocument
     {
-        private List<MarkdownLineToken> tokens;
+        private List<MdLineToken> tokens;
 
-        private MarkdownDocument()
+        private MdDocument()
         {
-            tokens = new List<MarkdownLineToken>();
+            tokens = new List<MdLineToken>();
         }
 
-        public static MarkdownDocument Load(string path)
+        public static MdDocument Load(string path)
         {
-            MarkdownDocument document = new MarkdownDocument();
-            MarkdownAnalyzer analyzer = MarkdownAnalyzer.GetStartAnalyzer();
+            MdDocument document = new MdDocument();
+            MdAnalyzer analyzer = MdAnalyzerHelper.GetStartAnalyzer();
             using (StreamReader reader = new StreamReader(path))
             {
                 int index = 0;
                 while (!reader.EndOfStream)
                 {
                     string line = reader.ReadLine();
-                    analyzer = analyzer.GetToken(line, out MarkdownLineToken token);
+                    analyzer = analyzer.GetToken(line, out MdLineToken token);
                     token.Line = index;
                     document.tokens.Add(token);
                     index++;
@@ -35,17 +33,17 @@ namespace Berrysoft.Html.Markdown
             return document;
         }
 
-        public static async Task<MarkdownDocument> LoadAsync(string path)
+        public static async Task<MdDocument> LoadAsync(string path)
         {
-            MarkdownDocument document = new MarkdownDocument();
-            MarkdownAnalyzer analyzer = MarkdownAnalyzer.GetStartAnalyzer();
+            MdDocument document = new MdDocument();
+            MdAnalyzer analyzer = MdAnalyzerHelper.GetStartAnalyzer();
             using (StreamReader reader = new StreamReader(path))
             {
                 int index = 0;
                 while (!reader.EndOfStream)
                 {
                     string line = await reader.ReadLineAsync();
-                    analyzer = analyzer.GetToken(line, out MarkdownLineToken token);
+                    analyzer = analyzer.GetToken(line, out MdLineToken token);
                     token.Line = index;
                     document.tokens.Add(token);
                     index++;
@@ -60,7 +58,7 @@ namespace Berrysoft.Html.Markdown
             HtmlNode current = document.Body;
             foreach(var token in tokens)
             {
-                MarkdownAnalyzer analyzer = MarkdownAnalyzer.GetAnalyzerFromToken(token.Type);
+                MdAnalyzer analyzer = MdAnalyzerHelper.GetAnalyzerFromToken(token.Type);
                 current = analyzer.AnalyzeToken(token, current);
             }
             return document;
