@@ -15,11 +15,11 @@ namespace Berrysoft.Html.Markdown
             if (line.Length == 0)
             {
                 token.Type = MdLineTokenType.ListEnd;
-                result = ParagraphAnalyzer;
+                result = ParaAnalyzer;
             }
             else if (HeadRegex.IsMatch(line))
             {
-                return ParagraphAnalyzer.GetToken(line, out token);
+                return ParaAnalyzer.GetToken(line, out token);
             }
             else
             {

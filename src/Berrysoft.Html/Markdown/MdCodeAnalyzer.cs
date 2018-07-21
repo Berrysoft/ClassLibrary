@@ -13,7 +13,7 @@ namespace Berrysoft.Html.Markdown
             if (CodeBlockRegex.IsMatch(line))
             {
                 token.Type = MdLineTokenType.CodeEnd;
-                result = ParagraphAnalyzer;
+                result = ParaAnalyzer;
             }
             token.Tokens = Array.Empty<MdToken>();
             return result;

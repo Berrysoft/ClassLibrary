@@ -24,8 +24,8 @@ namespace Berrysoft.Html.Markdown
     enum MdLineTokenType
     {
         Head,
-        Paragraph,
-        ParagraphEnd,
+        Para,
+        ParaEnd,
         List,
         ListEnd,
         Code,

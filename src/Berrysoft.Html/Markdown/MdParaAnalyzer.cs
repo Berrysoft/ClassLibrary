@@ -4,7 +4,7 @@ using static Berrysoft.Html.Markdown.MdAnalyzerHelper;
 
 namespace Berrysoft.Html.Markdown
 {
-    class MdParagraphAnalyzer : MdAnalyzer
+    class MdParaAnalyzer : MdAnalyzer
     {
         public override MdAnalyzer GetToken(string line, out MdLineToken token)
         {
@@ -13,7 +13,7 @@ namespace Berrysoft.Html.Markdown
             MdAnalyzer result = this;
             if (line.Length == 0)
             {
-                token.Type = MdLineTokenType.ParagraphEnd;
+                token.Type = MdLineTokenType.ParaEnd;
             }
             else if (HeadRegex.IsMatch(line))
             {
@@ -30,7 +30,7 @@ namespace Berrysoft.Html.Markdown
             }
             else
             {
-                token.Type = MdLineTokenType.Paragraph;
+                token.Type = MdLineTokenType.Para;
                 tokensList.AddRange(GetTextTokens(line));
             }
             token.Tokens = tokensList.ToArray();
@@ -41,7 +41,7 @@ namespace Berrysoft.Html.Markdown
         {
             switch (token.Type)
             {
-                case MdLineTokenType.Paragraph:
+                case MdLineTokenType.Para:
                     if (current.Name != "p")
                     {
                         HtmlNode p = new HtmlNode("p");
@@ -58,7 +58,7 @@ namespace Berrysoft.Html.Markdown
                     }
                     current.AddElement(" ");
                     return current;
-                case MdLineTokenType.ParagraphEnd:
+                case MdLineTokenType.ParaEnd:
                     return current.Parent;
                 default:
                     return null;

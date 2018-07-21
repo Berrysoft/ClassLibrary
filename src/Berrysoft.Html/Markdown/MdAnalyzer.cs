@@ -12,6 +12,17 @@ namespace Berrysoft.Html.Markdown
         public abstract HtmlNode AnalyzeToken(MdLineToken token, HtmlNode current);
     }
 
+    abstract class MdTextAnalyzer
+    {
+        public abstract IEnumerable<MdToken> GetTokens(string line);
+
+#if NETCOREAPP2_1
+        public abstract HtmlObject AnalyzeToken(ReadOnlyMemory<char> line, Memory<MdToken> tokens);
+#else
+        public abstract HtmlObject AnalyzeToken(string line, IEnumerable<MdToken> tokens);
+#endif
+    }
+
     static class MdAnalyzerHelper
     {
         public static readonly Regex HeadRegex = new Regex(@"^[ ]*(#+[ ]+)([^#]+)#*$");
@@ -168,11 +179,11 @@ namespace Berrysoft.Html.Markdown
 #endif
 
         public static readonly MdHeadAnalyzer HeadAnalyzer = new MdHeadAnalyzer();
-        public static readonly MdParagraphAnalyzer ParagraphAnalyzer = new MdParagraphAnalyzer();
+        public static readonly MdParaAnalyzer ParaAnalyzer = new MdParaAnalyzer();
         public static readonly MdListAnalyzer ListAnalyzer = new MdListAnalyzer();
         public static readonly MdCodeAnalyzer CodeAnalyzer = new MdCodeAnalyzer();
 
-        public static MdAnalyzer GetStartAnalyzer() => ParagraphAnalyzer;
+        public static MdAnalyzer GetStartAnalyzer() => ParaAnalyzer;
 
         public static MdAnalyzer GetAnalyzerFromToken(MdLineTokenType token)
         {
@@ -180,9 +191,9 @@ namespace Berrysoft.Html.Markdown
             {
                 case MdLineTokenType.Head:
                     return HeadAnalyzer;
-                case MdLineTokenType.Paragraph:
-                case MdLineTokenType.ParagraphEnd:
-                    return ParagraphAnalyzer;
+                case MdLineTokenType.Para:
+                case MdLineTokenType.ParaEnd:
+                    return ParaAnalyzer;
                 case MdLineTokenType.List:
                 case MdLineTokenType.ListEnd:
                     return ListAnalyzer;

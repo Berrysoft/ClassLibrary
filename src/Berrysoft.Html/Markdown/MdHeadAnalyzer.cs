@@ -18,7 +18,7 @@ namespace Berrysoft.Html.Markdown
                 tokensList.AddRange(GetTextTokens(matches[2].Value));
             }
             token.Tokens = tokensList.ToArray();
-            return ParagraphAnalyzer;
+            return ParaAnalyzer;
         }
 
         public override HtmlNode AnalyzeToken(MdLineToken token, HtmlNode current)
