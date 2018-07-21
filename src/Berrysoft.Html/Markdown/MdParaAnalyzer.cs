@@ -31,7 +31,7 @@ namespace Berrysoft.Html.Markdown
             else
             {
                 token.Type = MdLineTokenType.Para;
-                tokensList.AddRange(GetTextTokens(line));
+                tokensList.AddRange(GetTextTokens(line, 0));
             }
             token.Tokens = tokensList.ToArray();
             return result;
@@ -48,11 +48,7 @@ namespace Berrysoft.Html.Markdown
                         current.AddElement(p);
                         current = p;
                     }
-#if NETCOREAPP2_1
-                    foreach (var obj in GetHtmlObjects(token.Value.AsMemory(), token.Tokens))
-#else
                     foreach (var obj in GetHtmlObjects(token.Value, token.Tokens))
-#endif
                     {
                         current.AddElement(obj);
                     }

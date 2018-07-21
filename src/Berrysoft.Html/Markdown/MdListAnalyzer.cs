@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using static Berrysoft.Html.Markdown.MdAnalyzerHelper;
 
 namespace Berrysoft.Html.Markdown
@@ -28,7 +27,7 @@ namespace Berrysoft.Html.Markdown
                 tokensList.Add(new MdToken() { Index = matches[1].Index + matches[1].Length - 1, Type = MdTokenType.ListItem });
                 if (matches.Count > 2)
                 {
-                    tokensList.AddRange(GetTextTokens(matches[2].Value));
+                    tokensList.AddRange(GetTextTokens(line, matches[2].Index));
                 }
             }
             token.Tokens = tokensList.ToArray();
@@ -52,11 +51,7 @@ namespace Berrysoft.Html.Markdown
                         current.AddElement(ul);
                         current = ul;
                     }
-#if NETCOREAPP2_1
-                    HtmlNode node = new HtmlNode("li", GetHtmlObjects(token.Value.AsMemory().Slice(token.Tokens[0].Index + 1), token.Tokens.AsMemory().Slice(1)));
-#else
-                    HtmlNode node = new HtmlNode("li", GetHtmlObjects(token.Value.Substring(token.Tokens[0].Index + 1), token.Tokens.Skip(1)));
-#endif
+                    HtmlNode node = new HtmlNode("li", GetHtmlObjects(token.Value, token.Tokens));
                     current.AddElement(node);
                     return current;
                 default:
