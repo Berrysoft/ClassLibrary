@@ -25,6 +25,8 @@ namespace Berrysoft.Html
             set => decl = value;
         }
 
+        public override HtmlNode Parent => null;
+
         private HtmlNode head;
         public HtmlNode Head => head;
 

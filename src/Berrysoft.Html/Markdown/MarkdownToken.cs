@@ -23,11 +23,13 @@ namespace Berrysoft.Html.Markdown
 
     enum MarkdownLineTokenType
     {
-        None,
         Head,
         Paragraph,
-        CodeBlock,
-        List
+        ParagraphEnd,
+        List,
+        ListEnd,
+        Code,
+        CodeEnd
     }
 
     struct MarkdownLineToken

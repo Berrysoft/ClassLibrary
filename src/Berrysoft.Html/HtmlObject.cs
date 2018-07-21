@@ -17,6 +17,8 @@ namespace Berrysoft.Html
         private Encoding encoding;
         public Encoding Encoding => encoding;
 
+        public virtual HtmlNode Parent { get; internal set; }
+
         public static implicit operator HtmlObject(string value) => new HtmlString(value);
 
         public static explicit operator string(HtmlObject value) => value.ToString();
