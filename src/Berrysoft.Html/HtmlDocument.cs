@@ -5,12 +5,22 @@ using System.Threading.Tasks;
 
 namespace Berrysoft.Html
 {
+    /// <summary>
+    /// Represents a HTML document.
+    /// </summary>
     public class HtmlDocument : HtmlObject
     {
+        /// <summary>
+        /// Initializes a new instance of <see cref="HtmlDocument"/> class.
+        /// </summary>
         public HtmlDocument()
             : this(Encoding.UTF8)
         { }
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="HtmlDocument"/> class with encoding.
+        /// </summary>
+        /// <param name="encoding">The specified encoding.</param>
         public HtmlDocument(Encoding encoding)
             : base(encoding)
         {
@@ -19,23 +29,34 @@ namespace Berrysoft.Html
         }
 
         private HtmlDeclaration decl;
+        /// <summary>
+        /// The declaration of the document.
+        /// </summary>
         public HtmlDeclaration Declaration
         {
             get => decl;
             set => decl = value;
         }
 
-        public override HtmlNode Parent => null;
-
         private HtmlNode head;
+        /// <summary>
+        /// The &lt;head&gt; label of the document.
+        /// </summary>
         public HtmlNode Head => head;
 
         private HtmlNode body;
+        /// <summary>
+        /// The &lt;body&gt; label of the document.
+        /// </summary>
         public HtmlNode Body => body;
 
+        /// <summary>
+        /// Save the document to a file.
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
         public void Save(string path)
         {
-            using (StreamWriter writer = new StreamWriter(path))
+            using (StreamWriter writer = new StreamWriter(path, false, Encoding))
             {
                 writer.WriteLine((decl ?? HtmlDeclaration.Default).ToString());
                 writer.WriteLine("<html>");
@@ -67,6 +88,10 @@ namespace Berrysoft.Html
             }
         }
 
+        /// <summary>
+        /// Save the document to a file.
+        /// </summary>
+        /// <param name="path">The path of the file.</param>
         public async Task SaveAsync(string path)
         {
             using (StreamWriter writer = new StreamWriter(path))
@@ -101,6 +126,10 @@ namespace Berrysoft.Html
             }
         }
 
+        /// <summary>
+        /// Get the string form of the document.
+        /// </summary>
+        /// <returns>A string contains the document.</returns>
         public override string ToString()
         {
             return $"{(decl ?? HtmlDeclaration.Default).ToString()}<html>{head.ToString()}{body.ToString()}</html>";

@@ -23,7 +23,6 @@ namespace Berrysoft.Html.Markdown
             }
         }
 
-
         public static MdDocument Load(string path)
         {
             MdDocument document = new MdDocument();
@@ -33,25 +32,6 @@ namespace Berrysoft.Html.Markdown
             }
             return document;
         }
-
-        //public static async Task<MdDocument> LoadAsync(string path)
-        //{
-        //    MdDocument document = new MdDocument();
-        //    MdAnalyzer analyzer = MdAnalyzerHelper.GetStartAnalyzer();
-        //    using (StreamReader reader = new StreamReader(path))
-        //    {
-        //        int index = 0;
-        //        while (!reader.EndOfStream)
-        //        {
-        //            string line = await reader.ReadLineAsync();
-        //            analyzer = analyzer.GetToken(line, out MdLineToken token);
-        //            token.Line = index;
-        //            document.tokens.Add(token);
-        //            index++;
-        //        }
-        //    }
-        //    return document;
-        //}
 
         public HtmlDocument ToHtmlDocument()
         {
