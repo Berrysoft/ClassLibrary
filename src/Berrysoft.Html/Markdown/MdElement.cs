@@ -14,6 +14,8 @@ namespace Berrysoft.Html.Markdown
         public static readonly Regex HeadRegex = new Regex(@"^[ ]*(#+)([ ]+)([^#]+)#*$");
         public static readonly Regex ListItemRegex = new Regex(@"^[ ]*(\*[ ]+)(.*)$");
         public static readonly Regex CodeBlockRegex = new Regex(@"^[ ]*(\`\`\`)[ ]*(.*)$");
+        public static readonly Regex TableRegex = new Regex(@"[\|]?([^\|]+)");
+        public static readonly Regex TableAlignRegex = new Regex(@"[\|]?(:?)-+(:?)");
 
         public static IEnumerable<MdElement> GetElements(string[] lines)
         {
@@ -35,6 +37,14 @@ namespace Berrysoft.Html.Markdown
                 else if (CodeBlockRegex.IsMatch(line))
                 {
                     yield return new MdCodeElement(lines, ref i);
+                }
+#if NETCOREAPP2_1
+                else if (TableRegex.IsMatch(line) && line.Contains('|'))
+#else
+                else if (TableRegex.IsMatch(line) && line.Contains("|"))
+#endif
+                {
+                    yield return new MdTableElement(lines, ref i);
                 }
                 else
                 {

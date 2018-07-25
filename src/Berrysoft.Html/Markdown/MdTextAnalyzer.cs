@@ -21,8 +21,6 @@ namespace Berrysoft.Html.Markdown
         public static readonly Regex HyperlinkRegex = new Regex(@"([^\!]|^)\[(.*)\]\((.*)\)");
         public static readonly Regex PictureRegex = new Regex(@"\!\[(.*)\]\((.*)\)");
         public static readonly Regex NoStartHyperlinkRegex = new Regex(@"\[(.*)\]\((.*)\)");
-        public static readonly Regex TableRegex = new Regex(@"(\||^)([^\|]+)");
-        public static readonly Regex TableAlignRegex = new Regex(@"(\||^)(:?)-+(:?)");
 
         public static readonly MdTextCodeAnalyzer TextCodeAnalyzer = new MdTextCodeAnalyzer();
         public static readonly MdTextStrongAnalyzer StrongAnalyzer = new MdTextStrongAnalyzer();

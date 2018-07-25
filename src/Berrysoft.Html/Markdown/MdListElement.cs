@@ -21,7 +21,7 @@ namespace Berrysoft.Html.Markdown
                     }
                     else
                     {
-                        this.lines[this.lines.Count - 1] += " " + line;
+                        this.lines[this.lines.Count - 1] += ' ' + line;
                     }
                 }
                 else
