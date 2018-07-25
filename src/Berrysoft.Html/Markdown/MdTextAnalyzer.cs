@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Berrysoft.Html.Markdown
 {
-    abstract class MdAnalyzer
-    {
-        public abstract MdAnalyzer GetToken(string line, out MdLineToken token);
-
-        public abstract HtmlNode AnalyzeToken(MdLineToken token, HtmlNode current);
-    }
-
     abstract class MdTextAnalyzer
     {
         public abstract IEnumerable<MdToken> GetTokens(string line, int offset);
@@ -18,44 +13,16 @@ namespace Berrysoft.Html.Markdown
         public abstract HtmlObject AnalyzeToken(string line, MdTokenType token);
     }
 
-    static class MdAnalyzerHelper
+    static class MdTextAnalyzerHelper
     {
-        public static readonly Regex HeadRegex = new Regex(@"^[ ]*(#+[ ]+)([^#]+)#*$");
-        public static readonly Regex ListItemRegex = new Regex(@"^[ ]*(\*[ ]+)(.*)$");
-        public static readonly Regex CodeBlockRegex = new Regex(@"^[ ]*(\`\`\`)(.*)$");
         public static readonly Regex InlineCodeRegex = new Regex(@"([\`])([^`]+)([\`])");
         public static readonly Regex StrongRegex = new Regex(@"(\*\*)([^\*]+)(\*\*)");
         public static readonly Regex ItalicRegex = new Regex(@"[^\*](\*)([^\*\`]+)(\*)");
         public static readonly Regex HyperlinkRegex = new Regex(@"([^\!]|^)\[(.*)\]\((.*)\)");
         public static readonly Regex PictureRegex = new Regex(@"\!\[(.*)\]\((.*)\)");
         public static readonly Regex NoStartHyperlinkRegex = new Regex(@"\[(.*)\]\((.*)\)");
-
-        public static readonly MdHeadAnalyzer HeadAnalyzer = new MdHeadAnalyzer();
-        public static readonly MdParaAnalyzer ParaAnalyzer = new MdParaAnalyzer();
-        public static readonly MdListAnalyzer ListAnalyzer = new MdListAnalyzer();
-        public static readonly MdCodeAnalyzer CodeAnalyzer = new MdCodeAnalyzer();
-
-        public static MdAnalyzer GetStartAnalyzer() => ParaAnalyzer;
-
-        public static MdAnalyzer GetAnalyzerFromToken(MdLineTokenType token)
-        {
-            switch (token)
-            {
-                case MdLineTokenType.Head:
-                    return HeadAnalyzer;
-                case MdLineTokenType.Para:
-                case MdLineTokenType.ParaEnd:
-                    return ParaAnalyzer;
-                case MdLineTokenType.List:
-                case MdLineTokenType.ListEnd:
-                    return ListAnalyzer;
-                case MdLineTokenType.Code:
-                case MdLineTokenType.CodeEnd:
-                    return CodeAnalyzer;
-                default:
-                    return null;
-            }
-        }
+        public static readonly Regex TableRegex = new Regex(@"(\||^)([^\|]+)");
+        public static readonly Regex TableAlignRegex = new Regex(@"(\||^)(:?)-+(:?)");
 
         public static readonly MdTextCodeAnalyzer TextCodeAnalyzer = new MdTextCodeAnalyzer();
         public static readonly MdTextStrongAnalyzer StrongAnalyzer = new MdTextStrongAnalyzer();
@@ -80,7 +47,7 @@ namespace Berrysoft.Html.Markdown
             result.Sort((t1, t2) => t1.Index.CompareTo(t2.Index));
             return result;
         }
-        public static IEnumerable<HtmlObject> GetHtmlObjects(string line, MdToken[] tokens)
+        public static IEnumerable<HtmlObject> GetHtmlObjects(string line, IEnumerable<MdToken> tokens)
         {
             int startIndex = 0;
             foreach (MdToken token in tokens)

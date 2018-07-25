@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using static Berrysoft.Html.Markdown.MdAnalyzerHelper;
+using static Berrysoft.Html.Markdown.MdTextAnalyzerHelper;
 
 namespace Berrysoft.Html.Markdown
 {

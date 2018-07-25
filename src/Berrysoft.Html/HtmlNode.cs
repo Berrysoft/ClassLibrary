@@ -36,26 +36,28 @@ namespace Berrysoft.Html
         public string Name => name;
 
         private Collection<HtmlAttribute> attrs;
-        public virtual IEnumerable<HtmlAttribute> Attributes() => attrs;
+        public IEnumerable<HtmlAttribute> Attributes() => attrs;
 
-        public virtual HtmlAttribute Attribute(string name) => attrs.FirstOrDefault(attr => attr.Name == name);
+        public HtmlAttribute Attribute(string name) => attrs.FirstOrDefault(attr => attr.Name == name);
 
-        public virtual void AddAttribute(HtmlAttribute attr) => attrs.Add(attr);
+        public void AddAttribute(HtmlAttribute attr) => attrs.Add(attr);
 
-        public virtual bool RemoveAttribute(HtmlAttribute attr) => attrs.Remove(attr);
+        public bool RemoveAttribute(HtmlAttribute attr) => attrs.Remove(attr);
 
         private Collection<HtmlObject> objs;
-        public virtual IEnumerable<HtmlObject> Elements() => objs;
+        public IEnumerable<HtmlObject> Elements() => objs;
 
-        public virtual HtmlObject Element(string name) => objs.FirstOrDefault(obj => ((HtmlNode)obj).name == name);
+        public HtmlObject Element(string name) => objs.FirstOrDefault(obj => ((HtmlNode)obj).name == name);
 
-        public virtual void AddElement(HtmlObject element)
+        public HtmlObject ElementAt(int index) => objs[index];
+
+        public void AddElement(HtmlObject element)
         {
             element.Parent = this;
             objs.Add(element);
         }
 
-        public virtual bool RemoveElement(HtmlObject element)
+        public bool RemoveElement(HtmlObject element)
         {
             if (objs.Remove(element))
             {

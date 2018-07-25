@@ -12,31 +12,17 @@ namespace Berrysoft.Html.Markdown
         Italic,
         Image,
         Hyperlink,
-        ListItem
+        ListItem,
+        TableBorder,
+        TableDefaultAlign,
+        TableLeftAlign,
+        TableCenterAlign,
+        TableRightAlign
     }
 
     struct MdToken
     {
         public int Index;
         public MdTokenType Type;
-    }
-
-    enum MdLineTokenType
-    {
-        Head,
-        Para,
-        ParaEnd,
-        List,
-        ListEnd,
-        Code,
-        CodeEnd
-    }
-
-    struct MdLineToken
-    {
-        public int Line;
-        public string Value;
-        public MdLineTokenType Type;
-        public MdToken[] Tokens;
     }
 }
