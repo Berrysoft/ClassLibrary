@@ -5,6 +5,6 @@ Module Program
     Sub Main(args As String())
         Dim document = MdDocument.Load("test.md")
         Dim htm = document.ToHtmlDocument()
-        htm.SaveAsync("test.html").Wait()
+        htm.Save("test.html")
     End Sub
 End Module

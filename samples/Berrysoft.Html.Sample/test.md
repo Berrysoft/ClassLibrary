@@ -1,5 +1,5 @@
 ﻿# First Title
-    This is a paragraph.
+This is a paragraph.
 ## Second Title
 Here is a list:
 * Item 1
@@ -16,6 +16,12 @@ Dim f = Function(c)
             Return c.ToString()
         End Function
 ```
+This is another code block:
+
+    var f = c =>
+    {
+        return c.ToString();
+    }
 ### Title - 3
 Another paragraph.
 And no linebreak.
@@ -26,9 +32,8 @@ This is a picture:
 
 This is a hyperlink: [HyperLink](http://github.com/)
 ## Tables
-|Hhhhhhhhhhhhhhhhhhh1|Hhhhhhhhhhhhhhhhhhh2|Hhhhhhhhhhhhhhhhhhh3|Hhhhhhhhhhhhhhhhhhh4|
+|Hhhhhhhhh1|Hhhhhhhhh2|Hhhhhhhhh3|Hhhhhhhhh4|
 |-|:-:|-:|:-|
 |r1|r2|r3|r4|
 |-:|:-|-|-|
-|-|-|-|-|
 |123|`abc|def`|456|789

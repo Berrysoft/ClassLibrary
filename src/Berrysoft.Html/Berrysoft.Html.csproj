@@ -1,7 +1,7 @@
 ﻿<Project>
 
   <PropertyGroup>
-    <Description>Some classes to read and write html files.</Description>
+    <Description>Some classes to read and write HTML files and Markdown files.</Description>
   </PropertyGroup>
 
   <Import Project="..\..\target.props" />

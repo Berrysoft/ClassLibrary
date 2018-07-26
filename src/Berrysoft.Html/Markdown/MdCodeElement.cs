@@ -10,19 +10,45 @@ namespace Berrysoft.Html.Markdown
         string codeType;
         public MdCodeElement(string[] lines, ref int index)
         {
-            var matches = CodeBlockRegex.Match(lines[index]).Groups;
-            codeType = matches[2].Value;
-            index++;
-            for (; index < lines.Length; index++)
+            if (CodeBlockRegex.IsMatch(lines[index]))
             {
-                string line = lines[index];
-                if (!CodeBlockRegex.IsMatch(line))
+                var matches = CodeBlockRegex.Match(lines[index]).Groups;
+                codeType = matches[2].Value;
+                index++;
+                for (; index < lines.Length; index++)
                 {
-                    this.lines.Add(line);
+                    string line = lines[index];
+                    if (!CodeBlockRegex.IsMatch(line))
+                    {
+                        this.lines.Add(line);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+            }
+            else
+            {
+                for (; index < lines.Length; index++)
                 {
-                    break;
+                    string line = lines[index];
+                    if (CodeBlockIndentRegex.IsMatch(line))
+                    {
+                        if (line.Length > 4)
+                        {
+                            this.lines.Add(line.Substring(4));
+                        }
+                        else
+                        {
+                            this.lines.Add(string.Empty);
+                        }
+                    }
+                    else
+                    {
+                        index--;
+                        break;
+                    }
                 }
             }
         }
@@ -30,7 +56,10 @@ namespace Berrysoft.Html.Markdown
         public override HtmlNode ToHtmlNode()
         {
             HtmlNode code = new HtmlNode("code", string.Join(Environment.NewLine, lines));
-            code.AddAttribute(new HtmlAttribute("lang", codeType));
+            if (codeType != null)
+            {
+                code.AddAttribute(new HtmlAttribute("lang", codeType));
+            }
             return new HtmlNode("pre", code);
         }
     }

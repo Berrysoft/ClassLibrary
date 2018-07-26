@@ -11,9 +11,10 @@ namespace Berrysoft.Html.Markdown
 
     static class MdElementHelper
     {
-        public static readonly Regex HeadRegex = new Regex(@"^[ ]*(#+)([ ]+)([^#]+)#*$");
-        public static readonly Regex ListItemRegex = new Regex(@"^[ ]*(\*[ ]+)(.*)$");
-        public static readonly Regex CodeBlockRegex = new Regex(@"^[ ]*(\`\`\`)[ ]*(.*)$");
+        public static readonly Regex HeadRegex = new Regex(@"^(#+)([ ]+)([^#]+)#*$");
+        public static readonly Regex ListItemRegex = new Regex(@"^(\*[ ]+)(.*)$");
+        public static readonly Regex CodeBlockRegex = new Regex(@"^(\`\`\`)[ ]*(.*)$");
+        public static readonly Regex CodeBlockIndentRegex = new Regex(@"^[ ]{4}");
         public static readonly Regex TableRegex = new Regex(@"[\|]?([^\|]+)");
         public static readonly Regex TableAlignRegex = new Regex(@"[\|]?(:?)-+(:?)");
 
@@ -34,7 +35,7 @@ namespace Berrysoft.Html.Markdown
                 {
                     yield return new MdListElement(lines, ref i);
                 }
-                else if (CodeBlockRegex.IsMatch(line))
+                else if (CodeBlockRegex.IsMatch(line) || CodeBlockIndentRegex.IsMatch(line))
                 {
                     yield return new MdCodeElement(lines, ref i);
                 }
