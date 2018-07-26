@@ -38,11 +38,11 @@ namespace Berrysoft.Html.Markdown
             switch (token)
             {
                 case MdTokenType.Strong:
-                    return new HtmlNode("strong", line);
+                    return new HtmlNode("strong", new HtmlString(line, HtmlEscapeOption.Auto));
                 case MdTokenType.Italic:
-                    return new HtmlNode("em", line);
+                    return new HtmlNode("em", new HtmlString(line, HtmlEscapeOption.Auto));
                 default:
-                    return line;
+                    return new HtmlString(line, HtmlEscapeOption.Auto);
             }
         }
     }

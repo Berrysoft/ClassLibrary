@@ -13,7 +13,10 @@ namespace Berrysoft.Html.Markdown
             if (CodeBlockRegex.IsMatch(lines[index]))
             {
                 var matches = CodeBlockRegex.Match(lines[index]).Groups;
-                codeType = matches[2].Value;
+                if (matches[2].Value.Length > 0)
+                {
+                    codeType = matches[2].Value;
+                }
                 index++;
                 for (; index < lines.Length; index++)
                 {
@@ -55,7 +58,7 @@ namespace Berrysoft.Html.Markdown
 
         public override HtmlNode ToHtmlNode()
         {
-            HtmlNode code = new HtmlNode("code", string.Join(Environment.NewLine, lines));
+            HtmlNode code = new HtmlNode("code", new HtmlString(string.Join(Environment.NewLine, lines), HtmlEscapeOption.All));
             if (codeType != null)
             {
                 code.AddAttribute(new HtmlAttribute("lang", codeType));

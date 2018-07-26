@@ -31,7 +31,7 @@ namespace Berrysoft.Html.Markdown
                     node.AddAttribute(new HtmlAttribute("alt", match.Groups[1].Value));
                     return node;
                 default:
-                    return line;
+                    return new HtmlString(line, HtmlEscapeOption.Auto);
             }
         }
     }

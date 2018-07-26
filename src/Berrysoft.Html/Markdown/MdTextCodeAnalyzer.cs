@@ -29,7 +29,7 @@ namespace Berrysoft.Html.Markdown
                 case MdTokenType.Code:
                     return new HtmlNode("code", line);
                 default:
-                    return line;
+                    return new HtmlString(line, HtmlEscapeOption.Auto);
             }
         }
     }

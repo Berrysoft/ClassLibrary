@@ -30,7 +30,7 @@ namespace Berrysoft.Html.Markdown
                     node.AddAttribute(new HtmlAttribute("href", match.Groups[2].Value));
                     return node;
                 default:
-                    return line;
+                    return new HtmlString(line, HtmlEscapeOption.Auto);
             }
         }
     }
