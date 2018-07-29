@@ -363,6 +363,14 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="value">Value of the node.</param>
         /// <param name="children">Children of the node.</param>
+        public Tree(T value, params Tree<T>[] children)
+            : this(value, (IEnumerable<Tree<T>>)children)
+        { }
+        /// <summary>
+        /// Initialize an instance of <see cref="Tree{T}"/> with value and children.
+        /// </summary>
+        /// <param name="value">Value of the node.</param>
+        /// <param name="children">Children of the node.</param>
         public Tree(T value, IEnumerable<Tree<T>> children)
         {
             _value = value;

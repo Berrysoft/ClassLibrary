@@ -1,10 +1,23 @@
-Imports System.IO
 Imports Berrysoft.Html.Markdown
+Imports BenchmarkDotNet.Attributes
+Imports BenchmarkDotNet.Running
 
 Module Program
     Sub Main(args As String())
-        Dim document = MdDocument.Load("test.md")
-        Dim htm = document.ToHtmlDocument()
-        htm.Save("test.html")
+        BenchmarkRunner.Run(Of MdBenchmark)()
     End Sub
 End Module
+
+<ClrJob(True), CoreJob>
+<RankColumn, MemoryDiagnoser>
+Public Class MdBenchmark
+    <Benchmark>
+    Public Sub LoadMd()
+        MdDocument.Load("test.md")
+    End Sub
+
+    <Benchmark>
+    Public Sub GetHtml()
+        MdDocument.Load("test.md").ToHtmlDocument()
+    End Sub
+End Class

@@ -10,6 +10,8 @@ Some complex data structure for convenience, e.g., BinaryTree&lt;T&gt;, Graph&lt
 Some unsafe structs and methods, which make unsafe command available to "safe" languages like Visual Basic.
 * [**Berrysoft.Tsinghua.Net**](https://github.com/Berrysoft/ClassLibrary/tree/master/src/Berrysoft.Tsinghua.Net)
 I used to complain about TUNet, which is a software to login our campus network with an unbelievable low speed.
+* [**Berrysoft.Html**](https://github.com/Berrysoft/ClassLibrary/Tree/master/src/Berrysoft.Html)
+Some classes to read & write HTML files and parse Markdown files.
 ### Experimental
 * [**Berrysoft.Workflow**](https://github.com/Berrysoft/ClassLibrary/tree/master/src/Berrysoft.Workflow)
 Some experimental classes implementing IExecutable or IExecutor.
