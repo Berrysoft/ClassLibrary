@@ -198,7 +198,7 @@ namespace Berrysoft.Console
                     assigned = true;
                 }
                 arg = validLongArgs[name];
-                if (argdic.TryGetValue(arg, out value))
+                if (arg != null && argdic.TryGetValue(arg, out value))
                 {
                     if (!assigned)
                     {
