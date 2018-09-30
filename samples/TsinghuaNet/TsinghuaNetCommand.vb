@@ -18,6 +18,6 @@ Class TsinghuaNetCommand
     <[Option]("s"c, "host", HelpText:="Host to login, default: net, others: auth4, auth6")>
     Public Property Host As String
     Protected Overrides Sub PrintUsage(opt As OptionAttribute)
-        Console.WriteLine("{0}{1}" & vbTab & "{2}{3}  " & vbTab & "{4}", ShortHead, opt.ShortArg, LongHead, opt.LongArg, opt.HelpText)
+        Console.WriteLine("-{0,-2}--{1,-10}{2}", opt.ShortArg, opt.LongArg, opt.HelpText)
     End Sub
 End Class
