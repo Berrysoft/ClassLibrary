@@ -547,7 +547,7 @@ namespace Berrysoft.Data
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         public Graph()
-#if NETCOREAPP2_1 || NET472
+#if NETCOREAPP2_2 || NET472
             : this(0, 0, null)
 #else
             : this((IEqualityComparer<T>)null)
@@ -558,7 +558,7 @@ namespace Berrysoft.Data
         /// </summary>
         /// <param name="comparer">An instance of <see cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
         public Graph(IEqualityComparer<T> comparer)
-#if NETCOREAPP2_1 || NET472
+#if NETCOREAPP2_2 || NET472
             : this(0, 0, comparer)
         { }
 #else
@@ -567,7 +567,7 @@ namespace Berrysoft.Data
             _arcs = new MultiMap<T, T>(comparer, comparer);
         }
 #endif
-#if NETCOREAPP2_1 || NET472
+#if NETCOREAPP2_2 || NET472
         /// <summary>
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>

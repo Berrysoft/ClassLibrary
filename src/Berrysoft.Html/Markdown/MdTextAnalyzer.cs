@@ -32,7 +32,7 @@ namespace Berrysoft.Html.Markdown
             result.AddRange(StrongAnalyzer.GetTokens(text, offset));
             result.AddRange(HyperlinkAnalyzer.GetTokens(text, offset));
             result.AddRange(ImageAnalyzer.GetTokens(text, offset));
-#if NETCOREAPP2_1
+#if NETCOREAPP2_2
             if (!(text.EndsWith('*') || text.EndsWith('`') || text.EndsWith(')')))
 #else
             if (!(text.EndsWith("*") || text.EndsWith("`") || text.EndsWith(")")))
