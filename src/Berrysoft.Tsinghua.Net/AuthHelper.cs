@@ -93,7 +93,7 @@ namespace Berrysoft.Tsinghua.Net
             return match.Groups[1].Value;
         }
 
-        private Dictionary<string, string> loginDataDictionary;
+        private Dictionary<string, string> logDataDictionary;
         private const string LoginInfoJson = "{{\"ip\": \"\", \"acid\": \"1\", \"enc_ver\": \"srun_bx1\", \"username\": \"{0}\", \"password\": \"{1}\"}}";
         private const string ChkSumData = "{0}{1}{0}{2}{0}1{0}{0}200{0}1{0}{3}";
         /// <summary>
@@ -105,22 +105,22 @@ namespace Berrysoft.Tsinghua.Net
             //const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
             string token = await GetChallengeAsync();
             string passwordMD5 = CryptographyHelper.GetHMACMD5(token);
-            if (loginDataDictionary == null)
+            if (logDataDictionary == null)
             {
-                loginDataDictionary = new Dictionary<string, string>
+                logDataDictionary = new Dictionary<string, string>
                 {
-                    ["action"] = "login",
                     ["ac_id"] = "1",
                     ["double_stack"] = "1",
                     ["n"] = "200",
-                    ["type"] = "1",
-                    ["password"] = "{MD5}" + passwordMD5
+                    ["type"] = "1"
                 };
             }
-            loginDataDictionary["info"] = "{SRBX1}" + CryptographyHelper.Base64Encode(CryptographyHelper.XEncode(string.Format(LoginInfoJson, Username, Password), token));
-            loginDataDictionary["username"] = Username;
-            loginDataDictionary["chksum"] = CryptographyHelper.GetSHA1(string.Format(ChkSumData, token, Username, passwordMD5, loginDataDictionary["info"]));
-            return loginDataDictionary;
+            logDataDictionary["action"] = "login";
+            logDataDictionary["password"] = "{MD5}" + passwordMD5;
+            logDataDictionary["info"] = "{SRBX1}" + CryptographyHelper.Base64Encode(CryptographyHelper.XEncode(string.Format(LoginInfoJson, Username, Password), token));
+            logDataDictionary["username"] = Username;
+            logDataDictionary["chksum"] = CryptographyHelper.GetSHA1(string.Format(ChkSumData, token, Username, passwordMD5, logDataDictionary["info"]));
+            return logDataDictionary;
         }
     }
     /// <summary>
