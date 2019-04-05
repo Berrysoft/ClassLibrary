@@ -137,7 +137,7 @@ namespace Berrysoft.Html
         {
             if (objs.Count > 0)
             {
-#if NETCOREAPP2_2
+#if NETCOREAPP
                 return $"<{Name} {string.Join(' ', Attributes())}>{string.Concat(Elements())}</{Name}>";
 #else
                 return $"<{Name} {string.Join(" ", Attributes().Select(attr => attr.ToString()))}>{string.Concat(Elements())}</{Name}>";
@@ -145,7 +145,7 @@ namespace Berrysoft.Html
             }
             else
             {
-#if NETCOREAPP2_2
+#if NETCOREAPP
                 return $"<{Name} {string.Join(' ', Attributes())} />";
 #else
                 return $"<{Name} {string.Join(" ", Attributes().Select(attr => attr.ToString()))} />";

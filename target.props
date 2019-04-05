@@ -2,18 +2,18 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.2;netstandard2.0;net472</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.0;netstandard2.1;net472</TargetFrameworks>
   </PropertyGroup>
 
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
-    <AssemblyVersion>1.1.205.0</AssemblyVersion>
-    <FileVersion>1.1.205.0</FileVersion>
+    <AssemblyVersion>1.1.208.0</AssemblyVersion>
+    <FileVersion>1.1.208.0</FileVersion>
     <OutputPath>..\..\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.205-preview2</Version>
+    <Version>1.1.208-preview3</Version>
     <Authors>Berrysoft</Authors>
     <Copyright>Copyright (c) 2018 Berrysoft</Copyright>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

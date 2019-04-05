@@ -86,7 +86,7 @@ namespace Berrysoft.Html.Markdown
             HtmlNode table = new HtmlNode("table");
             HtmlNode tr = new HtmlNode("tr");
             table.AddElement(new HtmlNode("thead", tr));
-#if NETCOREAPP2_2
+#if NETCOREAPP
             string[] heads = head.Split('|', StringSplitOptions.RemoveEmptyEntries);
 #else
             string[] heads = head.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
@@ -109,7 +109,7 @@ namespace Berrysoft.Html.Markdown
             table.AddElement(tbody);
             foreach (string line in elements)
             {
-#if NETCOREAPP2_2
+#if NETCOREAPP
                 string[] es = line.Split('|', StringSplitOptions.RemoveEmptyEntries);
 #else
                 string[] es = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);

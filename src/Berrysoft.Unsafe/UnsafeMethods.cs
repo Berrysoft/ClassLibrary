@@ -81,7 +81,7 @@ namespace Berrysoft.Unsafe
             byte* ptr = stackalloc byte[size * SizeOf<T>()];
             action(new Pointer<T>(ptr));
         }
-#if NETCOREAPP2_2
+#if NETCOREAPP
         /// <summary>
         /// Get a <see cref="Span{T}"/> of a <see cref="Pointer{T}"/>.
         /// </summary>
