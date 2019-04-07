@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="System.Net.Http" Condition="'$(TargetFramework)'=='net472'" />
+    <Reference Include="System.Net.Http" Condition="'$(TargetFramework)'=='net48'" />
   </ItemGroup>
 
 </Project>

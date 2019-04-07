@@ -164,7 +164,7 @@ namespace Berrysoft.Data
                 }
                 last = current;
             }
-            ret:
+        ret:
             return false;
         }
         /// <summary>
@@ -473,7 +473,7 @@ namespace Berrysoft.Data
                     }
                 }
             }
-            ret:
+        ret:
             return result;
         }
         /// <summary>
@@ -530,7 +530,7 @@ namespace Berrysoft.Data
                     }
                 }
             }
-            ret:
+        ret:
             return result;
         }
     }
@@ -547,27 +547,15 @@ namespace Berrysoft.Data
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         public Graph()
-#if NETCOREAPP || NET472
             : this(0, 0, null)
-#else
-            : this((IEqualityComparer<T>)null)
-#endif
         { }
         /// <summary>
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
         /// <param name="comparer">An instance of <see cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
         public Graph(IEqualityComparer<T> comparer)
-#if NETCOREAPP || NET472
             : this(0, 0, comparer)
         { }
-#else
-        {
-            _vertexes = new HashSet<T>(comparer);
-            _arcs = new MultiMap<T, T>(comparer, comparer);
-        }
-#endif
-#if NETCOREAPP || NET472
         /// <summary>
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>
@@ -579,7 +567,6 @@ namespace Berrysoft.Data
             _vertexes = new HashSet<T>(vertexCapacity, comparer);
             _arcs = new MultiMap<T, T>(arcCapacity, comparer, comparer);
         }
-#endif
         /// <summary>
         /// Initialize an instance of <see cref="Graph{T}"/>.
         /// </summary>

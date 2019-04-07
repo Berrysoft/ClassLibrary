@@ -22,7 +22,7 @@ namespace Berrysoft.Console
     {
         private readonly XName rootName;
         private HashSet<string> multipleNames = new HashSet<string>();
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD
         private readonly object syncLock = new object();
 #endif
         /// <summary>
@@ -89,7 +89,7 @@ namespace Berrysoft.Console
                 this[name] = propValue;
             }
         }
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD
         /// <summary>
         /// Open an xml file and parse it asynchronously.
         /// </summary>
@@ -163,7 +163,7 @@ namespace Berrysoft.Console
             }
             document.Save(fileName);
         }
-#if NETCOREAPP
+#if NETCOREAPP || NETSTANDARD
         /// <summary>
         /// Save the settings to an xml file.
         /// </summary>
