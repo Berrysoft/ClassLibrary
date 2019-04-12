@@ -82,18 +82,18 @@ namespace Berrysoft.Tsinghua.Net
         /// Login to the website.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public Task<string> LoginAsync() => PostAsync(LogUri, GetLoginData());
+        public async Task<LogResponse> LoginAsync() => LogResponse.ParseFromUsereg(await PostAsync(LogUri, GetLoginData()));
         /// <summary>
         /// Logout from the website.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
+        public async Task<LogResponse> LogoutAsync() => LogResponse.ParseFromUsereg(await PostAsync(LogUri, LogoutData));
         /// <summary>
         /// Drop the IP address from network.
         /// </summary>
         /// <param name="ip">The IP address to be dropped.</param>
         /// <returns>The response of the website.</returns>
-        public Task<string> LogoutAsync(IPAddress ip) => PostAsync(InfoUri, string.Format(DropData, ip.ToString()));
+        public async Task<LogResponse> LogoutAsync(IPAddress ip) => LogResponse.ParseFromUsereg(await PostAsync(InfoUri, string.Format(DropData, ip.ToString())));
 
         private static readonly Regex TableRegex = new Regex(@"<tr align=""center"">.+?</tr>", RegexOptions.Singleline);
         private static readonly Regex ItemRegex = new Regex(@"(?<=\<td class=""maintd""\>)(.*?)(?=\</td\>)");
@@ -119,23 +119,18 @@ namespace Berrysoft.Tsinghua.Net
             }
         }
 
-        private Dictionary<string, string> loginDataDictionary;
         /// <summary>
         /// Get login data with username and password.
         /// </summary>
         /// <returns>A dictionary contains the data.</returns>
         private Dictionary<string, string> GetLoginData()
         {
-            if (loginDataDictionary == null)
+            return new Dictionary<string, string>
             {
-                loginDataDictionary = new Dictionary<string, string>()
-                {
-                    ["action"] = "login"
-                };
-            }
-            loginDataDictionary["user_login_name"] = Username;
-            loginDataDictionary["user_password"] = CryptographyHelper.GetMD5(Password);
-            return loginDataDictionary;
+                ["action"] = "login",
+                ["user_login_name"] = Username,
+                ["user_password"] = CryptographyHelper.GetMD5(Password)
+            };
         }
     }
 }

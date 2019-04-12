@@ -15,102 +15,17 @@ namespace Berrysoft.Tsinghua.Net
         /// Login to the network.
         /// </summary>
         /// <returns>The response of the website, may be a sentense or a html page.</returns>
-        Task<string> LoginAsync();
+        Task<LogResponse> LoginAsync();
         /// <summary>
         /// Logout from the network.
         /// </summary>
         /// <returns>The response of the website, may be a sentense or a html page.</returns>
-        Task<string> LogoutAsync();
-        /// <summary>
-        /// Logout from the network with the specified username.
-        /// </summary>
-        /// <param name="username">The specified username.</param>
-        /// <returns>The response of the website, may be a sentense or a html page.</returns>
-        Task<string> LogoutAsync(string username);
+        Task<LogResponse> LogoutAsync();
         /// <summary>
         /// Get information of the user online.
         /// </summary>
         /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         Task<FluxUser> GetFluxAsync();
-    }
-    /// <summary>
-    /// A simple class represents the current user online.
-    /// </summary>
-    public class FluxUser
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FluxUser"/> class.
-        /// </summary>
-        /// <param name="username">Username of the user.</param>
-        /// <param name="flux">Flux used by the user this month.</param>
-        /// <param name="onlineTime">Online time used this time of the user.</param>
-        /// <param name="balance">The network balance of the user.</param>
-        public FluxUser(string username, long flux, TimeSpan onlineTime, decimal balance)
-        {
-            Username = username;
-            Flux = flux;
-            OnlineTime = onlineTime;
-            Balance = balance;
-        }
-        /// <summary>
-        /// Username of the user.
-        /// </summary>
-        public string Username { get; }
-        /// <summary>
-        /// Flux used by the user this month.
-        /// </summary>
-        public long Flux { get; }
-        /// <summary>
-        /// Online time used this time of the user.
-        /// </summary>
-        public TimeSpan OnlineTime { get; }
-        /// <summary>
-        /// The network balance of the user.
-        /// </summary>
-        public decimal Balance { get; }
-        /// <summary>
-        /// Converts the string representation of informathion of current user to its <see cref="FluxUser"/> equivalent.
-        /// </summary>
-        /// <param name="fluxstr">A string containing information to convert.</param>
-        /// <returns>An instance of <see cref="FluxUser"/>.</returns>
-        public static FluxUser Parse(string fluxstr)
-        {
-            string[] r = fluxstr.Split(',');
-            if (string.IsNullOrWhiteSpace(r[0]))
-            {
-                return null;
-            }
-            else
-            {
-                return new FluxUser(
-                    r[0],
-                    long.Parse(r[6]),
-                    TimeSpan.FromSeconds(long.Parse(r[2]) - long.Parse(r[1])),
-                    decimal.Parse(r[11]));
-            }
-        }
-        /// <summary>
-        /// Converts the string representation of informathion of current user to its <see cref="FluxUser"/> equivalent.
-        /// A return value indicates whether the conversion succeeded or failed.
-        /// </summary>
-        /// <param name="fluxstr">A string containing information to convert.</param>
-        /// <param name="user">An instance of <see cref="FluxUser"/>, when succeed; otherwise null.</param>
-        /// <returns>true if fluxstr was converted successfully; otherwise, false.</returns>
-        public static bool TryParse(string fluxstr, out FluxUser user)
-        {
-            string[] r = fluxstr.Split(',');
-            if (!string.IsNullOrWhiteSpace(r[0])
-                && long.TryParse(r[6], out long flux)
-                && long.TryParse(r[2], out long endTime)
-                && long.TryParse(r[1], out long startTime)
-                && decimal.TryParse(r[11], out decimal balance))
-            {
-                user = new FluxUser(r[0], flux, TimeSpan.FromSeconds(endTime - startTime), balance);
-                return true;
-            }
-            user = null;
-            return false;
-        }
     }
     /// <summary>
     /// Base class of net helpers.

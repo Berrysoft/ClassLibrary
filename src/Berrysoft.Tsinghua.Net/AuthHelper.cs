@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Json;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Berrysoft.Tsinghua.Net
@@ -14,8 +13,7 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
         private const string FluxUriBase = "https://auth{0}.tsinghua.edu.cn/rad_user_info.php";
         private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge?username={{0}}&double_stack=1&ip&callback=callback";
-        private const string LogoutData = "action=logout";
-        private const string LogoutUserData = "action=logout&username={0}";
+        private static readonly int[] AcIds = new int[] { 1, 25, 33, 35 };
         private readonly string LogUri;
         private readonly string FluxUri;
         private readonly string ChallengeUri;
@@ -61,27 +59,40 @@ namespace Berrysoft.Tsinghua.Net
         /// Login to the network.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public async Task<string> LoginAsync() => await PostAsync(LogUri, await GetLoginDataAsync());
+        public async Task<LogResponse> LoginAsync()
+        {
+            LogResponse response = null;
+            foreach (int ac_id in AcIds)
+            {
+                response = LogResponse.ParseFromAuth(await PostAsync(LogUri, await GetLoginDataAsync(ac_id)));
+                if (response.Succeed)
+                    break;
+            }
+            return response;
+        }
+
         /// <summary>
         /// Logout from the network.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
-        /// <summary>
-        /// Logout from the network with the specified username.
-        /// When a user logged in through <see cref="AuthHelper"/> and logged out through <see cref="NetHelper"/>,
-        /// he should call this method with his username explicitly, or he can't logout.
-        /// </summary>
-        /// <param name="username">The specified username.</param>
-        /// <returns>The response of the website.</returns>
-        public Task<string> LogoutAsync(string username) => PostAsync(LogUri, string.Format(LogoutUserData, username));
+        public async Task<LogResponse> LogoutAsync()
+        {
+            LogResponse response = null;
+            foreach (int ac_id in AcIds)
+            {
+                response = LogResponse.ParseFromAuth(await PostAsync(LogUri, await GetLogoutDataAsync(ac_id)));
+                if (response.Succeed)
+                    break;
+            }
+            return response;
+        }
+
         /// <summary>
         /// Get information of the user online.
         /// </summary>
         /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
 
-        private static readonly Regex ChallengeRegex = new Regex(@"""challenge"":""(.*?)""");
         /// <summary>
         /// Get "challenge" to encode the password.
         /// </summary>
@@ -89,38 +100,54 @@ namespace Berrysoft.Tsinghua.Net
         private async Task<string> GetChallengeAsync()
         {
             string result = await GetAsync(string.Format(ChallengeUri, Username));
-            Match match = ChallengeRegex.Match(result);
-            return match.Groups[1].Value;
+            JsonValue json = JsonValue.Parse(result.Substring(9, result.Length - 10));
+            return json["challenge"];
         }
 
-        private Dictionary<string, string> logDataDictionary;
-        private const string LoginInfoJson = "{{\"ip\": \"\", \"acid\": \"1\", \"enc_ver\": \"srun_bx1\", \"username\": \"{0}\", \"password\": \"{1}\"}}";
-        private const string ChkSumData = "{0}{1}{0}{2}{0}1{0}{0}200{0}1{0}{3}";
+        private const string LoginInfoJson = "{{\"username\": \"{0}\", \"password\": \"{1}\", \"ip\": \"\", \"acid\": \"{2}\", \"enc_ver\": \"srun_bx1\"}}";
+        private const string ChkSumData = "{0}{1}{0}{2}{0}{4}{0}{0}200{0}1{0}{3}";
         /// <summary>
         /// Get login data with username, password and "challenge".
         /// </summary>
         /// <returns>A dictionary contains the data.</returns>
-        private async Task<Dictionary<string, string>> GetLoginDataAsync()
+        private async Task<Dictionary<string, string>> GetLoginDataAsync(int ac_id)
         {
-            //const string passwordMD5 = "5e543256c480ac577d30f76f9120eb74";
             string token = await GetChallengeAsync();
             string passwordMD5 = CryptographyHelper.GetHMACMD5(token);
-            if (logDataDictionary == null)
+            string info = "{SRBX1}" + CryptographyHelper.Base64Encode(CryptographyHelper.XEncode(string.Format(LoginInfoJson, Username, Password, ac_id), token));
+            return new Dictionary<string, string>
             {
-                logDataDictionary = new Dictionary<string, string>
-                {
-                    ["ac_id"] = "1",
-                    ["double_stack"] = "1",
-                    ["n"] = "200",
-                    ["type"] = "1"
-                };
-            }
-            logDataDictionary["action"] = "login";
-            logDataDictionary["password"] = "{MD5}" + passwordMD5;
-            logDataDictionary["info"] = "{SRBX1}" + CryptographyHelper.Base64Encode(CryptographyHelper.XEncode(string.Format(LoginInfoJson, Username, Password), token));
-            logDataDictionary["username"] = Username;
-            logDataDictionary["chksum"] = CryptographyHelper.GetSHA1(string.Format(ChkSumData, token, Username, passwordMD5, logDataDictionary["info"]));
-            return logDataDictionary;
+                ["action"] = "login",
+                ["ac_id"] = ac_id.ToString(),
+                ["double_stack"] = "1",
+                ["n"] = "200",
+                ["type"] = "1",
+                ["username"] = Username,
+                ["password"] = "{MD5}" + passwordMD5,
+                ["info"] = info,
+                ["chksum"] = CryptographyHelper.GetSHA1(string.Format(ChkSumData, token, Username, passwordMD5, info, ac_id)),
+                ["callback"] = "callback"
+            };
+        }
+
+        private const string LogoutInfoJson = "{{\"username\": \"{0}\", \"ip\": \"\", \"acid\": \"{1}\", \"enc_ver\": \"srun_bx1\"}}";
+        private const string LogoutChkSumData = "{0}{1}{0}{3}{0}{0}200{0}1{0}{2}";
+        private async Task<Dictionary<string, string>> GetLogoutDataAsync(int ac_id)
+        {
+            string token = await GetChallengeAsync();
+            string info = "{SRBX1}" + CryptographyHelper.Base64Encode(CryptographyHelper.XEncode(string.Format(LogoutInfoJson, Username, ac_id), token));
+            return new Dictionary<string, string>
+            {
+                ["action"] = "logout",
+                ["ac_id"] = ac_id.ToString(),
+                ["double_stack"] = "1",
+                ["n"] = "200",
+                ["type"] = "1",
+                ["username"] = Username,
+                ["info"] = info,
+                ["chksum"] = CryptographyHelper.GetSHA1(string.Format(LogoutChkSumData, token, Username, info, ac_id)),
+                ["callback"] = "callback"
+            };
         }
     }
     /// <summary>

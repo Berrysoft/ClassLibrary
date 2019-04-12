@@ -11,7 +11,7 @@ Class TsinghuaNetCommand
     Public Property Logout As Boolean
     <[Option]("f"c, "flux", HelpText:="Option to get flux of the user online")>
     Public Property Flux As Boolean
-    <[Option]("u"c, "username", HelpText:="Username to login, required when -i")>
+    <[Option]("u"c, "username", HelpText:="Username to login, required when -i or -o")>
     Public Property Username As String
     <[Option]("p"c, "password", HelpText:="Password to login")>
     Public Property Password As String

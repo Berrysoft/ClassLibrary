@@ -24,31 +24,30 @@ Module Program
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
             Return
         End Try
-        Dim helper As IConnect = Nothing
+
+        Dim username As String = command.Username
+        Dim password As String = If(command.Password, String.Empty)
+        Dim helper As IConnect = CreateHelper(username, password, command.Host)
+        If helper Is Nothing Then
+            Console.Error.WriteLine("Invalid host.")
+            Return
+        End If
         If command.Login Then
-            If command.Logout Then
-                Console.Error.WriteLine("Cannot login and logout at the same time!")
-                Return
-            End If
-            Dim username As String = command.Username
             If username Is Nothing Then
                 Console.Error.WriteLine("Please input username.")
                 Return
             End If
-            Dim password As String = If(command.Password, String.Empty)
-            helper = CreateHelper(username, password, command.Host)
-            If helper Is Nothing Then
-                Console.Error.WriteLine("Invalid host.")
+            If command.Logout Then
+                Console.Error.WriteLine("Cannot login and logout at the same time!")
                 Return
             End If
             Login(helper).Wait()
         ElseIf command.Logout Then
-            helper = CreateHelper(Nothing, Nothing, command.Host)
-            If helper Is Nothing Then
-                Console.Error.WriteLine("Invalid host.")
+            If username Is Nothing Then
+                Console.Error.WriteLine("Please input username.")
                 Return
             End If
-            Logout(helper, command.Username).Wait()
+            Logout(helper).Wait()
         End If
         If command.Flux Then
             If helper Is Nothing Then
@@ -78,18 +77,14 @@ Module Program
     End Function
     Async Function Login(helper As IConnect) As Task
         Try
-            Console.WriteLine(Await helper.LoginAsync())
+            Console.WriteLine((Await helper.LoginAsync()).Message)
         Catch ex As Exception
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
         End Try
     End Function
-    Async Function Logout(helper As IConnect, username As String) As Task
+    Async Function Logout(helper As IConnect) As Task
         Try
-            If username Is Nothing Then
-                Console.WriteLine(Await helper.LogoutAsync())
-            Else
-                Console.WriteLine(Await helper.LogoutAsync(username))
-            End If
+            Console.WriteLine((Await helper.LogoutAsync()).Message)
         Catch ex As Exception
             Console.Error.WriteLine("Exception occured: {0}", ex.Message)
         End Try

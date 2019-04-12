@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -13,7 +12,6 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogUri = "http://net.tsinghua.edu.cn/do_login.php";
         private const string FluxUri = "http://net.tsinghua.edu.cn/rad_user_info.php";
         private const string LogoutData = "action=logout";
-        private const string LogoutUserData = "action=logout&username={0}";
         /// <summary>
         /// Initializes a new instance of the <see cref="NetHelper"/> class.
         /// </summary>
@@ -48,42 +46,31 @@ namespace Berrysoft.Tsinghua.Net
         /// Login to the network.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public Task<string> LoginAsync() => PostAsync(LogUri, GetLoginData());
+        public async Task<LogResponse> LoginAsync() => LogResponse.ParseFromNet(await PostAsync(LogUri, GetLoginData()));
         /// <summary>
         /// Logout from the network.
         /// </summary>
         /// <returns>The response of the website.</returns>
-        public Task<string> LogoutAsync() => PostAsync(LogUri, LogoutData);
-        /// <summary>
-        /// Logout from the network with the specified username.
-        /// </summary>
-        /// <param name="username">The specified username.</param>
-        /// <returns>The response of the website.</returns>
-        public Task<string> LogoutAsync(string username) => PostAsync(LogUri, string.Format(LogoutUserData, username));
+        public async Task<LogResponse> LogoutAsync() => LogResponse.ParseFromNet(await PostAsync(LogUri, LogoutData));
         /// <summary>
         /// Get information of the user online.
         /// </summary>
         /// <returns>An instance of <see cref="FluxUser"/> class of the current user.</returns>
         public async Task<FluxUser> GetFluxAsync() => FluxUser.Parse(await PostAsync(FluxUri));
 
-        private Dictionary<string, string> loginDataDictionary;
         /// <summary>
         /// Get login data with username and password.
         /// </summary>
         /// <returns>A dictionary contains the data.</returns>
         private Dictionary<string, string> GetLoginData()
         {
-            if (loginDataDictionary == null)
+            return new Dictionary<string, string>
             {
-                loginDataDictionary = new Dictionary<string, string>()
-                {
-                    ["action"] = "login",
-                    ["ac_id"] = "1"
-                };
-            }
-            loginDataDictionary["username"] = Username;
-            loginDataDictionary["password"] = "{MD5_HEX}" + CryptographyHelper.GetMD5(Password);
-            return loginDataDictionary;
+                ["action"] = "login",
+                ["ac_id"] = "1",
+                ["username"] = Username,
+                ["password"] = "{MD5_HEX}" + CryptographyHelper.GetMD5(Password)
+            };
         }
     }
 }
