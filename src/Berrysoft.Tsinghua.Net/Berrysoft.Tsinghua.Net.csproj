@@ -12,7 +12,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Json" Version="4.6.0-preview3.19128.7" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.3" />
+    <PackageReference Include="System.Json" Version="4.6.0-preview4.19212.13" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">

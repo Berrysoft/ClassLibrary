@@ -6,6 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace Berrysoft.Tsinghua.Net
 {
@@ -39,6 +40,18 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public string Client { get; }
     }
+
+    public class NetDetail
+    {
+        public NetDetail(DateTime onlineDate, long flux)
+        {
+            OnlineDate = onlineDate;
+            Flux = flux;
+        }
+        public DateTime OnlineDate { get; }
+        public long Flux { get; }
+    }
+
     /// <summary>
     /// Exposes methods to login, logout, get connection information and drop connections from https://usereg.tsinghua.edu.cn/
     /// </summary>
@@ -46,6 +59,7 @@ namespace Berrysoft.Tsinghua.Net
     {
         private const string LogUri = "https://usereg.tsinghua.edu.cn/do.php";
         private const string InfoUri = "https://usereg.tsinghua.edu.cn/online_user_ipv4.php";
+        private const string DetailUri = "https://usereg.tsinghua.edu.cn/action=query&order=user_login_time&start_time={0}-{1}-01&end_time={0}-{1}-{2}&page={3}&offset=20";
         private const string LogoutData = "action=logout";
         private const string DropData = "action=drop&user_ip={0}";
         /// <summary>
@@ -95,28 +109,65 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>The response of the website.</returns>
         public async Task<LogResponse> LogoutAsync(IPAddress ip) => LogResponse.ParseFromUsereg(await PostAsync(InfoUri, string.Format(DropData, ip.ToString())));
 
-        private static readonly Regex TableRegex = new Regex(@"<tr align=""center"">.+?</tr>", RegexOptions.Singleline);
-        private static readonly Regex ItemRegex = new Regex(@"(?<=\<td class=""maintd""\>)(.*?)(?=\</td\>)");
         /// <summary>
         /// Get all connections of this user.
         /// </summary>
         /// <returns><see cref="IEnumerable{NetUser}"/></returns>
         public async Task<IEnumerable<NetUser>> GetUsersAsync()
         {
-            try
+            string userhtml = await GetAsync(InfoUri);
+            var doc = new HtmlDocument();
+            doc.LoadHtml(userhtml);
+            return from tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").ElementAt(1).Elements("tr").Skip(1)
+                   let tds = (from td in tr.Elements("td").Skip(1)
+                              select td.FirstChild?.InnerText).ToArray()
+                   select new NetUser(
+                       IPAddress.Parse(tds[0]),
+                       DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                       tds[10]);
+        }
+
+        private long ParseFlux(string str)
+        {
+            double flux = double.Parse(str.Substring(0, str.Length - 1));
+            char c = str[str.Length - 1];
+            switch (c)
             {
-                string userhtml = await GetAsync(InfoUri);
-                return from Match r in TableRegex.Matches(userhtml)
-                       let details = ItemRegex.Matches(r.Value)
-                       select new NetUser(
-                           IPAddress.Parse(details[0].Value),
-                           DateTime.ParseExact(details[1].Value, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                           details[10].Value);
+                case 'G':
+                    flux *= 1000 * 1000 * 1000;
+                    break;
+                case 'M':
+                    flux *= 1000 * 1000;
+                    break;
+                case 'K':
+                    flux *= 1000;
+                    break;
             }
-            catch (Exception)
+            return (long)flux;
+        }
+
+        public async Task<IEnumerable<NetDetail>> GetDetailsAsync()
+        {
+            DateTime now = DateTime.Now;
+            int i = 1;
+            List<NetDetail> list = new List<NetDetail>();
+            while (true)
             {
-                return null;
+                string detailhtml = await GetAsync(string.Format(DetailUri, now.Year, now.Month.ToString().PadLeft(2, '0'), now.Day, i));
+                var doc = new HtmlDocument();
+                doc.LoadHtml(detailhtml);
+                int oldsize = list.Count;
+                list.AddRange(
+                    from tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").Last().Elements("tr").Skip(1)
+                    let tds = (from td in tr.Elements("td").Skip(1)
+                               select td.FirstChild?.InnerText).ToArray()
+                    select new NetDetail(
+                        DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                        ParseFlux(tds[4])));
+                if (list.Count <= oldsize) break;
+                i++;
             }
+            return list;
         }
 
         /// <summary>

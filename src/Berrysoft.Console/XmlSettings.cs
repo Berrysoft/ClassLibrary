@@ -89,7 +89,7 @@ namespace Berrysoft.Console
                 this[name] = propValue;
             }
         }
-#if NETCOREAPP || NETSTANDARD
+#if NETCOREAPP || NETSTANDARD2_1
         /// <summary>
         /// Open an xml file and parse it asynchronously.
         /// </summary>
@@ -163,7 +163,7 @@ namespace Berrysoft.Console
             }
             document.Save(fileName);
         }
-#if NETCOREAPP || NETSTANDARD
+#if NETCOREAPP || NETSTANDARD2_1
         /// <summary>
         /// Save the settings to an xml file.
         /// </summary>
