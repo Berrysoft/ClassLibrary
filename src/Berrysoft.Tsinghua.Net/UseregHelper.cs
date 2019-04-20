@@ -59,7 +59,7 @@ namespace Berrysoft.Tsinghua.Net
     {
         private const string LogUri = "https://usereg.tsinghua.edu.cn/do.php";
         private const string InfoUri = "https://usereg.tsinghua.edu.cn/online_user_ipv4.php";
-        private const string DetailUri = "https://usereg.tsinghua.edu.cn/action=query&order=user_login_time&start_time={0}-{1}-01&end_time={0}-{1}-{2}&page={3}&offset=20";
+        private const string DetailUri = "https://usereg.tsinghua.edu.cn/user_detail_list.php?action=query&order=user_login_time&start_time={0}-{1}-01&end_time={0}-{1}-{2}&page={3}&offset=20";
         private const string LogoutData = "action=logout";
         private const string DropData = "action=drop&user_ip={0}";
         /// <summary>
