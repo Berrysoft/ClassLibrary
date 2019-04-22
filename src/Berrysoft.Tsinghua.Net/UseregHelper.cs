@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 
@@ -41,14 +40,28 @@ namespace Berrysoft.Tsinghua.Net
         public string Client { get; }
     }
 
+    /// <summary>
+    /// Flux detail.
+    /// </summary>
     public class NetDetail
     {
+        /// <summary>
+        /// Initializes a new instance of <see cref="NetDetail"/> class.
+        /// </summary>
+        /// <param name="onlineDate">The date logging in.</param>
+        /// <param name="flux">The flux has been used.</param>
         public NetDetail(DateTime onlineDate, long flux)
         {
             OnlineDate = onlineDate;
             Flux = flux;
         }
+        /// <summary>
+        /// The date logging in.
+        /// </summary>
         public DateTime OnlineDate { get; }
+        /// <summary>
+        /// The flux has been used.
+        /// </summary>
         public long Flux { get; }
     }
 
@@ -112,19 +125,21 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get all connections of this user.
         /// </summary>
-        /// <returns><see cref="IEnumerable{NetUser}"/></returns>
-        public async Task<IEnumerable<NetUser>> GetUsersAsync()
+        /// <returns><see cref="IAsyncEnumerable{NetUser}"/></returns>
+        public async IAsyncEnumerable<NetUser> GetUsersAsync()
         {
             string userhtml = await GetAsync(InfoUri);
             var doc = new HtmlDocument();
             doc.LoadHtml(userhtml);
-            return from tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").ElementAt(1).Elements("tr").Skip(1)
-                   let tds = (from td in tr.Elements("td").Skip(1)
-                              select td.FirstChild?.InnerText).ToArray()
-                   select new NetUser(
-                       IPAddress.Parse(tds[0]),
-                       DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                       tds[10]);
+            foreach (var tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").ElementAt(1).Elements("tr").Skip(1))
+            {
+                var tds = (from td in tr.Elements("td").Skip(1)
+                           select td.FirstChild?.InnerText).ToArray();
+                yield return new NetUser(
+                    IPAddress.Parse(tds[0]),
+                    DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                    tds[10]);
+            }
         }
 
         private long ParseFlux(string str)
@@ -146,28 +161,30 @@ namespace Berrysoft.Tsinghua.Net
             return (long)flux;
         }
 
-        public async Task<IEnumerable<NetDetail>> GetDetailsAsync()
+        /// <summary>
+        /// Get all details of this month.
+        /// </summary>
+        /// <returns><see cref="IAsyncEnumerable{NetDetail}"/></returns>
+        public async IAsyncEnumerable<NetDetail> GetDetailsAsync()
         {
             DateTime now = DateTime.Now;
-            int i = 1;
-            List<NetDetail> list = new List<NetDetail>();
-            while (true)
+            for (int i = 1; ; i++)
             {
                 string detailhtml = await GetAsync(string.Format(DetailUri, now.Year, now.Month.ToString().PadLeft(2, '0'), now.Day, i));
                 var doc = new HtmlDocument();
                 doc.LoadHtml(detailhtml);
-                int oldsize = list.Count;
-                list.AddRange(
-                    from tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").Last().Elements("tr").Skip(1)
-                    let tds = (from td in tr.Elements("td").Skip(1)
-                               select td.FirstChild?.InnerText).ToArray()
-                    select new NetDetail(
+                bool @continue = false;
+                foreach (var tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").Last().Elements("tr").Skip(1))
+                {
+                    var tds = (from td in tr.Elements("td").Skip(1)
+                               select td.FirstChild?.InnerText).ToArray();
+                    yield return new NetDetail(
                         DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                        ParseFlux(tds[4])));
-                if (list.Count <= oldsize) break;
-                i++;
+                        ParseFlux(tds[4]));
+                    @continue = true;
+                }
+                if (!@continue) break;
             }
-            return list;
         }
 
         /// <summary>

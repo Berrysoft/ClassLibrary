@@ -6,16 +6,16 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-    <AssemblyVersion>1.1.212.0</AssemblyVersion>
-    <FileVersion>1.1.212.0</FileVersion>
+    <LangVersion>preview</LangVersion>
+    <AssemblyVersion>1.1.214.0</AssemblyVersion>
+    <FileVersion>1.1.214.0</FileVersion>
     <OutputPath>..\..\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.212-preview5</Version>
+    <Version>1.1.214-preview6</Version>
     <Authors>Berrysoft</Authors>
-    <Copyright>Copyright (c) 2018 Berrysoft</Copyright>
+    <Copyright>Copyright (c) 2018-2019 Berrysoft</Copyright>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <RepositoryType>GitHub</RepositoryType>
