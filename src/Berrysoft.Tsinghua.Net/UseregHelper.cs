@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -123,23 +124,35 @@ namespace Berrysoft.Tsinghua.Net
         public async Task<LogResponse> LogoutAsync(IPAddress ip) => LogResponse.ParseFromUsereg(await PostAsync(InfoUri, string.Format(DropData, ip.ToString())));
 
         /// <summary>
+        /// Get login data with username and password.
+        /// </summary>
+        /// <returns>A dictionary contains the data.</returns>
+        private Dictionary<string, string> GetLoginData()
+        {
+            return new Dictionary<string, string>
+            {
+                ["action"] = "login",
+                ["user_login_name"] = Username,
+                ["user_password"] = CryptographyHelper.GetMD5(Password)
+            };
+        }
+
+        /// <summary>
         /// Get all connections of this user.
         /// </summary>
-        /// <returns><see cref="IAsyncEnumerable{NetUser}"/></returns>
-        public async IAsyncEnumerable<NetUser> GetUsersAsync()
+        /// <returns><see cref="IEnumerable{NetUser}"/></returns>
+        public async Task<IEnumerable<NetUser>> GetUsersAsync()
         {
             string userhtml = await GetAsync(InfoUri);
             var doc = new HtmlDocument();
             doc.LoadHtml(userhtml);
-            foreach (var tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").ElementAt(1).Elements("tr").Skip(1))
-            {
-                var tds = (from td in tr.Elements("td").Skip(1)
-                           select td.FirstChild?.InnerText).ToArray();
-                yield return new NetUser(
-                    IPAddress.Parse(tds[0]),
-                    DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                    tds[10]);
-            }
+            return from tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").ElementAt(1).Elements("tr").Skip(1)
+                   let tds = (from td in tr.Elements("td").Skip(1)
+                              select td.FirstChild?.InnerText).ToArray()
+                   select new NetUser(
+                       IPAddress.Parse(tds[0]),
+                       DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                       tds[10]);
         }
 
         private long ParseFlux(string str)
@@ -164,41 +177,27 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Get all details of this month.
         /// </summary>
-        /// <returns><see cref="IAsyncEnumerable{NetDetail}"/></returns>
-        public async IAsyncEnumerable<NetDetail> GetDetailsAsync()
+        /// <returns><see cref="IEnumerable{NetDetail}"/></returns>
+        public async Task<IEnumerable<NetDetail>> GetDetailsAsync()
         {
             DateTime now = DateTime.Now;
+            List<NetDetail> list = new List<NetDetail>();
             for (int i = 1; ; i++)
             {
                 string detailhtml = await GetAsync(string.Format(DetailUri, now.Year, now.Month.ToString().PadLeft(2, '0'), now.Day, i));
                 var doc = new HtmlDocument();
                 doc.LoadHtml(detailhtml);
-                bool @continue = false;
-                foreach (var tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").Last().Elements("tr").Skip(1))
-                {
-                    var tds = (from td in tr.Elements("td").Skip(1)
-                               select td.FirstChild?.InnerText).ToArray();
-                    yield return new NetDetail(
+                int oldsize = list.Count;
+                list.AddRange(
+                    from tr in doc.DocumentNode.Element("html").Element("body").Element("table").Element("tr").Elements("td").Last().Elements("table").Last().Elements("tr").Skip(1)
+                    let tds = (from td in tr.Elements("td").Skip(1)
+                               select td.FirstChild?.InnerText).ToArray()
+                    select new NetDetail(
                         DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
-                        ParseFlux(tds[4]));
-                    @continue = true;
-                }
-                if (!@continue) break;
+                        ParseFlux(tds[4])));
+                if (list.Count <= oldsize) break;
             }
-        }
-
-        /// <summary>
-        /// Get login data with username and password.
-        /// </summary>
-        /// <returns>A dictionary contains the data.</returns>
-        private Dictionary<string, string> GetLoginData()
-        {
-            return new Dictionary<string, string>
-            {
-                ["action"] = "login",
-                ["user_login_name"] = Username,
-                ["user_password"] = CryptographyHelper.GetMD5(Password)
-            };
+            return list;
         }
     }
 }

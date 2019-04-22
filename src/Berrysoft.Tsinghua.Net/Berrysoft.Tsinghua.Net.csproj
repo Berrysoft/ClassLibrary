@@ -14,7 +14,6 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.11.3" />
     <PackageReference Include="System.Json" Version="4.6.0-preview4.19212.13" />
-    <PackageReference Include="System.Linq.Async" Version="4.0.0-preview.1.build.745" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net48'">

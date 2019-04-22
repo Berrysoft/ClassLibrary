@@ -13,7 +13,7 @@ namespace Berrysoft.Tsinghua.Net
         private const string LogUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/srun_portal";
         private const string FluxUriBase = "https://auth{0}.tsinghua.edu.cn/rad_user_info.php";
         private const string ChallengeUriBase = "https://auth{0}.tsinghua.edu.cn/cgi-bin/get_challenge?username={{0}}&double_stack=1&ip&callback=callback";
-        private static readonly int[] AcIds = new int[] { 1, 25, 33, 35 };
+        private static readonly int[] AcIds = new int[] { 1, 25, 33, 35, 37 };
         private readonly string LogUri;
         private readonly string FluxUri;
         private readonly string ChallengeUri;
