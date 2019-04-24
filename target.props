@@ -7,13 +7,13 @@
 
   <PropertyGroup>
     <LangVersion>preview</LangVersion>
-    <AssemblyVersion>1.1.214.0</AssemblyVersion>
-    <FileVersion>1.1.214.0</FileVersion>
+    <AssemblyVersion>1.1.216.0</AssemblyVersion>
+    <FileVersion>1.1.216.0</FileVersion>
     <OutputPath>..\..\bin\$(Configuration)</OutputPath>
   </PropertyGroup>
 
   <PropertyGroup>
-    <Version>1.1.214-preview6</Version>
+    <Version>1.1.216-rc1</Version>
     <Authors>Berrysoft</Authors>
     <Copyright>Copyright (c) 2018-2019 Berrysoft</Copyright>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>

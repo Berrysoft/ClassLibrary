@@ -564,8 +564,13 @@ namespace Berrysoft.Data
         /// <param name="comparer">An instance of <see cref="IEqualityComparer{T}"/>; default when <see langword="null"/>.</param>
         public Graph(int vertexCapacity, int arcCapacity, IEqualityComparer<T> comparer)
         {
+#if NETSTANDARD2_0
+            _vertexes = new HashSet<T>(comparer);
+            _arcs = new MultiMap<T, T>(comparer, comparer);
+#else
             _vertexes = new HashSet<T>(vertexCapacity, comparer);
             _arcs = new MultiMap<T, T>(arcCapacity, comparer, comparer);
+#endif
         }
         /// <summary>
         /// Initialize an instance of <see cref="Graph{T}"/>.

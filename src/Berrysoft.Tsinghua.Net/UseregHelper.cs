@@ -49,17 +49,23 @@ namespace Berrysoft.Tsinghua.Net
         /// <summary>
         /// Initializes a new instance of <see cref="NetDetail"/> class.
         /// </summary>
-        /// <param name="onlineDate">The date logging in.</param>
+        /// <param name="login">The time logging in.</param>
+        /// <param name="logout">The time logging out.</param>
         /// <param name="flux">The flux has been used.</param>
-        public NetDetail(DateTime onlineDate, long flux)
+        public NetDetail(DateTime login, DateTime logout, long flux)
         {
-            OnlineDate = onlineDate;
+            LoginTime = login;
+            LogoutTime = logout;
             Flux = flux;
         }
         /// <summary>
-        /// The date logging in.
+        /// The time logging in.
         /// </summary>
-        public DateTime OnlineDate { get; }
+        public DateTime LoginTime { get; }
+        /// <summary>
+        /// The time logging out.
+        /// </summary>
+        public DateTime LogoutTime { get; }
         /// <summary>
         /// The flux has been used.
         /// </summary>
@@ -194,6 +200,7 @@ namespace Berrysoft.Tsinghua.Net
                                select td.FirstChild?.InnerText).ToArray()
                     select new NetDetail(
                         DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
+                        DateTime.ParseExact(tds[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                         ParseFlux(tds[4])));
                 if (list.Count <= oldsize) break;
             }
