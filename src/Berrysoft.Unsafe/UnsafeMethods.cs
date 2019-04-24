@@ -18,6 +18,7 @@ namespace Berrysoft.Unsafe
         public static int GetSize<T>() => SizeOf<T>();
         /// <summary>
         /// Get a <see cref="Pointer{T}"/> with a <typeparamref name="T"/> reference.
+        /// Note: the storage of value should be pinned.
         /// </summary>
         /// <typeparam name="T">Type of the pointer pointed to.</typeparam>
         /// <param name="value">The reference.</param>
@@ -47,6 +48,7 @@ namespace Berrysoft.Unsafe
         }
         /// <summary>
         /// Get a <see cref="Unsafe.ByReference{T}"/> with a <typeparamref name="T"/> reference.
+        /// Note: the storage of value should be pinned.
         /// </summary>
         /// <typeparam name="T">Type of the pointer pointed to.</typeparam>
         /// <param name="value">The reference.</param>
@@ -55,6 +57,7 @@ namespace Berrysoft.Unsafe
         public static ByReference<T> ByReference<T>(ref T value) => new ByReference<T>(ref value);
         /// <summary>
         /// Get a <see cref="Unsafe.ByReference{T}"/> with a readonly <typeparamref name="T"/> reference.
+        /// Note: the storage of value should be pinned.
         /// </summary>
         /// <typeparam name="T">Type of the pointer pointed to.</typeparam>
         /// <param name="value">The reference.</param>

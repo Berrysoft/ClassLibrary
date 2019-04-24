@@ -38,6 +38,7 @@ namespace Berrysoft.Unsafe
         }
         /// <summary>
         /// Initialize a <see cref="Pointer{T}"/> with a <typeparamref name="T"/> reference.
+        /// Note: the storage of value should be pinned.
         /// </summary>
         /// <param name="ptr">The reference.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
