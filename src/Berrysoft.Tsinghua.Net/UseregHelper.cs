@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -39,6 +38,27 @@ namespace Berrysoft.Tsinghua.Net
         /// The client used by this connection. It may be "Unknown" through <see cref="NetHelper"/>, and "Windows NT", "Windows 8", "Windows 7" or "Unknown" through <see cref="AuthHelper"/>.
         /// </summary>
         public string Client { get; }
+        /// <summary>
+        /// Determines whether the two <see cref="NetUser"/> are equal.
+        /// </summary>
+        /// <param name="obj">The other object.</param>
+        /// <returns><see langword="true"/> if they're equal; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is NetUser other)
+            {
+                return Address.Equals(other.Address) && LoginTime == other.LoginTime && Client == other.Client;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns the hash value of this object.
+        /// </summary>
+        /// <returns>The hash value.</returns>
+        public override int GetHashCode()
+        {
+            return (Address?.GetHashCode() ?? 0) ^ LoginTime.GetHashCode() ^ (Client?.GetHashCode() ?? 0);
+        }
     }
 
     /// <summary>
@@ -70,6 +90,27 @@ namespace Berrysoft.Tsinghua.Net
         /// The flux has been used.
         /// </summary>
         public long Flux { get; }
+        /// <summary>
+        /// Determines whether the two <see cref="NetDetail"/> are equal.
+        /// </summary>
+        /// <param name="obj">The other object.</param>
+        /// <returns><see langword="true"/> if they're equal; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is NetDetail other)
+            {
+                return LoginTime == other.LoginTime && LogoutTime == other.LogoutTime && Flux == other.Flux;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns the hash value of this object.
+        /// </summary>
+        /// <returns>The hash value.</returns>
+        public override int GetHashCode()
+        {
+            return LoginTime.GetHashCode() ^ LogoutTime.GetHashCode() ^ Flux.GetHashCode();
+        }
     }
 
     /// <summary>

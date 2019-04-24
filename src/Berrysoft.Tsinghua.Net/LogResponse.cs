@@ -9,6 +9,17 @@ namespace Berrysoft.Tsinghua.Net
     public class LogResponse
     {
         /// <summary>
+        /// Initialize a new instance of <see cref="LogResponse"/> class.
+        /// </summary>
+        /// <param name="succeed">Whether the command is succeed.</param>
+        /// <param name="message">The formatted response message.</param>
+        public LogResponse(bool succeed, string message)
+        {
+            Succeed = succeed;
+            Message = message;
+        }
+
+        /// <summary>
         /// Shows whether the command is succeed.
         /// </summary>
         public bool Succeed { get; }
@@ -18,14 +29,25 @@ namespace Berrysoft.Tsinghua.Net
         public string Message { get; }
 
         /// <summary>
-        /// Initialize a new instance of <see cref="LogResponse"/> class.
+        /// Determines whether the two <see cref="LogResponse"/> are equal.
         /// </summary>
-        /// <param name="succeed">Whether the command is succeed.</param>
-        /// <param name="message">The formatted response message.</param>
-        public LogResponse(bool succeed, string message)
+        /// <param name="obj">The other object.</param>
+        /// <returns><see langword="true"/> if they're equal; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
         {
-            Succeed = succeed;
-            Message = message;
+            if (obj is LogResponse other)
+            {
+                return Succeed == other.Succeed && Message == other.Message;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns the hash value of this object.
+        /// </summary>
+        /// <returns>The hash value.</returns>
+        public override int GetHashCode()
+        {
+            return Succeed.GetHashCode() ^ (Message?.GetHashCode() ?? 0);
         }
 
         internal static LogResponse ParseFromNet(string response)

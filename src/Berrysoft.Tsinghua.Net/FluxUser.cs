@@ -38,6 +38,28 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public decimal Balance { get; }
 
+        /// <summary>
+        /// Determines whether the username of the two <see cref="FluxUser"/> are equal.
+        /// </summary>
+        /// <param name="obj">The other object.</param>
+        /// <returns><see langword="true"/> if they're equal; otherwise, <see langword="false"/>.</returns>
+        public override bool Equals(object obj)
+        {
+            if (obj is FluxUser other)
+            {
+                return Username == other.Username;
+            }
+            return false;
+        }
+        /// <summary>
+        /// Returns the hash value of this object.
+        /// </summary>
+        /// <returns>The hash value.</returns>
+        public override int GetHashCode()
+        {
+            return Username?.GetHashCode() ?? 0;
+        }
+
         internal static FluxUser Parse(string fluxstr)
         {
             string[] r = fluxstr.Split(',');
