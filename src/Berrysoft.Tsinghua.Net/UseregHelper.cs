@@ -120,7 +120,7 @@ namespace Berrysoft.Tsinghua.Net
     {
         private const string LogUri = "https://usereg.tsinghua.edu.cn/do.php";
         private const string InfoUri = "https://usereg.tsinghua.edu.cn/online_user_ipv4.php";
-        private const string DetailUri = "https://usereg.tsinghua.edu.cn/user_detail_list.php?action=query&order=user_real_name&start_time={0}-{1}-01&end_time={0}-{1}-{2}&page={3}&offset=100";
+        private const string DetailUri = "https://usereg.tsinghua.edu.cn/user_detail_list.php?action=query&order=user_real_name&start_time={0}-{1}-01&end_time={0}-{1}-{2}&page={3}&offset={4}";
         private const string LogoutData = "action=logout";
         private const string DropData = "action=drop&user_ip={0}";
         /// <summary>
@@ -227,11 +227,12 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns><see cref="IEnumerable{NetDetail}"/></returns>
         public async Task<IEnumerable<NetDetail>> GetDetailsAsync()
         {
+            const int offset = 100;
             DateTime now = DateTime.Now;
             List<NetDetail> list = new List<NetDetail>();
             for (int i = 1; ; i++)
             {
-                string detailhtml = await GetAsync(string.Format(DetailUri, now.Year, now.Month.ToString().PadLeft(2, '0'), now.Day, i));
+                string detailhtml = await GetAsync(string.Format(DetailUri, now.Year, now.Month.ToString().PadLeft(2, '0'), now.Day, i, offset));
                 var doc = new HtmlDocument();
                 doc.LoadHtml(detailhtml);
                 int oldsize = list.Count;
@@ -243,7 +244,7 @@ namespace Berrysoft.Tsinghua.Net
                         DateTime.ParseExact(tds[1], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                         DateTime.ParseExact(tds[2], "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture),
                         ParseFlux(tds[4])));
-                if (list.Count <= oldsize) break;
+                if (list.Count - oldsize < offset) break;
             }
             return list;
         }
