@@ -28,6 +28,9 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public string Message { get; }
 
+        public static bool operator ==(LogResponse r1, LogResponse r2) => r1.Succeed == r2.Succeed && r1.Message == r2.Message;
+        public static bool operator !=(LogResponse r1, LogResponse r2) => !(r1 == r2);
+
         /// <summary>
         /// Determines whether the two <see cref="LogResponse"/> are equal.
         /// </summary>
@@ -37,7 +40,7 @@ namespace Berrysoft.Tsinghua.Net
         {
             if (obj is LogResponse other)
             {
-                return Succeed == other.Succeed && Message == other.Message;
+                return this == other;
             }
             return false;
         }

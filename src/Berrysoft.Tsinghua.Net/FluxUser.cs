@@ -38,6 +38,9 @@ namespace Berrysoft.Tsinghua.Net
         /// </summary>
         public decimal Balance { get; }
 
+        public static bool operator ==(FluxUser u1, FluxUser u2) => u1.Username == u2.Username;
+        public static bool operator !=(FluxUser u1, FluxUser u2) => !(u1 == u2);
+
         /// <summary>
         /// Determines whether the username of the two <see cref="FluxUser"/> are equal.
         /// </summary>
@@ -47,7 +50,7 @@ namespace Berrysoft.Tsinghua.Net
         {
             if (obj is FluxUser other)
             {
-                return Username == other.Username;
+                return this == other;
             }
             return false;
         }
