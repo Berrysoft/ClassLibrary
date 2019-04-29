@@ -6,7 +6,7 @@ namespace Berrysoft.Tsinghua.Net
     /// <summary>
     /// The response of Login or Logout.
     /// </summary>
-    public class LogResponse
+    public struct LogResponse
     {
         /// <summary>
         /// Initialize a new instance of <see cref="LogResponse"/> class.

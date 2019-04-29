@@ -3,9 +3,9 @@
 namespace Berrysoft.Tsinghua.Net
 {
     /// <summary>
-    /// A simple class represents the current user online.
+    /// A simple structure represents the current user online.
     /// </summary>
-    public class FluxUser
+    public struct FluxUser
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="FluxUser"/> class.
@@ -65,7 +65,7 @@ namespace Berrysoft.Tsinghua.Net
             string[] r = fluxstr.Split(',');
             if (string.IsNullOrWhiteSpace(r[0]))
             {
-                return null;
+                return default;
             }
             else
             {

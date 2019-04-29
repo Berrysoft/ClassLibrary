@@ -61,7 +61,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>The response of the website.</returns>
         public async Task<LogResponse> LoginAsync()
         {
-            LogResponse response = null;
+            LogResponse response = default;
             foreach (int ac_id in AcIds)
             {
                 response = LogResponse.ParseFromAuth(await PostAsync(LogUri, await GetLoginDataAsync(ac_id)));
@@ -77,7 +77,7 @@ namespace Berrysoft.Tsinghua.Net
         /// <returns>The response of the website.</returns>
         public async Task<LogResponse> LogoutAsync()
         {
-            LogResponse response = null;
+            LogResponse response = default;
             foreach (int ac_id in AcIds)
             {
                 response = LogResponse.ParseFromAuth(await PostAsync(LogUri, await GetLogoutDataAsync(ac_id)));

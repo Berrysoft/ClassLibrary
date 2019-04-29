@@ -10,9 +10,9 @@ using HtmlAgilityPack;
 namespace Berrysoft.Tsinghua.Net
 {
     /// <summary>
-    /// A simple class represents the status of a connection.
+    /// A simple structure represents the status of a connection.
     /// </summary>
-    public class NetUser
+    public struct NetUser
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NetUser"/> class.
@@ -64,7 +64,7 @@ namespace Berrysoft.Tsinghua.Net
     /// <summary>
     /// Flux detail.
     /// </summary>
-    public class NetDetail
+    public struct NetDetail
     {
         /// <summary>
         /// Initializes a new instance of <see cref="NetDetail"/> class.
