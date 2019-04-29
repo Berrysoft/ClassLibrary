@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Berrysoft.Tsinghua.Net
 {
@@ -63,8 +63,8 @@ namespace Berrysoft.Tsinghua.Net
             try
             {
                 string jsonstr = response.Substring(9, response.Length - 10);
-                JsonValue json = JsonValue.Parse(jsonstr);
-                return new LogResponse(json["error"] == "ok", $"error: {json["error"]}\nerror_msg: {json["error_msg"]}");
+                JObject json = JObject.Parse(jsonstr);
+                return new LogResponse((string)json["error"] == "ok", $"error: {json["error"]}\nerror_msg: {json["error_msg"]}");
             }
             catch (Exception)
             {

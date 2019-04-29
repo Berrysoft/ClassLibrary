@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Json;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace Berrysoft.Tsinghua.Net
 {
@@ -100,8 +100,8 @@ namespace Berrysoft.Tsinghua.Net
         private async Task<string> GetChallengeAsync()
         {
             string result = await GetAsync(string.Format(ChallengeUri, Username));
-            JsonValue json = JsonValue.Parse(result.Substring(9, result.Length - 10));
-            return json["challenge"];
+            JObject json = JObject.Parse(result.Substring(9, result.Length - 10));
+            return (string)json["challenge"];
         }
 
         private const string LoginInfoJson = "{{\"username\": \"{0}\", \"password\": \"{1}\", \"ip\": \"\", \"acid\": \"{2}\", \"enc_ver\": \"srun_bx1\"}}";
