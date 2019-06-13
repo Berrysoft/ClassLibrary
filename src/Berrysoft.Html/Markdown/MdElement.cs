@@ -39,7 +39,7 @@ namespace Berrysoft.Html.Markdown
                 {
                     yield return new MdCodeElement(lines, ref i);
                 }
-#if NETCOREAPP || NETSTANDARD2_1
+#if NETSTANDARD2_1
                 else if (TableRegex.IsMatch(line) && line.Contains('|'))
 #else
                 else if (TableRegex.IsMatch(line) && line.Contains("|"))

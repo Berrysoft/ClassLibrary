@@ -71,7 +71,7 @@ namespace Berrysoft.Html
             switch (obj)
             {
                 case HtmlNode node:
-#if NETCOREAPP || NETSTANDARD2_1
+#if NETSTANDARD2_1
                     writer.Write("<{0} {1}>", node.Name, string.Join(' ', node.Attributes()));
 #else
                     writer.Write("<{0} {1}>", node.Name, string.Join(" ", node.Attributes()));
@@ -109,7 +109,7 @@ namespace Berrysoft.Html
             switch (obj)
             {
                 case HtmlNode node:
-#if NETCOREAPP || NETSTANDARD2_1
+#if NETSTANDARD2_1
                     await writer.WriteAsync($"<{node.Name} {string.Join(' ', node.Attributes())}>");
 #else
                     await writer.WriteAsync($"<{node.Name} {string.Join(" ", node.Attributes())}>");

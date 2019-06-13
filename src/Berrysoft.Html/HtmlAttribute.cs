@@ -38,7 +38,7 @@ namespace Berrysoft.Html
         /// <returns>A string.</returns>
         public override string ToString()
         {
-#if NETCOREAPP || NETSTANDARD2_1
+#if NETSTANDARD2_1
             if (attrvalue.Contains('\"'))
 #else
             if (attrvalue.Contains("\""))

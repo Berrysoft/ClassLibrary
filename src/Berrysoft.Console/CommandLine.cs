@@ -136,7 +136,7 @@ namespace Berrysoft.Console
                 {
                     throw ExceptionHelper.ArgInvalid(argKey);
                 }
-#if NETCOREAPP || NETSTANDARD2_1
+#if NETSTANDARD2_1
                 if (!result.TryAdd(argKey, argValue))
                 {
                     throw ExceptionHelper.ArgInvalid(argKey);
